@@ -8,8 +8,14 @@
 
 package org.oscm.common.jms.unit;
 
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.junit.Test;
@@ -138,5 +144,48 @@ public class ListenerTest extends Listener {
                 .when(persistence).receive(Mockito.any(TestRep.class));
 
         consumeMessage(msg, TestRep.class, persistence);
+    }
+
+    @Test
+    public void testSendAnswerPositive() throws Exception {
+
+        ConnectionFactory factory = Mockito.mock(ConnectionFactory.class);
+        Message message = Mockito.mock(Message.class);
+        TextMessage answer = Mockito.mock(TextMessage.class);
+        Destination dest = Mockito.mock(Destination.class);
+        Connection conn = Mockito.mock(Connection.class);
+        Session session = Mockito.mock(Session.class);
+        MessageProducer producer = Mockito.mock(MessageProducer.class);
+
+        Mockito.when(factory.createConnection()).thenReturn(conn);
+        Mockito.when(message.getJMSReplyTo()).thenReturn(dest);
+        Mockito.when(conn.createSession(false, Session.DUPS_OK_ACKNOWLEDGE))
+                .thenReturn(session);
+        Mockito.when(session.createProducer(dest)).thenReturn(producer);
+        Mockito.when(session.createTextMessage()).thenReturn(answer);
+
+        sendAnswer(factory, message, new TestRep());
+    }
+
+    @Test
+    public void testSendAnswerNegative() throws Exception {
+
+        ConnectionFactory factory = Mockito.mock(ConnectionFactory.class);
+        Message message = Mockito.mock(Message.class);
+        TextMessage answer = Mockito.mock(TextMessage.class);
+        Destination dest = Mockito.mock(Destination.class);
+        Connection conn = Mockito.mock(Connection.class);
+        Session session = Mockito.mock(Session.class);
+        MessageProducer producer = Mockito.mock(MessageProducer.class);
+
+        Mockito.when(factory.createConnection()).thenReturn(conn);
+        Mockito.when(message.getJMSReplyTo()).thenThrow(
+                new JMSException("because REASONS!!"));
+        Mockito.when(conn.createSession(false, Session.DUPS_OK_ACKNOWLEDGE))
+                .thenReturn(session);
+        Mockito.when(session.createProducer(dest)).thenReturn(producer);
+        Mockito.when(session.createTextMessage()).thenReturn(answer);
+
+        sendAnswer(factory, message, new TestRep());
     }
 }

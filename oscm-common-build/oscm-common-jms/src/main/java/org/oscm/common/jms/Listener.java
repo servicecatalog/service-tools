@@ -8,8 +8,14 @@
 
 package org.oscm.common.jms;
 
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.oscm.common.interfaces.exceptions.ComponentException;
@@ -74,6 +80,31 @@ public class Listener {
         } else {
             throw new ValidationException(new Integer(1), "");
             // TODO add error message
+        }
+    }
+
+    protected <R extends Representation> void sendAnswer(
+            ConnectionFactory connectionFactory, Message message,
+            R representation) {
+        try {
+            Connection conn = connectionFactory.createConnection();
+            Session session = conn.createSession(false,
+                    Session.DUPS_OK_ACKNOWLEDGE);
+
+            Destination dest = message.getJMSReplyTo();
+
+            MessageProducer producer = session.createProducer(dest);
+            producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(representation);
+
+            TextMessage answer = session.createTextMessage();
+            answer.setText(json);
+
+            producer.send(answer);
+        } catch (JMSException e) {
+            // TODO log error
         }
     }
 }
