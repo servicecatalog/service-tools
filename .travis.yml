@@ -1,0 +1,12 @@
+language: java
+sudo: required
+jdk: oraclejdk8
+
+before_install:
+  - sudo pip install codecov
+
+script: 
+  - mvn clean test -f ./oscm-common-build/pom.xml
+
+after_success:
+  - codecov
