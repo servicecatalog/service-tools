@@ -13,12 +13,36 @@
   <name>${project.artifactId}-${project.version}</name>
   <url>https://github.com/servicecatalog</url>
   
+  <build>
+    <finalName>${project.name}</finalName>
+    <plugins>
+     <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
   <dependencies>
   
     <dependency>
       <groupId>org.oscm.common</groupId>
       <artifactId>oscm-common-interfaces</artifactId>
       <version>0.0.1-SNAPSHOT</version>
+      <scope></scope>
     </dependency>
   
     <dependency>
@@ -43,7 +67,6 @@
       <groupId>org.oscm.common</groupId>
       <artifactId>oscm-common-util</artifactId>
       <version>0.0.1-SNAPSHOT</version>
-      <scope>provided</scope>
     </dependency>
     
     <!-- Third party libraries -->
