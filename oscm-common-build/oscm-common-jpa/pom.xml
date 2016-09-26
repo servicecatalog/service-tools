@@ -20,6 +20,20 @@
       <artifactId>oscm-common-interfaces</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+    
+    <dependency>
+      <groupId>org.oscm.common</groupId>
+      <artifactId>oscm-common-util</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+  
+    <!-- Third party libraries -->
+  
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>5.0.10.Final</version>
+    </dependency>
   
   </dependencies>
 </project>

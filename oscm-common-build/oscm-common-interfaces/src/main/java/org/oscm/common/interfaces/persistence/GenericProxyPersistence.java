@@ -12,21 +12,29 @@ import java.util.List;
 
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.InternalException;
+import org.oscm.common.interfaces.exceptions.NotFoundException;
+import org.oscm.common.interfaces.exceptions.ValidationException;
 
 /**
- * Interface for operations on proxy entities
+ * Generic interface for operations on proxy entities.
  * 
  * @author miethaner
  */
 public interface GenericProxyPersistence<D extends DataType> {
 
     /**
-     * Reads the entity specified by the given parameters
+     * Reads the entity specified by the given parameters.
      * 
      * @param params
      *            the read parameters
      * @return the specified entity
-     * @throws ComponentException
+     * @throws ValidationException
+     *             if parameters are not valid
+     * @throws NotFoundException
+     *             if entity does not exists
+     * @throws InternalException
+     *             if an unexpected error occurs
      */
     public D read(Long id) throws ComponentException;
 
@@ -34,15 +42,22 @@ public interface GenericProxyPersistence<D extends DataType> {
      * Reads all valid entities.
      * 
      * @return list of entities
+     * @throws InternalException
+     *             if an unexpected error occurs
      */
-    public List<D> readAll();
+    public List<D> readAll() throws ComponentException;
 
     /**
-     * Merges the proxy entity into the persistence
+     * Merges the proxy entity into the persistence.
      * 
      * @param content
      *            the entity content
-     * @throws ComponentException
+     * @throws ValidationException
+     *             if parameters are not valid
+     * @throws NotFoundException
+     *             if entity does not exists
+     * @throws InternalException
+     *             if an unexpected error occurs
      */
     public void merge(D content) throws ComponentException;
 }

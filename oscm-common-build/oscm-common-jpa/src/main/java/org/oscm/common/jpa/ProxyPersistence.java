@@ -21,7 +21,15 @@ import org.oscm.common.interfaces.exceptions.NotFoundException;
  * 
  * @author miethaner
  */
-public class ProxyPersistence {
+public class ProxyPersistence<P extends ProxyObject> {
+
+    private EntityManager entityManager;
+    private Class<P> clazz;
+
+    protected void init(EntityManager entityManager, Class<P> clazz) {
+        this.entityManager = entityManager;
+        this.clazz = clazz;
+    }
 
     /**
      * Reads the entity from the persistence
@@ -35,8 +43,7 @@ public class ProxyPersistence {
      * @return the entity
      * @throws ComponentException
      */
-    protected <P extends ProxyObject> P read(EntityManager entityManager,
-            Class<P> clazz, Long id) throws ComponentException {
+    protected P readProxy(Long id) throws ComponentException {
 
         try {
             P data = entityManager.getReference(clazz, id);
@@ -64,8 +71,7 @@ public class ProxyPersistence {
      *            the content to merge
      * @throws ComponentException
      */
-    protected <P extends ProxyObject> void merge(EntityManager entityManager,
-            Class<P> clazz, P content) throws ComponentException {
+    protected void mergeProxy(P content) throws ComponentException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();

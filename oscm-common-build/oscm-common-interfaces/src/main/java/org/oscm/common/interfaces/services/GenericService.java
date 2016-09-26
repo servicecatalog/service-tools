@@ -12,7 +12,12 @@ import java.util.List;
 
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.data.ParameterType;
+import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ConcurrencyException;
+import org.oscm.common.interfaces.exceptions.InternalException;
+import org.oscm.common.interfaces.exceptions.NotFoundException;
+import org.oscm.common.interfaces.exceptions.ValidationException;
 
 /**
  * Generic interfaces for CRUD services
@@ -31,7 +36,10 @@ public interface GenericService {
          * @param params
          *            the creation parameters
          * @return the ID of the created entity
-         * @throws ComponentException
+         * @throws ValidationException
+         *             if parameters are not valid
+         * @throws InternalException
+         *             if an unexpected error occurs
          */
         public Long create(D content, P params) throws ComponentException;
     }
@@ -44,7 +52,10 @@ public interface GenericService {
          * @param params
          *            the read parameters
          * @return the list of entities
-         * @throws ComponentException
+         * @throws ValidationException
+         *             if parameters are not valid
+         * @throws InternalException
+         *             if an unexpected error occurs
          */
         public List<D> readAll(P params) throws ComponentException;
 
@@ -54,7 +65,14 @@ public interface GenericService {
          * @param params
          *            the read parameters
          * @return the specified entity
-         * @throws ComponentException
+         * @throws ValidationException
+         *             if parameters are not valid
+         * @throws NotFoundException
+         *             if entity does not exists
+         * @throws CacheException
+         *             if the etag is equals the current one (not modified)
+         * @throws InternalException
+         *             if an unexpected error occurs
          */
         public D read(P params) throws ComponentException;
     }
@@ -70,7 +88,14 @@ public interface GenericService {
          * @param params
          *            the update parameters
          * @return the ID of the created entity
-         * @throws ComponentException
+         * @throws ValidationException
+         *             if parameters are not valid
+         * @throws NotFoundException
+         *             if entity does not exists
+         * @throws ConcurrencyException
+         *             if the etag (if present) is not equals the current one
+         * @throws InternalException
+         *             if an unexpected error occurs
          */
         public void update(D content, P params) throws ComponentException;
     }
@@ -82,12 +107,17 @@ public interface GenericService {
          * 
          * @param params
          *            the deletion parameters
-         * @throws ComponentException
+         * @throws ValidationException
+         *             if parameters are not valid
+         * @throws NotFoundException
+         *             if entity does not exists
+         * @throws InternalException
+         *             if an unexpected error occurs
          */
         public void delete(P params) throws ComponentException;
     }
 
-    public interface Crud<D extends DataType, P extends ParameterType> extends
-            Create<D, P>, Read<D, P>, Update<D, P>, Delete<P> {
+    public interface Crud<D extends DataType, P extends ParameterType>
+            extends Create<D, P>, Read<D, P>, Update<D, P>, Delete<P> {
     }
 }

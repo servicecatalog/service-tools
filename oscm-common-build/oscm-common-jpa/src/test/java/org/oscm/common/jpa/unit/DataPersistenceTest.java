@@ -20,18 +20,20 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.enums.Operation;
+import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.jpa.DataObject;
 import org.oscm.common.jpa.DataPersistence;
 import org.oscm.common.jpa.ProxyObject;
+import org.oscm.common.jpa.unit.DataPersistenceTest.DOTest;
 
 /**
  * Unit test for DataPersistence
  * 
  * @author miethaner
  */
-public class DataPersistenceTest extends DataPersistence {
+public class DataPersistenceTest extends DataPersistence<DOTest> {
 
     public interface Subdata extends DataType {
     }
@@ -63,7 +65,8 @@ public class DataPersistenceTest extends DataPersistence {
 
         DOTest dotest = new DOTest();
 
-        create(em, dotest);
+        init(em, DOTest.class);
+        createData(dotest);
     }
 
     @Test
@@ -76,7 +79,8 @@ public class DataPersistenceTest extends DataPersistence {
         Mockito.doThrow(new EntityExistsException()).when(em).persist(dotest);
 
         try {
-            create(em, dotest);
+            init(em, DOTest.class);
+            createData(dotest);
             fail();
         } catch (InternalException e) {
         }
@@ -88,13 +92,32 @@ public class DataPersistenceTest extends DataPersistence {
         EntityManager em = getEntityManager(false);
 
         DOTest dotest = new DOTest();
+        dotest.setETag(new Long(2L));
         dotest.setLastOperation(Operation.CREATE);
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(
-                dotest);
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
 
-        DOTest doread = read(em, DOTest.class, new Long(1L));
+        init(em, DOTest.class);
+        DOTest doread = readData(new Long(1L), new Long(1L));
 
         assertEquals(dotest, doread);
+    }
+
+    @Test
+    public void testReadNegativeEtag() throws Exception {
+
+        EntityManager em = getEntityManager(false);
+
+        DOTest dotest = new DOTest();
+        dotest.setETag(new Long(2L));
+        dotest.setLastOperation(Operation.CREATE);
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
+
+        try {
+            init(em, DOTest.class);
+            readData(new Long(1L), new Long(2L));
+            fail();
+        } catch (CacheException e) {
+        }
     }
 
     @Test
@@ -102,11 +125,11 @@ public class DataPersistenceTest extends DataPersistence {
 
         EntityManager em = getEntityManager(true);
 
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenThrow(
-                new EntityNotFoundException());
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenThrow(new EntityNotFoundException());
 
         try {
-            read(em, DOTest.class, new Long(1L));
+            init(em, DOTest.class);
+            readData(new Long(1L), null);
             fail();
         } catch (NotFoundException e) {
         }
@@ -119,58 +142,11 @@ public class DataPersistenceTest extends DataPersistence {
 
         DOTest dotest = new DOTest();
         dotest.setLastOperation(Operation.DELETE);
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(
-                dotest);
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
 
         try {
-            read(em, DOTest.class, new Long(1L));
-            fail();
-        } catch (NotFoundException e) {
-        }
-    }
-
-    @Test
-    public void testReadProxyPositive() throws Exception {
-
-        EntityManager em = getEntityManager(false);
-
-        POTest potest = new POTest();
-        potest.setLastOperation(Operation.CREATE);
-        Mockito.when(em.getReference(POTest.class, new Long(1L))).thenReturn(
-                potest);
-
-        POTest poread = readProxy(em, POTest.class, new Long(1L));
-
-        assertEquals(potest, poread);
-    }
-
-    @Test
-    public void testReadProxyNegativeNotFound() throws Exception {
-
-        EntityManager em = getEntityManager(true);
-
-        Mockito.when(em.getReference(POTest.class, new Long(1L))).thenThrow(
-                new EntityNotFoundException());
-
-        try {
-            readProxy(em, POTest.class, new Long(1L));
-            fail();
-        } catch (NotFoundException e) {
-        }
-    }
-
-    @Test
-    public void testReadProxyNegativeDeleted() throws Exception {
-
-        EntityManager em = getEntityManager(true);
-
-        POTest potest = new POTest();
-        potest.setLastOperation(Operation.DELETE);
-        Mockito.when(em.getReference(POTest.class, new Long(1L))).thenReturn(
-                potest);
-
-        try {
-            readProxy(em, POTest.class, new Long(1L));
+            init(em, DOTest.class);
+            readData(new Long(1L), null);
             fail();
         } catch (NotFoundException e) {
         }
@@ -183,21 +159,27 @@ public class DataPersistenceTest extends DataPersistence {
 
         DOTest dotest = new DOTest();
         dotest.setId(new Long(1L));
+        dotest.setETag(new Long(1L));
 
         DOTest old = new DOTest();
         old.setId(new Long(1L));
+        old.setETag(new Long(1L));
         old.setLastOperation(Operation.UPDATE);
         old.setPublished(Boolean.TRUE);
 
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(
-                old);
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(old);
 
-        update(em, DOTest.class, dotest);
+        init(em, DOTest.class);
+        updateData(dotest);
 
         old.setLastOperation(Operation.CREATE);
         old.setPublished(Boolean.FALSE);
 
-        update(em, DOTest.class, dotest);
+        updateData(dotest);
+
+        dotest.setETag(null);
+
+        updateData(dotest);
     }
 
     @Test
@@ -208,11 +190,11 @@ public class DataPersistenceTest extends DataPersistence {
         DOTest dotest = new DOTest();
         dotest.setId(new Long(1L));
 
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenThrow(
-                new EntityNotFoundException());
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenThrow(new EntityNotFoundException());
 
         try {
-            update(em, DOTest.class, dotest);
+            init(em, DOTest.class);
+            updateData(dotest);
             fail();
         } catch (NotFoundException e) {
         }
@@ -228,13 +210,38 @@ public class DataPersistenceTest extends DataPersistence {
         dotest.setLastOperation(Operation.DELETE);
         dotest.setPublished(Boolean.TRUE);
 
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(
-                dotest);
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
 
         try {
-            update(em, DOTest.class, dotest);
+            init(em, DOTest.class);
+            updateData(dotest);
             fail();
         } catch (NotFoundException e) {
+        }
+    }
+
+    @Test
+    public void testUpdateNegativeEtag() throws Exception {
+
+        EntityManager em = getEntityManager(true);
+
+        DOTest dotest = new DOTest();
+        dotest.setId(new Long(1L));
+        dotest.setETag(new Long(1L));
+
+        DOTest old = new DOTest();
+        old.setId(new Long(1L));
+        old.setETag(new Long(2L));
+        old.setLastOperation(Operation.UPDATE);
+        old.setPublished(Boolean.TRUE);
+
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(old);
+
+        try {
+            init(em, DOTest.class);
+            updateData(dotest);
+            fail();
+        } catch (CacheException e) {
         }
     }
 
@@ -246,10 +253,10 @@ public class DataPersistenceTest extends DataPersistence {
         DOTest old = new DOTest();
         old.setId(new Long(1L));
 
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(
-                old);
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(old);
 
-        delete(em, DOTest.class, new Long(1L));
+        init(em, DOTest.class);
+        deleteData(new Long(1L));
     }
 
     @Test
@@ -260,11 +267,11 @@ public class DataPersistenceTest extends DataPersistence {
         DOTest dotest = new DOTest();
         dotest.setId(new Long(1L));
 
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenThrow(
-                new EntityNotFoundException());
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenThrow(new EntityNotFoundException());
 
         try {
-            delete(em, DOTest.class, new Long(1L));
+            init(em, DOTest.class);
+            deleteData(new Long(1L));
             fail();
         } catch (NotFoundException e) {
         }
@@ -279,11 +286,11 @@ public class DataPersistenceTest extends DataPersistence {
         dotest.setId(new Long(1L));
         dotest.setLastOperation(Operation.DELETE);
 
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(
-                dotest);
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
 
         try {
-            delete(em, DOTest.class, new Long(1L));
+            init(em, DOTest.class);
+            deleteData(new Long(1L));
             fail();
         } catch (NotFoundException e) {
         }
@@ -298,16 +305,16 @@ public class DataPersistenceTest extends DataPersistence {
         dotest.setId(new Long(1L));
         dotest.setLastOperation(Operation.UPDATE);
 
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(
-                dotest);
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
 
-        confirmPublish(em, DOTest.class, new Long(1L));
+        init(em, DOTest.class);
+        confirm(new Long(1L));
 
         assertEquals(Boolean.TRUE, dotest.isPublished());
 
         dotest.setLastOperation(Operation.DELETE);
 
-        confirmPublish(em, DOTest.class, new Long(1L));
+        confirm(new Long(1L));
 
         Mockito.verify(em).remove(dotest);
     }
@@ -320,11 +327,11 @@ public class DataPersistenceTest extends DataPersistence {
         DOTest dotest = new DOTest();
         dotest.setId(new Long(1L));
 
-        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenThrow(
-                new EntityNotFoundException());
+        Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenThrow(new EntityNotFoundException());
 
         try {
-            confirmPublish(em, DOTest.class, new Long(1L));
+            init(em, DOTest.class);
+            confirm(new Long(1L));
             fail();
         } catch (NotFoundException e) {
         }

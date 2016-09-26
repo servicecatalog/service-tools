@@ -43,9 +43,10 @@ public class LocaleString {
     @MapKeyColumn(name = FIELD_LANG_KEY)
     @Column(name = FIELD_TRANSLATION)
     @CollectionTable(name = COLLECTION_NAME)
-    private Map<String, String> translations = new TreeMap<String, String>();
+    private Map<String, String> translations;
 
     public LocaleString() {
+        translations = new TreeMap<>();
     }
 
     public LocaleString(Map<String, String> translations) {
@@ -53,14 +54,14 @@ public class LocaleString {
     }
 
     public Map<String, String> getTranslations() {
-        return new TreeMap<String, String>(translations);
+        return new TreeMap<>(translations);
     }
 
     public void setTranslations(Map<String, String> translations) {
         if (translations != null) {
             this.translations = translations;
         } else {
-            this.translations = new TreeMap<String, String>();
+            this.translations = new TreeMap<>();
         }
     }
 }

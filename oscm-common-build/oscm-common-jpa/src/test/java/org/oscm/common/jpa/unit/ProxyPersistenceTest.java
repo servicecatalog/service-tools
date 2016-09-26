@@ -22,13 +22,14 @@ import org.oscm.common.interfaces.enums.Operation;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.jpa.ProxyObject;
 import org.oscm.common.jpa.ProxyPersistence;
+import org.oscm.common.jpa.unit.ProxyPersistenceTest.POTest;
 
 /**
  * Unit test for ProxyPersistence
  * 
  * @author miethaner
  */
-public class ProxyPersistenceTest extends ProxyPersistence {
+public class ProxyPersistenceTest extends ProxyPersistence<POTest> {
 
     public interface Subdata extends DataType {
     }
@@ -57,10 +58,10 @@ public class ProxyPersistenceTest extends ProxyPersistence {
 
         POTest potest = new POTest();
         potest.setLastOperation(Operation.CREATE);
-        Mockito.when(em.getReference(POTest.class, new Long(1L))).thenReturn(
-                potest);
+        Mockito.when(em.getReference(POTest.class, new Long(1L))).thenReturn(potest);
 
-        POTest poread = read(em, POTest.class, new Long(1L));
+        init(em, POTest.class);
+        POTest poread = readProxy(new Long(1L));
 
         assertEquals(potest, poread);
     }
@@ -70,11 +71,11 @@ public class ProxyPersistenceTest extends ProxyPersistence {
 
         EntityManager em = getEntityManager(true);
 
-        Mockito.when(em.getReference(POTest.class, new Long(1L))).thenThrow(
-                new EntityNotFoundException());
+        Mockito.when(em.getReference(POTest.class, new Long(1L))).thenThrow(new EntityNotFoundException());
 
         try {
-            read(em, POTest.class, new Long(1L));
+            init(em, POTest.class);
+            readProxy(new Long(1L));
             fail();
         } catch (NotFoundException e) {
         }
@@ -87,11 +88,11 @@ public class ProxyPersistenceTest extends ProxyPersistence {
 
         POTest potest = new POTest();
         potest.setLastOperation(Operation.DELETE);
-        Mockito.when(em.getReference(POTest.class, new Long(1L))).thenReturn(
-                potest);
+        Mockito.when(em.getReference(POTest.class, new Long(1L))).thenReturn(potest);
 
         try {
-            read(em, POTest.class, new Long(1L));
+            init(em, POTest.class);
+            readProxy(new Long(1L));
             fail();
         } catch (NotFoundException e) {
         }
@@ -106,7 +107,8 @@ public class ProxyPersistenceTest extends ProxyPersistence {
         dotest.setId(new Long(1L));
         dotest.setLastOperation(Operation.CREATE);
 
-        merge(em, POTest.class, dotest);
+        init(em, POTest.class);
+        mergeProxy(dotest);
 
         Mockito.verify(em).merge(dotest);
 

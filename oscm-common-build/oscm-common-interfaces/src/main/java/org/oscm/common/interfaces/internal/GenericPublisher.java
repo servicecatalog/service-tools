@@ -10,6 +10,7 @@ package org.oscm.common.interfaces.internal;
 
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ConnectionException;
 
 /**
  * Interface for publishing content to other components
@@ -23,7 +24,8 @@ public interface GenericPublisher<D extends DataType> {
      * 
      * @param content
      *            the content to publish
-     * @throws ComponentException
+     * @throws ConnectionException
+     *             if connection to topic handler failed
      */
     public void publish(D content) throws ComponentException;
 }

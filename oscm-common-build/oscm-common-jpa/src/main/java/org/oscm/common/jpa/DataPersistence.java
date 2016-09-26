@@ -14,6 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.EntityTransaction;
 
 import org.oscm.common.interfaces.enums.Operation;
+import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
@@ -23,13 +24,21 @@ import org.oscm.common.interfaces.exceptions.NotFoundException;
  * 
  * @author miethaner
  */
-public abstract class DataPersistence {
+public abstract class DataPersistence<D extends DataObject> {
+
+    private static final Long ETAG_INIT = new Long(0);
+
+    private EntityManager entityManager;
+    private Class<D> clazz;
+
+    protected void init(EntityManager entityManager, Class<D> clazz) {
+        this.entityManager = entityManager;
+        this.clazz = clazz;
+    }
 
     /**
      * Creates a new entity in the persistence and publishes it
      * 
-     * @param entityManager
-     *            the entity manager
      * @param content
      *            the content to create
      * @param publisher
@@ -37,13 +46,13 @@ public abstract class DataPersistence {
      * @return the entity id
      * @throws ComponentException
      */
-    protected <D extends DataObject> D create(EntityManager entityManager,
-            D content) throws ComponentException {
+    protected D createData(D content) throws ComponentException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             content.setId(null);
+            content.setETag(ETAG_INIT);
             content.setLastOperation(Operation.CREATE);
             content.setPublished(Boolean.FALSE);
             entityManager.persist(content);
@@ -63,17 +72,12 @@ public abstract class DataPersistence {
     /**
      * Reads the data entity from the persistence
      * 
-     * @param entityManager
-     *            the entity manager
-     * @param clazz
-     *            the data entity class
      * @param id
      *            the entity id
      * @return the entity
      * @throws ComponentException
      */
-    protected <D extends DataObject> D read(EntityManager entityManager,
-            Class<D> clazz, Long id) throws ComponentException {
+    protected D readData(Long id, Long etag) throws ComponentException {
 
         try {
             D data = entityManager.getReference(clazz, id);
@@ -83,33 +87,8 @@ public abstract class DataPersistence {
                 // TODO add error message
             }
 
-            return data;
-
-        } catch (EntityNotFoundException e) {
-            throw new NotFoundException(null, "", e); // TODO add error message
-        }
-    }
-
-    /**
-     * Reads the proxy entity from the persistence
-     * 
-     * @param entityManager
-     *            the entity manager
-     * @param clazz
-     *            the proxy entity class
-     * @param id
-     *            the entity id
-     * @return the entity
-     * @throws ComponentException
-     */
-    protected <D extends ProxyObject> D readProxy(EntityManager entityManager,
-            Class<D> clazz, Long id) throws ComponentException {
-
-        try {
-            D data = entityManager.getReference(clazz, id);
-
-            if (data.getLastOperation() == Operation.DELETE) {
-                throw new NotFoundException(null, "");
+            if (etag != null && etag.equals(data.getETag())) {
+                throw new CacheException(null, "");
                 // TODO add error message
             }
 
@@ -123,18 +102,11 @@ public abstract class DataPersistence {
     /**
      * Updates the given entity and publishes it
      * 
-     * @param entityManager
-     *            the entity manager
-     * @param clazz
-     *            the entity class
      * @param content
      *            the content to update with
-     * @param publisher
-     *            the publisher
      * @throws ComponentException
      */
-    protected <D extends DataObject> D update(EntityManager entityManager,
-            Class<D> clazz, D content) throws ComponentException {
+    protected D updateData(D content) throws ComponentException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -144,9 +116,17 @@ public abstract class DataPersistence {
                 throw new NotFoundException(null, ""); // TODO add error message
             }
 
+            if (content.getETag() != null) {
+                if (!content.getETag().equals(old.getETag())) {
+                    throw new CacheException(null, "");
+                    // TODO add error message
+                }
+            } else {
+                content.setETag(old.getETag());
+            }
+
             transaction.begin();
-            if (old.getLastOperation() == Operation.CREATE
-                    && old.isPublished() != null
+            if (old.getLastOperation() == Operation.CREATE && old.isPublished() != null
                     && !old.isPublished().booleanValue()) {
                 content.setLastOperation(Operation.CREATE);
             } else {
@@ -169,18 +149,13 @@ public abstract class DataPersistence {
     /**
      * Deletes the given entity and publishes it
      * 
-     * @param entityManager
-     *            the entity manager
-     * @param clazz
-     *            the entity class
      * @param id
      *            the entity id
      * @param publisher
      *            the publisher
      * @throws ComponentException
      */
-    protected <D extends DataObject> D delete(EntityManager entityManager,
-            Class<D> clazz, Long id) throws ComponentException {
+    protected D deleteData(Long id) throws ComponentException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -206,9 +181,7 @@ public abstract class DataPersistence {
         }
     }
 
-    protected <D extends DataObject> void confirmPublish(
-            EntityManager entityManager, Class<D> clazz, Long id)
-            throws ComponentException {
+    protected void confirm(Long id) throws ComponentException {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
 
