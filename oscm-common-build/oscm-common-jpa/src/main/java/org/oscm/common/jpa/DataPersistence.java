@@ -53,7 +53,7 @@ public abstract class DataPersistence<D extends DataObject> {
             transaction.begin();
             content.setId(null);
             content.setETag(ETAG_INIT);
-            content.setLastOperation(Operation.CREATE);
+            content.setLastOperation(Operation.CREAT);
             content.setPublished(Boolean.FALSE);
             entityManager.persist(content);
             entityManager.flush();
@@ -82,7 +82,7 @@ public abstract class DataPersistence<D extends DataObject> {
         try {
             D data = entityManager.getReference(clazz, id);
 
-            if (data.getLastOperation() == Operation.DELETE) {
+            if (data.getLastOperation() == Operation.DELET) {
                 throw new NotFoundException(null, "");
                 // TODO add error message
             }
@@ -112,7 +112,7 @@ public abstract class DataPersistence<D extends DataObject> {
         try {
             D old = entityManager.getReference(clazz, content.getId());
 
-            if (old.getLastOperation() == Operation.DELETE) {
+            if (old.getLastOperation() == Operation.DELET) {
                 throw new NotFoundException(null, ""); // TODO add error message
             }
 
@@ -126,11 +126,11 @@ public abstract class DataPersistence<D extends DataObject> {
             }
 
             transaction.begin();
-            if (old.getLastOperation() == Operation.CREATE && old.isPublished() != null
+            if (old.getLastOperation() == Operation.CREAT && old.isPublished() != null
                     && !old.isPublished().booleanValue()) {
-                content.setLastOperation(Operation.CREATE);
+                content.setLastOperation(Operation.CREAT);
             } else {
-                content.setLastOperation(Operation.UPDATE);
+                content.setLastOperation(Operation.UPDAT);
             }
             content.setPublished(Boolean.FALSE);
 
@@ -162,12 +162,12 @@ public abstract class DataPersistence<D extends DataObject> {
 
             D entity = entityManager.getReference(clazz, id);
 
-            if (entity.getLastOperation() == Operation.DELETE) {
+            if (entity.getLastOperation() == Operation.DELET) {
                 throw new NotFoundException(null, ""); // TODO add error message
             }
 
             transaction.begin();
-            entity.setLastOperation(Operation.DELETE);
+            entity.setLastOperation(Operation.DELET);
             entity.setPublished(Boolean.FALSE);
             transaction.commit();
 
@@ -188,7 +188,7 @@ public abstract class DataPersistence<D extends DataObject> {
             D entity = entityManager.getReference(clazz, id);
 
             transaction.begin();
-            if (entity.getLastOperation() == Operation.DELETE) {
+            if (entity.getLastOperation() == Operation.DELET) {
                 entityManager.remove(entity);
             } else {
                 entity.setPublished(Boolean.TRUE);

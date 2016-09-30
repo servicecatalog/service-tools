@@ -140,7 +140,7 @@ public class ProducerTest extends Producer {
         TestRep rep = new TestRep();
         rep.setId(new Long(1));
         rep.setETag(new Long(1));
-        rep.setLastOperation(Operation.CREATE);
+        rep.setLastOperation(Operation.CREAT);
         rep.setVersion(new Integer(1));
 
         produceMessage(rep);
@@ -152,7 +152,7 @@ public class ProducerTest extends Producer {
         TestRep rep = new TestRep();
         rep.setId(new Long(1));
         rep.setETag(new Long(1));
-        rep.setLastOperation(Operation.CREATE);
+        rep.setLastOperation(Operation.CREAT);
         rep.setVersion(new Integer(1));
 
         try {
@@ -183,7 +183,7 @@ public class ProducerTest extends Producer {
         TestRep rep = new TestRep();
         rep.setId(new Long(1));
         rep.setETag(new Long(1));
-        rep.setLastOperation(Operation.CREATE);
+        rep.setLastOperation(Operation.CREAT);
         rep.setVersion(new Integer(1));
 
         try {

@@ -57,7 +57,7 @@ public class ProxyPersistenceTest extends ProxyPersistence<POTest> {
         EntityManager em = getEntityManager(false);
 
         POTest potest = new POTest();
-        potest.setLastOperation(Operation.CREATE);
+        potest.setLastOperation(Operation.CREAT);
         Mockito.when(em.getReference(POTest.class, new Long(1L))).thenReturn(potest);
 
         init(em, POTest.class);
@@ -87,7 +87,7 @@ public class ProxyPersistenceTest extends ProxyPersistence<POTest> {
         EntityManager em = getEntityManager(true);
 
         POTest potest = new POTest();
-        potest.setLastOperation(Operation.DELETE);
+        potest.setLastOperation(Operation.DELET);
         Mockito.when(em.getReference(POTest.class, new Long(1L))).thenReturn(potest);
 
         try {
@@ -105,7 +105,7 @@ public class ProxyPersistenceTest extends ProxyPersistence<POTest> {
 
         POTest dotest = new POTest();
         dotest.setId(new Long(1L));
-        dotest.setLastOperation(Operation.CREATE);
+        dotest.setLastOperation(Operation.CREAT);
 
         init(em, POTest.class);
         mergeProxy(dotest);

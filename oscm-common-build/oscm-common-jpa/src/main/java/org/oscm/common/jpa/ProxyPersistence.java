@@ -48,7 +48,7 @@ public class ProxyPersistence<P extends ProxyObject> {
         try {
             P data = entityManager.getReference(clazz, id);
 
-            if (data.getLastOperation() == Operation.DELETE) {
+            if (data.getLastOperation() == Operation.DELET) {
                 throw new NotFoundException(null, "");
                 // TODO add error message
             }

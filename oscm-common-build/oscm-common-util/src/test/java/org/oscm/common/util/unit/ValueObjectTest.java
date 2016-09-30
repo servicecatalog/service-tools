@@ -25,7 +25,7 @@ public class ValueObjectTest {
 
     private static final Long ID = new Long(1L);
     private static final Long ETAG = new Long(2L);
-    private static final Operation OP = Operation.CREATE;
+    private static final Operation OP = Operation.CREAT;
 
     private class DataTest implements DataType {
 

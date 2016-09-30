@@ -32,6 +32,8 @@ public abstract class DataObject implements DataType {
     public static final String FIELD_LAST_OPERATION = "last_operation";
     public static final String FIELD_PUBLISHED = "published";
 
+    public static final String CLASS_LAST_OPERATION = "org.oscm.common.interfaces.enums.Operation";
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "do_seq")
     @SequenceGenerator(name = "do_seq", allocationSize = 1000)

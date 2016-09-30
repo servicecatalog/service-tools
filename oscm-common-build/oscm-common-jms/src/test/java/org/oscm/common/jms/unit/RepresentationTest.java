@@ -25,7 +25,7 @@ public class RepresentationTest {
 
     private static final Long ID = new Long(1L);
     private static final Long ETAG = new Long(2L);
-    private static final Operation OP = Operation.CREATE;
+    private static final Operation OP = Operation.CREAT;
     private static final Integer VERSION = new Integer(3);
 
     private class DataTest implements DataType {
@@ -73,12 +73,12 @@ public class RepresentationTest {
         test.setId(ID);
         test.setETag(ETAG);
         test.setVersion(VERSION);
-        test.setLastOperation(Operation.CREATE);
+        test.setLastOperation(Operation.CREAT);
 
         assertEquals(ID, test.getId());
         assertEquals(ETAG, test.getETag());
         assertEquals(VERSION, test.getVersion());
-        assertEquals(Operation.CREATE, test.getLastOperation());
+        assertEquals(Operation.CREAT, test.getLastOperation());
 
         test.setId(null);
         test.setETag(null);

@@ -27,6 +27,8 @@ public abstract class ProxyObject implements DataType {
     public static final String FIELD_ETAG = "etag";
     public static final String FIELD_LAST_OPERATION = "last_operation";
 
+    public static final String CLASS_LAST_OPERATION = "org.oscm.common.interfaces.enums.Operation";
+
     @Id
     @Column(name = FIELD_ID)
     private Long id;

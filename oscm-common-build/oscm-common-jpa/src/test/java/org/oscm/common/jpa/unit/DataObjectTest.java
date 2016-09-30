@@ -25,7 +25,7 @@ public class DataObjectTest {
 
     private static final Long ID = new Long(1L);
     private static final Long ETAG = new Long(2L);
-    private static final Operation OP = Operation.CREATE;
+    private static final Operation OP = Operation.CREAT;
 
     private class DataTest implements DataType {
 
@@ -73,12 +73,12 @@ public class DataObjectTest {
 
         test.setId(ID);
         test.setETag(ETAG);
-        test.setLastOperation(Operation.CREATE);
+        test.setLastOperation(Operation.CREAT);
         test.setPublished(Boolean.TRUE);
 
         assertEquals(ID, test.getId());
         assertEquals(ETAG, test.getETag());
-        assertEquals(Operation.CREATE, test.getLastOperation());
+        assertEquals(Operation.CREAT, test.getLastOperation());
         assertEquals(Boolean.TRUE, test.isPublished());
 
         test.setId(null);

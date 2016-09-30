@@ -19,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.SequenceGenerator;
 
 /**
  * Data class for localized strings
@@ -35,7 +36,8 @@ public class LocaleString {
     public static final String FIELD_TRANSLATION = "translation";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ls_seq")
+    @SequenceGenerator(name = "ls_seq", allocationSize = 1000)
     @Column(name = FIELD_ID)
     private Long id;
 

@@ -9,10 +9,11 @@
 package org.oscm.common.interfaces.enums;
 
 /**
- * Enum for basic C(R)UD operations.
+ * Enum for basic C(R)UD operations. (Missing E's are a workaround for a
+ * hibernate bug)
  * 
  * @author miethaner
  */
 public enum Operation {
-    CREATE, UPDATE, DELETE
+    CREAT, UPDAT, DELET
 }

@@ -93,7 +93,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
 
         DOTest dotest = new DOTest();
         dotest.setETag(new Long(2L));
-        dotest.setLastOperation(Operation.CREATE);
+        dotest.setLastOperation(Operation.CREAT);
         Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
 
         init(em, DOTest.class);
@@ -109,7 +109,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
 
         DOTest dotest = new DOTest();
         dotest.setETag(new Long(2L));
-        dotest.setLastOperation(Operation.CREATE);
+        dotest.setLastOperation(Operation.CREAT);
         Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
 
         try {
@@ -141,7 +141,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
         EntityManager em = getEntityManager(true);
 
         DOTest dotest = new DOTest();
-        dotest.setLastOperation(Operation.DELETE);
+        dotest.setLastOperation(Operation.DELET);
         Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
 
         try {
@@ -164,7 +164,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
         DOTest old = new DOTest();
         old.setId(new Long(1L));
         old.setETag(new Long(1L));
-        old.setLastOperation(Operation.UPDATE);
+        old.setLastOperation(Operation.UPDAT);
         old.setPublished(Boolean.TRUE);
 
         Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(old);
@@ -172,7 +172,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
         init(em, DOTest.class);
         updateData(dotest);
 
-        old.setLastOperation(Operation.CREATE);
+        old.setLastOperation(Operation.CREAT);
         old.setPublished(Boolean.FALSE);
 
         updateData(dotest);
@@ -207,7 +207,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
 
         DOTest dotest = new DOTest();
         dotest.setId(new Long(1L));
-        dotest.setLastOperation(Operation.DELETE);
+        dotest.setLastOperation(Operation.DELET);
         dotest.setPublished(Boolean.TRUE);
 
         Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
@@ -232,7 +232,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
         DOTest old = new DOTest();
         old.setId(new Long(1L));
         old.setETag(new Long(2L));
-        old.setLastOperation(Operation.UPDATE);
+        old.setLastOperation(Operation.UPDAT);
         old.setPublished(Boolean.TRUE);
 
         Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(old);
@@ -284,7 +284,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
 
         DOTest dotest = new DOTest();
         dotest.setId(new Long(1L));
-        dotest.setLastOperation(Operation.DELETE);
+        dotest.setLastOperation(Operation.DELET);
 
         Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
 
@@ -303,7 +303,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
 
         DOTest dotest = new DOTest();
         dotest.setId(new Long(1L));
-        dotest.setLastOperation(Operation.UPDATE);
+        dotest.setLastOperation(Operation.UPDAT);
 
         Mockito.when(em.getReference(DOTest.class, new Long(1L))).thenReturn(dotest);
 
@@ -312,7 +312,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
 
         assertEquals(Boolean.TRUE, dotest.isPublished());
 
-        dotest.setLastOperation(Operation.DELETE);
+        dotest.setLastOperation(Operation.DELET);
 
         confirm(new Long(1L));
 
