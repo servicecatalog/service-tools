@@ -15,7 +15,7 @@ import org.oscm.common.interfaces.security.SecurityToken;
  * 
  * @author miethaner
  */
-public interface ParameterType {
+public interface ParameterType extends Versionable {
 
     public static final String PROPERTY_ID = "id";
     public static final String PROPERTY_ETAG = "etag";

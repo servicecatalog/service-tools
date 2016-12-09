@@ -2,17 +2,25 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2016                                           
  *                                                                                                                                 
- *  Creation Date: Jun 29, 2016                                                      
+ *  Creation Date: Dec 9, 2016                                                      
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.interfaces.enums;
+package org.oscm.common.hibernate.unit;
+
+import org.junit.Test;
+import org.oscm.common.hibernate.ConnectionManager;
 
 /**
- * Enum for basic C(R)UD operations and more.
+ * Unit test for ConnectionManager
  * 
  * @author miethaner
  */
-public enum Operation {
-    CREATED, UPDATED, DELETED, SUSPENDED
+public class ConnectionManagerTest {
+
+    @Test(expected = RuntimeException.class)
+    public void testWithoutInit() {
+
+        ConnectionManager.getInstance().getEntityManager();
+    }
 }

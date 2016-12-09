@@ -13,9 +13,9 @@
     <module>oscm-common-interfaces</module>
     <module>oscm-common-package</module>
     <module>oscm-common-util</module>
-    <module>oscm-common-jms</module>
-    <module>oscm-common-jpa</module>
-    <module>oscm-common-rest</module>
+    <module>oscm-common-hibernate</module>
+    <module>oscm-common-kafka</module>
+    <module>oscm-common-jersey</module>
   </modules>
   
   <properties>
@@ -51,13 +51,6 @@
   <dependencies>
     
     <!-- Third party libraries -->
-    
-    <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>7.0</version>
-      <scope>provided</scope>
-    </dependency>
     
     <dependency>
       <groupId>org.mockito</groupId>

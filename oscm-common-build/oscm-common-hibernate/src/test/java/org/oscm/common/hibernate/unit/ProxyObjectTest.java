@@ -6,23 +6,22 @@
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.util.unit;
+package org.oscm.common.hibernate.unit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
+import org.oscm.common.hibernate.ProxyObject;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.enums.Operation;
-import org.oscm.common.util.ValueObject;
 
 /**
- * Unit test for DataObject
+ * Unit test for ProxyObject
  * 
  * @author miethaner
  */
-public class ValueObjectTest {
-
+public class ProxyObjectTest {
     private static final Long ID = new Long(1L);
     private static final Long ETAG = new Long(2L);
     private static final Operation OP = Operation.CREATED;
@@ -45,13 +44,13 @@ public class ValueObjectTest {
         }
     }
 
-    private class VOTest extends ValueObject {
+    private class POTest extends ProxyObject {
 
-        public VOTest() {
+        public POTest() {
             super();
         }
 
-        public VOTest(DataType data) {
+        public POTest(DataType data) {
             super(data);
         }
     }
@@ -59,25 +58,25 @@ public class ValueObjectTest {
     @Test
     public void testRepresentation() throws Exception {
 
-        VOTest test = new VOTest(new DataTest());
+        POTest test = new POTest(new DataTest());
 
         assertEquals(ID, test.getId());
         assertEquals(ETAG, test.getETag());
         assertEquals(OP, test.getLastOperation());
 
-        test = new VOTest(null);
+        test = new POTest(null);
 
         assertNull(test.getId());
 
-        test = new VOTest();
+        test = new POTest();
 
         test.setId(ID);
         test.setETag(ETAG);
-        test.setLastOperation(OP);
+        test.setLastOperation(Operation.CREATED);
 
         assertEquals(ID, test.getId());
         assertEquals(ETAG, test.getETag());
-        assertEquals(OP, test.getLastOperation());
+        assertEquals(Operation.CREATED, test.getLastOperation());
 
         test.setId(null);
         test.setETag(null);

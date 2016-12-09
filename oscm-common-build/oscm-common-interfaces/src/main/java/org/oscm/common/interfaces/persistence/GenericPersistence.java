@@ -2,17 +2,16 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2016                                           
  *                                                                                                                                 
- *  Creation Date: Jun 15, 2016                                                      
+ *  Creation Date: Jun 23, 2016                                                      
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.interfaces.services;
+package org.oscm.common.interfaces.persistence;
 
 import java.util.List;
 
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.data.ParameterType;
-import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.ConcurrencyException;
 import org.oscm.common.interfaces.exceptions.InternalException;
@@ -20,93 +19,83 @@ import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 
 /**
- * Generic interfaces for CRUD services
+ * Generic interfaces for operations on entities.
  * 
  * @author miethaner
  */
-public interface GenericService {
+public interface GenericPersistence {
 
-    public interface Create<D extends DataType, P extends ParameterType> {
+    public interface Create<D extends DataType> {
 
         /**
-         * Creates an entity with the given content and parameters
+         * Creates an entity with the given content and parameters.
          * 
-         * @param content
+         * @param entity
          *            the entity content
-         * @param params
-         *            the creation parameters
          * @return the ID of the created entity
          * @throws ValidationException
          *             if parameters are not valid
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public Long create(D content, P params) throws ComponentException;
+        public D create(D entity) throws ComponentException;
     }
 
     public interface Read<D extends DataType, P extends ParameterType> {
 
         /**
-         * Reads the entity specified by the given parameters
+         * Reads the entity specified by the given parameters.
          * 
          * @param params
-         *            the read parameters
+         *            the parameters
          * @return the specified entity
          * @throws ValidationException
          *             if parameters are not valid
          * @throws NotFoundException
          *             if entity does not exists
-         * @throws CacheException
-         *             if the etag is equals the current one (not modified)
          * @throws InternalException
          *             if an unexpected error occurs
          */
         public D read(P params) throws ComponentException;
 
         /**
-         * Reads all entities specified by the given parameters
+         * Reads all entities specified by the given parameters.
          * 
          * @param params
-         *            the read parameters
+         *            the parameters
          * @return the list of entities
-         * @throws ValidationException
-         *             if parameters are not valid
-         * @throws InternalException
-         *             if an unexpected error occurs
          */
-        public List<D> readAll(P params) throws ComponentException;
+        public List<D> readAll(P params);
     }
 
-    public interface Update<D extends DataType, P extends ParameterType> {
-
+    public interface Update<D extends DataType> {
         /**
          * Updates the entity specified by the given parameters with the given
-         * content and parameters
+         * content and parameters.
          * 
-         * @param content
+         * @param entity
          *            the entity content
-         * @param params
-         *            the update parameters
          * @return the ID of the created entity
          * @throws ValidationException
          *             if parameters are not valid
          * @throws NotFoundException
          *             if entity does not exists
          * @throws ConcurrencyException
-         *             if the etag (if present) is not equals the current one
+         *             if the etag is not equals the current one
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public void update(D content, P params) throws ComponentException;
+        public D update(D entity) throws ComponentException;
     }
 
-    public interface Delete<P extends ParameterType> {
-
+    public interface Delete<D extends DataType> {
         /**
-         * Deletes the entity specified in the given parameters
+         * Deletes the entity specified in the given parameters.
          * 
-         * @param params
-         *            the deletion parameters
+         * @param id
+         *            the id of the entity
+         * @return the deleted entity
+         * 
          * @throws ValidationException
          *             if parameters are not valid
          * @throws NotFoundException
@@ -114,10 +103,10 @@ public interface GenericService {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public void delete(P params) throws ComponentException;
+        public D delete(Long id) throws ComponentException;
     }
 
     public interface Crud<D extends DataType, P extends ParameterType>
-            extends Create<D, P>, Read<D, P>, Update<D, P>, Delete<P> {
+            extends Create<D>, Read<D, P>, Update<D>, Delete<D> {
     }
 }

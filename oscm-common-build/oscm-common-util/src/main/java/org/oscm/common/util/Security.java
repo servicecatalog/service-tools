@@ -11,7 +11,7 @@ package org.oscm.common.util;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.oscm.common.interfaces.config.GenericConfig;
+import org.oscm.common.interfaces.config.ServiceKey;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.SecurityException;
@@ -28,18 +28,18 @@ public class Security {
      * Validates the permissions with given security token through checking the
      * configuration for restrictions and roles.
      * 
-     * @param config
-     *            the configuration
      * @param service
      *            the key of the calling service
      * @param token
      *            the security token
      * @throws ComponentException
      */
-    public static <C extends GenericConfig<?, S>, S> void validatePermission(
-            C config, S service, SecurityToken token) throws ComponentException {
+    public static void validatePermission(ServiceKey service,
+            SecurityToken token) throws ComponentException {
 
-        if (config != null && config.isServiceRestricted(service)) {
+        ServiceConfiguration config = ServiceConfiguration.getInstance();
+
+        if (config.isServiceRestricted(service)) {
 
             if (token == null) {
                 throw new SecurityException(Messages.NOT_AUTHENTICATED.error(),
@@ -50,12 +50,11 @@ public class Security {
             Set<String> userRoles = token.getRoles();
 
             if (configRoles != null && userRoles != null) {
-                Set<String> intersection = new TreeSet<String>(configRoles);
+                Set<String> intersection = new TreeSet<>(configRoles);
                 intersection.retainAll(userRoles);
 
                 if (intersection.isEmpty()) {
-                    throw new SecurityException(
-                            Messages.NOT_AUTHORIZED.error(),
+                    throw new SecurityException(Messages.NOT_AUTHORIZED.error(),
                             Messages.NOT_AUTHORIZED.message());
                 }
             } else {

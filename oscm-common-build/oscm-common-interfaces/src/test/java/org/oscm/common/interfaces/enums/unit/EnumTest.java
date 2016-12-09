@@ -31,8 +31,9 @@ public class EnumTest {
     @Test
     public void testOperation() {
 
-        assertEquals("CREAT", Operation.CREAT.toString());
-        assertEquals("UPDAT", Operation.UPDAT.toString());
-        assertEquals("DELET", Operation.DELET.toString());
+        assertEquals("CREATED", Operation.CREATED.toString());
+        assertEquals("UPDATED", Operation.UPDATED.toString());
+        assertEquals("DELETED", Operation.DELETED.toString());
+        assertEquals("SUSPENDED", Operation.SUSPENDED.toString());
     }
 }

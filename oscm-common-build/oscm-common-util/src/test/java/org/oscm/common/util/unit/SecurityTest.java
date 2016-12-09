@@ -10,16 +10,23 @@ package org.oscm.common.util.unit;
 
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.oscm.common.interfaces.config.GenericConfig;
+import org.oscm.common.interfaces.config.ConfigurationImporter;
+import org.oscm.common.interfaces.config.ConfigurationKey;
+import org.oscm.common.interfaces.config.ServiceKey;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.security.SecurityToken;
 import org.oscm.common.util.Security;
+import org.oscm.common.util.ServiceConfiguration;
 
 /**
  * Unit test for Security
@@ -28,86 +35,91 @@ import org.oscm.common.util.Security;
  */
 public class SecurityTest {
 
-    private class TestConfig implements GenericConfig<String, String> {
+    private static final ServiceKey key = new ServiceKey() {
 
         @Override
-        public String getConfig(String config) {
-            return null;
+        public String getKeyName() {
+            return "key";
+        }
+    };
+
+    private class Importer implements ConfigurationImporter {
+
+        private Set<String> roles;
+
+        public Importer(Set<String> roles) {
+            this.roles = roles;
         }
 
         @Override
-        public Map<String, String> getAllConfigs() {
-            return null;
+        public Map<String, Set<String>> readRoles() {
+            Map<String, Set<String>> map = new HashMap<>();
+            map.put(key.getKeyName(), roles);
+
+            return map;
         }
 
         @Override
-        public boolean isServiceRestricted(String service) {
-            return false;
+        public Map<String, String> readEntries() {
+            return Collections.emptyMap();
         }
 
-        @Override
-        public Set<String> getRolesForService(String service) {
-            return null;
-        }
     }
 
-    @SuppressWarnings("boxing")
     @Test
     public void testSecurityPositive() throws Exception {
 
-        TestConfig config = Mockito.spy(new TestConfig());
+        Importer importer = new Importer(
+                new HashSet<>(Arrays.asList(ServiceKey.PUBLIC_ROLE)));
+        ServiceConfiguration.init(importer, new ServiceKey[] { key },
+                new ConfigurationKey[] {});
+
         SecurityToken token = Mockito.mock(SecurityToken.class);
 
-        Security.validatePermission(null, "test", token);
+        Security.validatePermission(key, token);
 
-        Security.validatePermission(config, "test", token);
+        importer = new Importer(
+                new HashSet<>(Arrays.asList(ServiceKey.PRIVATE_ROLE)));
+        ServiceConfiguration.init(importer, new ServiceKey[] { key },
+                new ConfigurationKey[] {});
 
-        Set<String> roles = new TreeSet<String>();
-        roles.add("role");
-
-        Mockito.when(config.isServiceRestricted(Mockito.anyString()))
-                .thenReturn(true);
-        Mockito.when(config.getRolesForService(Mockito.anyString()))
-                .thenReturn(roles);
+        Set<String> roles = new TreeSet<>();
+        roles.add(ServiceKey.PRIVATE_ROLE);
         Mockito.when(token.getRoles()).thenReturn(roles);
 
-        Security.validatePermission(config, "test", token);
+        Security.validatePermission(key, token);
     }
 
-    @SuppressWarnings("boxing")
     @Test
     public void testSecurityNegative() throws Exception {
 
-        TestConfig config = Mockito.spy(new TestConfig());
+        Importer importer = new Importer(
+                new HashSet<>(Arrays.asList(ServiceKey.PRIVATE_ROLE)));
+        ServiceConfiguration.init(importer, new ServiceKey[] { key },
+                new ConfigurationKey[] {});
+
+        try {
+            Security.validatePermission(key, null);
+            fail();
+        } catch (SecurityException e) {
+        }
+
+        Set<String> roles1 = new TreeSet<>();
+        roles1.add(ServiceKey.PUBLIC_ROLE);
+
         SecurityToken token = Mockito.mock(SecurityToken.class);
-
-        Mockito.when(config.isServiceRestricted(Mockito.anyString()))
-                .thenReturn(true);
+        Mockito.when(token.getRoles()).thenReturn(roles1);
 
         try {
-            Security.validatePermission(config, "test", null);
+            Security.validatePermission(key, token);
             fail();
         } catch (SecurityException e) {
         }
 
-        Set<String> roles1 = new TreeSet<String>();
-        roles1.add("role1");
-
-        Set<String> roles2 = new TreeSet<String>();
-        roles2.add("role2");
+        Mockito.when(token.getRoles()).thenReturn(null);
 
         try {
-            Security.validatePermission(config, "test", token);
-            fail();
-        } catch (SecurityException e) {
-        }
-
-        Mockito.when(config.getRolesForService(Mockito.anyString()))
-                .thenReturn(roles1);
-        Mockito.when(token.getRoles()).thenReturn(roles2);
-
-        try {
-            Security.validatePermission(config, "test", token);
+            Security.validatePermission(key, token);
             fail();
         } catch (SecurityException e) {
         }

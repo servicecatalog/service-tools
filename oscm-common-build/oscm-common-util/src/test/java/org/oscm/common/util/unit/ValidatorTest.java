@@ -63,7 +63,7 @@ public class ValidatorTest {
         String prop = "prop";
 
         Validator.validateLanguageCode(prop, null);
-        Validator.validateLanguageCode(prop, "DE");
+        Validator.validateLanguageCode(prop, "de");
 
         try {
             Validator.validateLanguageCode(prop, "ABCDE");

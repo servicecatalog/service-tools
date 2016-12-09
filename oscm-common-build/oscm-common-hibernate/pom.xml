@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>org.oscm.common</groupId>
+    <artifactId>oscm-common-build</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>oscm-common-hibernate</artifactId>
+  <packaging>jar</packaging>
+
+  <name>${project.artifactId}-${project.version}</name>
+  <url>https://github.com/servicecatalog</url>
+  
+  <dependencies>
+  
+    <dependency>
+      <groupId>org.oscm.common</groupId>
+      <artifactId>oscm-common-interfaces</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.oscm.common</groupId>
+      <artifactId>oscm-common-util</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+  
+    <!-- Third party libraries -->
+  
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>5.0.10.Final</version>
+    </dependency>
+  
+  </dependencies>
+</project>
