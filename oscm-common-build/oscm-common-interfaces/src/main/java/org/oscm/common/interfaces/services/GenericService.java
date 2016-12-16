@@ -29,7 +29,7 @@ public interface GenericService {
     public interface Create<D extends DataType, P extends ParameterType> {
 
         /**
-         * Creates an entity with the given content and parameters
+         * Creates the given entity with the given parameters
          * 
          * @param content
          *            the entity content
@@ -80,8 +80,7 @@ public interface GenericService {
     public interface Update<D extends DataType, P extends ParameterType> {
 
         /**
-         * Updates the entity specified by the given parameters with the given
-         * content and parameters
+         * Updates the given entity with the given parameters.
          * 
          * @param content
          *            the entity content

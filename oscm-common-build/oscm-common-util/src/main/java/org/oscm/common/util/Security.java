@@ -64,6 +64,59 @@ public class Security {
         }
     }
 
+    /**
+     * Validates the user id from the given token with the given user id.
+     * 
+     * @param token
+     *            the security token
+     * @param userId
+     *            the user id
+     * @throws ComponentException
+     */
+    public static void validateUserId(SecurityToken token, Long userId)
+            throws ComponentException {
+        if (token == null || token.getUserId() == null
+                || userId != null && !token.getUserId().equals(userId)) {
+            throw new SecurityException(null, ""); // TODO add error message
+        }
+    }
+
+    /**
+     * Validates the organization id from the given token with the given
+     * organization id.
+     * 
+     * @param token
+     *            the security token
+     * @param organizationId
+     *            the organization id
+     * @throws ComponentException
+     */
+    public static void validateOrganizationId(SecurityToken token,
+            Long organizationId) throws ComponentException {
+        if (token == null || token.getOrganizationId() == null
+                || organizationId != null
+                        && !token.getOrganizationId().equals(organizationId)) {
+            throw new SecurityException(null, ""); // TODO add error message
+        }
+    }
+
+    /**
+     * Validates the tenant id from the given token with the given tenant id.
+     * 
+     * @param token
+     *            the security token
+     * @param tenantId
+     *            the tenant id
+     * @throws ComponentException
+     */
+    public static void validateTenantId(SecurityToken token, Long tenantId)
+            throws ComponentException {
+        if (token == null || token.getTenantId() == null
+                || tenantId != null && !token.getTenantId().equals(tenantId)) {
+            throw new SecurityException(null, ""); // TODO add error message
+        }
+    }
+
     private Security() {
     }
 }

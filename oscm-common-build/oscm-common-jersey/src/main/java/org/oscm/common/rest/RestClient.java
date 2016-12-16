@@ -11,12 +11,12 @@ package org.oscm.common.rest;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
+import org.oscm.common.interfaces.data.Callback;
 import org.oscm.common.interfaces.exceptions.ComponentException;
-import org.oscm.common.interfaces.exceptions.ConnectionException;
 
 /**
  * Super class for REST clients
@@ -25,17 +25,36 @@ import org.oscm.common.interfaces.exceptions.ConnectionException;
  */
 public class RestClient {
 
-    protected void sendPost(String url, Representation content, int status)
-            throws ComponentException {
+    protected void sendPost(String url, Representation content, int status,
+            Callback success, Callback failure) {
 
-        WebTarget target = getClient().target(url);
+        getClient().target(url).request().async().post(Entity.json(content),
+                new InvocationCallback<Response>() {
 
-        Response response = target.request().post(Entity.json(content));
+                    @Override
+                    public void completed(Response response) {
+                        try {
+                            if (response == null
+                                    || response.getStatus() != status) {
+                                failure.callback();
+                            } else {
+                                success.callback();
+                            }
+                        } catch (ComponentException e) {
+                            // TODO Log error
+                        }
 
-        if (response == null || response.getStatus() != status) {
-            throw new ConnectionException(new Integer(1), "");
-            // TODO add error message
-        }
+                    }
+
+                    @Override
+                    public void failed(Throwable throwable) {
+                        try {
+                            failure.callback();
+                        } catch (ComponentException e) {
+                            // TODO Log error
+                        }
+                    }
+                });
     }
 
     protected Client getClient() {

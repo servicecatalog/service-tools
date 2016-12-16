@@ -20,6 +20,7 @@ public interface SecurityToken {
     public static final String TYPE_NAME = "SecurityToken";
     public static final String PROPERTY_USER_ID = "user id";
     public static final String PROPERTY_ORGANIZATION_ID = "organization id";
+    public static final String PROPERTY_TENANT_ID = "tenant id";
     public static final String PROPERTY_ROLES = "roles";
 
     /**
@@ -35,6 +36,13 @@ public interface SecurityToken {
      * @return the organization id
      */
     public Long getOrganizationId();
+
+    /**
+     * Get the tenant id of the token owner.
+     * 
+     * @return the tenant id
+     */
+    public Long getTenantId();
 
     /**
      * Gets the roles of the token owner in an immutable set.

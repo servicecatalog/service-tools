@@ -8,6 +8,8 @@
 
 package org.oscm.common.hibernate;
 
+import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +22,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 
 import org.oscm.common.interfaces.enums.Operation;
-import org.oscm.common.interfaces.event.GenericPublisher;
+import org.oscm.common.interfaces.events.GenericPublisher;
 import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.InternalException;
@@ -161,8 +163,8 @@ public abstract class DataPersistence<D extends DataObject> {
     /**
      * Reads all entities for the given query with the given parameters.
      * 
-     * @param id
-     *            the entity id
+     * @param namedQuery
+     *            the identifier of the named query to read all entities
      * @param params
      *            the map of parameters
      * @return the entity
@@ -177,8 +179,8 @@ public abstract class DataPersistence<D extends DataObject> {
      * Reads all entities for the given query with the given parameters and
      * pagination.
      * 
-     * @param id
-     *            the entity id
+     * @param namedQuery
+     *            the identifier of the named query to read all entities
      * @param params
      *            the map of parameters
      * @param limit
@@ -210,8 +212,8 @@ public abstract class DataPersistence<D extends DataObject> {
     /**
      * Reads one entity for the given query with the given parameters.
      * 
-     * @param id
-     *            the entity id
+     * @param namedQuery
+     *            the identifier of the named query to read a single entities
      * @param parameters
      *            the map of parameters
      * @return the entity
@@ -241,6 +243,17 @@ public abstract class DataPersistence<D extends DataObject> {
      * @throws ComponentException
      */
     protected D updateData(D entity) throws ComponentException {
+        return updateData(entity, null);
+    }
+
+    /**
+     * Updates the given entity and publishes it.
+     * 
+     * @param entity
+     *            the entity to update with
+     * @throws ComponentException
+     */
+    protected D updateData(D entity, Long etag) throws ComponentException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -250,7 +263,7 @@ public abstract class DataPersistence<D extends DataObject> {
                 throw new NotFoundException(null, ""); // TODO add error message
             }
 
-            if (entity.getETag() != null) {
+            if (etag != null) {
                 if (!entity.getETag().equals(old.getETag())) {
                     throw new CacheException(null, "");
                     // TODO add error message
@@ -287,7 +300,7 @@ public abstract class DataPersistence<D extends DataObject> {
     }
 
     /**
-     * Deletes the given entity and publishes it.
+     * Deletes (soft) the given entity and publishes it.
      * 
      * @param id
      *            the entity id
@@ -324,23 +337,134 @@ public abstract class DataPersistence<D extends DataObject> {
         }
     }
 
-    private void confirm(D entity) throws ComponentException {
+    /**
+     * Confirm the publishing of the given entity.
+     * 
+     * @param entity
+     *            the published entity
+     * @throws ComponentException
+     */
+    protected void confirm(D entity) throws ComponentException {
         EntityTransaction transaction = entityManager.getTransaction();
-        try {
 
-            transaction.begin();
-            entity.setPublished(Boolean.TRUE);
-            transaction.commit();
+        transaction.begin();
+        entity.setPublished(Boolean.TRUE);
+        transaction.commit();
+    }
+
+    /**
+     * Read the foreign data entity of the given class with the given id.
+     * 
+     * @param foreign
+     *            the class of the entity
+     * @param id
+     *            the id of the entity
+     * @return the foreign data entity
+     * @throws ComponentException
+     */
+    protected <F extends DataObject> F readForeignData(Class<F> foreign,
+            Long id) throws ComponentException {
+
+        try {
+            F entity = entityManager.getReference(foreign, id);
+
+            if (entity.getLastOperation() == Operation.DELETED) {
+                throw new NotFoundException(null, "");
+                // TODO add error message
+            }
+
+            return entity;
 
         } catch (EntityNotFoundException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
             throw new NotFoundException(null, "", e); // TODO add error message
         }
     }
 
-    public abstract void publishUnpublished();
+    /**
+     * Read the foreign proxy entity of the given class with the given id.
+     * 
+     * @param foreign
+     *            the class of the entity
+     * @param id
+     *            the id of the entity
+     * @return the foreign proxy entity
+     * @throws ComponentException
+     */
+    protected <F extends ProxyObject> F readForeignProxy(Class<F> foreign,
+            Long id) throws ComponentException {
 
-    public abstract void publishAll();
+        try {
+            F entity = entityManager.getReference(foreign, id);
+
+            if (entity.getLastOperation() == Operation.DELETED) {
+                throw new NotFoundException(null, "");
+                // TODO add error message
+            }
+
+            return entity;
+
+        } catch (EntityNotFoundException e) {
+            throw new NotFoundException(null, "", e); // TODO add error message
+        }
+    }
+
+    /**
+     * Publish all unpublished entities.
+     * 
+     * @throws ComponentException
+     */
+    public void publishUnpublished() throws ComponentException {
+        if (publisher != null) {
+
+            String queryName;
+            try {
+                Field f = clazz.getField("QUERY_READ_UNPUBLISHED");
+                queryName = (String) f.get(null);
+            } catch (NoSuchFieldException | SecurityException
+                    | IllegalArgumentException | IllegalAccessException e) {
+                throw new RuntimeException(
+                        "Unable to find query name to read all unpublished entities");
+            }
+
+            List<D> list = readAllData(queryName, Collections.emptyMap());
+
+            for (D action : list) {
+                publisher.publish(action, () -> confirm(action));
+            }
+        }
+    }
+
+    /**
+     * (Re-)Publish all entities.
+     * 
+     * @throws ComponentException
+     */
+    public void publishAll() throws ComponentException {
+        if (publisher != null) {
+
+            String queryName;
+            try {
+                Field f = clazz.getField("QUERY_READ_ALL");
+                queryName = (String) f.get(null);
+            } catch (NoSuchFieldException | SecurityException
+                    | IllegalArgumentException | IllegalAccessException e) {
+                throw new RuntimeException(
+                        "Unable to find query name to read all entities");
+            }
+
+            List<D> list = readAllData(queryName, Collections.emptyMap());
+
+            EntityTransaction transaction = entityManager.getTransaction();
+
+            transaction.begin();
+            for (D action : list) {
+                action.setPublished(Boolean.TRUE);
+            }
+            transaction.commit();
+
+            for (D action : list) {
+                publisher.publish(action, () -> confirm(action));
+            }
+        }
+    }
 }

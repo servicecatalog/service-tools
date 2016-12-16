@@ -31,21 +31,25 @@ public class TokenTest {
 
         test.setUserId(new Long(1));
         test.setOrganizationId(new Long(2));
+        test.setTenantId(new Long(3));
 
-        Set<String> roles = new TreeSet<String>();
+        Set<String> roles = new TreeSet<>();
         roles.add("test");
         test.setRoles(roles);
 
         assertEquals(new Long(1), test.getUserId());
         assertEquals(new Long(2), test.getOrganizationId());
+        assertEquals(new Long(3), test.getTenantId());
         assertTrue(test.getRoles().contains("test"));
 
         test.setUserId(null);
         test.setOrganizationId(null);
+        test.setTenantId(null);
         test.setRoles(null);
 
         assertNull(test.getUserId());
         assertNull(test.getOrganizationId());
+        assertNull(test.getTenantId());
         assertTrue(test.getRoles().isEmpty());
     }
 }

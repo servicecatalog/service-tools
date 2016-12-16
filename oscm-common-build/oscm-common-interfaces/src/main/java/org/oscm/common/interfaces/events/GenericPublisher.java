@@ -6,8 +6,9 @@
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.interfaces.event;
+package org.oscm.common.interfaces.events;
 
+import org.oscm.common.interfaces.data.Callback;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.ConnectionException;
@@ -18,10 +19,6 @@ import org.oscm.common.interfaces.exceptions.ConnectionException;
  * @author miethaner
  */
 public interface GenericPublisher<D extends DataType> {
-
-    public interface Callback {
-        public void callback() throws ComponentException;
-    }
 
     /**
      * Publishes the given content to all listening components.

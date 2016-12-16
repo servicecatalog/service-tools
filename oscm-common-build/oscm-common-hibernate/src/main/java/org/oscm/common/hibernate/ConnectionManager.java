@@ -50,6 +50,16 @@ public class ConnectionManager {
         cm = new ConnectionManager(unit, properties);
     }
 
+    /**
+     * Initialization method for test only purposes.
+     * 
+     * @param emf
+     *            the entity manager factory
+     */
+    public static void init(EntityManagerFactory emf) {
+        cm = new ConnectionManager(emf);
+    }
+
     private EntityManagerFactory emf;
 
     private ConnectionManager() {
@@ -58,6 +68,10 @@ public class ConnectionManager {
     private ConnectionManager(String unit, Map<String, String> properties) {
 
         emf = Persistence.createEntityManagerFactory(unit, properties);
+    }
+
+    private ConnectionManager(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 
     /**

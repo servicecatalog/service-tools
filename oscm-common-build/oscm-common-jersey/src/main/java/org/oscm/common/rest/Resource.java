@@ -14,6 +14,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
 import org.oscm.common.interfaces.enums.Messages;
@@ -94,11 +95,15 @@ public abstract class Resource {
 
         Object newId = backend.post(content, params);
 
-        ContainerRequestContext cr = (ContainerRequestContext) request;
-        UriBuilder builder = cr.getUriInfo().getAbsolutePathBuilder();
-        URI uri = builder.path(newId.toString()).build();
+        if (newId != null) {
+            ContainerRequestContext cr = (ContainerRequestContext) request;
+            UriBuilder builder = cr.getUriInfo().getAbsolutePathBuilder();
+            URI uri = builder.path(newId.toString()).build();
 
-        return Response.created(uri).build();
+            return Response.created(uri).build();
+        } else {
+            return Response.status(Status.CREATED).build();
+        }
     }
 
     /**

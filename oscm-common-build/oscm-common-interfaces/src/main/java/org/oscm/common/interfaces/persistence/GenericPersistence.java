@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.data.ParameterType;
+import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.ConcurrencyException;
 import org.oscm.common.interfaces.exceptions.InternalException;
@@ -28,11 +29,11 @@ public interface GenericPersistence {
     public interface Create<D extends DataType> {
 
         /**
-         * Creates an entity with the given content and parameters.
+         * Creates an the given entity.
          * 
          * @param entity
          *            the entity content
-         * @return the ID of the created entity
+         * @return the created entity
          * @throws ValidationException
          *             if parameters are not valid
          * @throws InternalException
@@ -64,18 +65,60 @@ public interface GenericPersistence {
          * @param params
          *            the parameters
          * @return the list of entities
+         * @throws ValidationException
+         *             if parameters are not valid
+         * @throws InternalException
+         *             if an unexpected error occurs
          */
-        public List<D> readAll(P params);
+        public List<D> readAll(P params) throws ComponentException;
+
+        /**
+         * Reads the entity specified by the given parameters. If the ETag is
+         * set in the parameters, it will be checked against the entity to read
+         * and a exception will be thrown if it was not modified.
+         * 
+         * @param params
+         *            the parameters
+         * @return the specified entity
+         * @throws ValidationException
+         *             if parameters are not valid
+         * @throws NotFoundException
+         *             if entity does not exists
+         * @throws CacheException
+         *             if the etag is equals the current one (not modified)
+         * @throws InternalException
+         *             if an unexpected error occurs
+         */
+        public D readIfModified(P params) throws ComponentException;
     }
 
-    public interface Update<D extends DataType> {
+    public interface Update<D extends DataType, P extends ParameterType> {
+
         /**
-         * Updates the entity specified by the given parameters with the given
-         * content and parameters.
+         * Updates the given entity.
          * 
          * @param entity
          *            the entity content
          * @return the ID of the created entity
+         * @throws ValidationException
+         *             if parameters are not valid
+         * @throws NotFoundException
+         *             if entity does not exists
+         * @throws InternalException
+         *             if an unexpected error occurs
+         */
+        public D update(D entity) throws ComponentException;
+
+        /**
+         * Updates the given entity. If the ETag is set in the parameters, it
+         * will be checked against the entity to update and a exception will be
+         * thrown if it was modified.
+         * 
+         * @param entity
+         *            the entity content
+         * @param params
+         *            the parameters
+         * @return the updated entity
          * @throws ValidationException
          *             if parameters are not valid
          * @throws NotFoundException
@@ -85,15 +128,17 @@ public interface GenericPersistence {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public D update(D entity) throws ComponentException;
+        public D updateIfNotModified(D entity, P params)
+                throws ComponentException;
     }
 
-    public interface Delete<D extends DataType> {
+    public interface Delete<D extends DataType, P extends ParameterType> {
+
         /**
          * Deletes the entity specified in the given parameters.
          * 
-         * @param id
-         *            the id of the entity
+         * @param params
+         *            the parameters
          * @return the deleted entity
          * 
          * @throws ValidationException
@@ -103,10 +148,10 @@ public interface GenericPersistence {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public D delete(Long id) throws ComponentException;
+        public D delete(P params) throws ComponentException;
     }
 
     public interface Crud<D extends DataType, P extends ParameterType>
-            extends Create<D>, Read<D, P>, Update<D>, Delete<D> {
+            extends Create<D>, Read<D, P>, Update<D, P>, Delete<D, P> {
     }
 }

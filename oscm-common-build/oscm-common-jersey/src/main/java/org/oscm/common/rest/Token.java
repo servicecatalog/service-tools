@@ -23,6 +23,7 @@ public class Token implements SecurityToken {
 
     private Long userId;
     private Long organizationId;
+    private Long tenantId;
     private Set<String> roles = new HashSet<>();
 
     @Override
@@ -41,6 +42,15 @@ public class Token implements SecurityToken {
 
     public void setOrganizationId(Long organizationId) {
         this.organizationId = organizationId;
+    }
+
+    @Override
+    public Long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
     }
 
     @Override

@@ -22,9 +22,10 @@ import org.mockito.Mockito;
 import org.oscm.common.hibernate.DataObject;
 import org.oscm.common.hibernate.DataPersistence;
 import org.oscm.common.hibernate.unit.DataPersistenceTest.DOTest;
+import org.oscm.common.interfaces.data.Callback;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.enums.Operation;
-import org.oscm.common.interfaces.event.GenericPublisher;
+import org.oscm.common.interfaces.events.GenericPublisher;
 import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.InternalException;
@@ -49,8 +50,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
     public class DPublisher implements Publisher {
 
         @Override
-        public void publish(Subdata content,
-                org.oscm.common.interfaces.event.GenericPublisher.Callback callback)
+        public void publish(Subdata content, Callback callback)
                 throws ComponentException {
             callback.callback();
         }
@@ -251,7 +251,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
 
         try {
             init(em, DOTest.class, pub);
-            updateData(dotest);
+            updateData(dotest, new Long(1));
             fail();
         } catch (CacheException e) {
         }
