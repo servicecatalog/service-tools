@@ -14,7 +14,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 
 import org.oscm.common.interfaces.data.ParameterType;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.security.SecurityToken;
 import org.oscm.common.util.Validator;
 
@@ -99,7 +99,7 @@ public abstract class RequestParameters implements ParameterType {
     }
 
     public void validateETag()
-            throws WebApplicationException, ComponentException {
+            throws WebApplicationException, ServiceException {
 
         if (noneMatch != null && !ETAG_WILDCARD.equals(noneMatch)) {
             etag = Validator.validateLong(PARAM_NONE_MATCH, noneMatch);
@@ -147,6 +147,6 @@ public abstract class RequestParameters implements ParameterType {
      * @throws WebApplicationException
      */
     public abstract void validateParameters()
-            throws WebApplicationException, ComponentException;
+            throws WebApplicationException, ServiceException;
 
 }

@@ -8,12 +8,14 @@
 
 package org.oscm.common.interfaces.enums;
 
+import org.oscm.common.interfaces.config.ErrorKey;
+
 /**
  * Enum for exceptions to provide error code and message.
  * 
  * @author miethaner
  */
-public enum Messages {
+public enum Messages implements ErrorKey {
 
     DEBUG(0, "Debug"), //
     ERROR(1, "Error"), //
@@ -50,21 +52,18 @@ public enum Messages {
         this.message = message;
     }
 
-    /**
-     * Gets the error code for this entry.
-     * 
-     * @return the error code
-     */
-    public Integer error() {
+    @Override
+    public String getKeyName() {
+        return name();
+    }
+
+    @Override
+    public Integer getId() {
         return new Integer(error);
     }
 
-    /**
-     * Gets the message for this entry.
-     * 
-     * @return the message
-     */
-    public String message() {
+    @Override
+    public String getMessage(String... values) {
         return message;
     }
 }

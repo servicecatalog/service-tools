@@ -18,6 +18,7 @@ import java.util.Set;
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.config.ConfigurationKey;
 import org.oscm.common.interfaces.config.ServiceKey;
+import org.oscm.common.interfaces.config.VersionKey;
 
 /**
  * Singleton class to manage configuration settings and service access roles.
@@ -54,12 +55,14 @@ public class ServiceConfiguration {
      *            the configuration keys
      */
     public static void init(ConfigurationImporter importer,
-            ServiceKey[] services, ConfigurationKey[] configs) {
-        sc = new ServiceConfiguration(importer, services, configs);
+            VersionKey[] versions, ServiceKey[] services,
+            ConfigurationKey[] configs) {
+        sc = new ServiceConfiguration(importer, versions, services, configs);
     }
 
     private Map<ServiceKey, Set<String>> roles;
     private Map<ConfigurationKey, String> entries;
+    private Set<VersionKey> versions;
 
     private ServiceConfiguration() {
         this.roles = Collections.emptyMap();
@@ -67,9 +70,11 @@ public class ServiceConfiguration {
     }
 
     private ServiceConfiguration(ConfigurationImporter importer,
-            ServiceKey[] services, ConfigurationKey[] configs) {
+            VersionKey[] versions, ServiceKey[] services,
+            ConfigurationKey[] configs) {
         this.roles = new HashMap<>();
         this.entries = new HashMap<>();
+        this.versions = new HashSet<>(Arrays.asList(versions));
 
         Map<String, Set<String>> tmpRoles = importer.readRoles();
         for (ServiceKey s : services) {
@@ -98,8 +103,13 @@ public class ServiceConfiguration {
         }
     }
 
+    public Set<VersionKey> getVersions() {
+        return Collections.unmodifiableSet(versions);
+    }
+
     /**
-     * Gets the value for the given configuration key.
+     * Gets the value for the given configuration key. Returns null if the key
+     * does not exist.
      * 
      * @param config
      *            the configuration key

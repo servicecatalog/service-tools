@@ -8,7 +8,7 @@
 
 package org.oscm.common.interfaces.data;
 
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * Generic callback interface.
@@ -17,5 +17,5 @@ import org.oscm.common.interfaces.exceptions.ComponentException;
  */
 public interface Callback {
 
-    public void callback() throws ComponentException;
+    public void callback() throws ServiceException;
 }

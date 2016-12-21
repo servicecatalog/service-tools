@@ -11,34 +11,97 @@ package org.oscm.common.hibernate.unit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.EntityTransaction;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.oscm.common.hibernate.ConnectionManager;
 import org.oscm.common.hibernate.DataObject;
 import org.oscm.common.hibernate.DataPersistence;
-import org.oscm.common.hibernate.unit.DataPersistenceTest.DOTest;
+import org.oscm.common.hibernate.ProxyObject;
 import org.oscm.common.interfaces.data.Callback;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.enums.Operation;
 import org.oscm.common.interfaces.events.GenericPublisher;
 import org.oscm.common.interfaces.exceptions.CacheException;
-import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * Unit test for DataPersistence
  * 
  * @author miethaner
  */
-public class DataPersistenceTest extends DataPersistence<DOTest> {
+public class DataPersistenceTest {
 
     public interface Subdata extends DataType {
+    }
+
+    public class DataTest extends DataPersistence<DOTest> {
+
+        public DataTest(GenericPublisher<? super DOTest> publisher) {
+            super(publisher);
+        }
+
+        @Override
+        public DOTest createData(DOTest entity) throws ServiceException {
+            return super.createData(entity);
+        }
+
+        @Override
+        public DOTest readData(Long id, Long etag) throws ServiceException {
+            return super.readData(id, etag);
+        }
+
+        @Override
+        public List<DOTest> readAllData(String namedQuery,
+                Map<String, Object> params, Long limit, Long offset) {
+            return super.readAllData(namedQuery, params, limit, offset);
+        }
+
+        @Override
+        public DOTest readSingleData(String namedQuery,
+                Map<String, Object> parameters) throws ServiceException {
+            return super.readSingleData(namedQuery, parameters);
+        }
+
+        @Override
+        public DOTest updateData(DOTest entity, Long etag)
+                throws ServiceException {
+            return super.updateData(entity, etag);
+        }
+
+        @Override
+        public DOTest deleteData(Long id) throws ServiceException {
+            return super.deleteData(id);
+        }
+
+        @Override
+        public void confirm(Long id) throws ServiceException {
+            super.confirm(id);
+        }
+
+        @Override
+        public <F extends DataObject> F readForeignData(Class<F> foreign,
+                Long id) throws ServiceException {
+            return super.readForeignData(foreign, id);
+        }
+
+        @Override
+        public <F extends ProxyObject> F readForeignProxy(Class<F> foreign,
+                Long id) throws ServiceException {
+            return super.readForeignProxy(foreign, id);
+        }
+
     }
 
     public class DOTest extends DataObject implements Subdata {
@@ -51,12 +114,13 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
 
         @Override
         public void publish(Subdata content, Callback callback)
-                throws ComponentException {
+                throws ServiceException {
             callback.callback();
         }
     }
 
     private static EntityManager em;
+    private static DataTest test;
     private static DOTest dotest;
     private static DPublisher pub;
 
@@ -67,14 +131,17 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
         dotest = new DOTest();
         pub = new DPublisher();
 
-        init(em, DOTest.class, pub);
+        test = new DataTest(pub);
     }
 
     @SuppressWarnings("boxing")
     private EntityManager getEntityManager(boolean exception) {
+        EntityManagerFactory emf = Mockito.mock(EntityManagerFactory.class);
+        ConnectionManager.init(emf);
         EntityManager em = Mockito.mock(EntityManager.class);
         EntityTransaction et = Mockito.mock(EntityTransaction.class);
 
+        Mockito.when(emf.createEntityManager()).thenReturn(em);
         Mockito.when(em.getTransaction()).thenReturn(et);
 
         if (exception) {
@@ -87,19 +154,22 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
     @Test
     public void testCreatePositive() throws Exception {
 
-        createData(dotest);
+        Mockito.when(em.getReference(Mockito.eq(DOTest.class), Mockito.any()))
+                .thenReturn(dotest);
+
+        test.createData(dotest);
     }
 
     @Test
     public void testCreateNegativePersist() throws Exception {
 
         em = getEntityManager(true);
+        test = new DataTest(pub);
 
         Mockito.doThrow(new EntityExistsException()).when(em).persist(dotest);
 
         try {
-            init(em, DOTest.class, pub);
-            createData(dotest);
+            test.createData(dotest);
             fail();
         } catch (InternalException e) {
         }
@@ -113,7 +183,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
         Mockito.when(em.getReference(DOTest.class, new Long(1L)))
                 .thenReturn(dotest);
 
-        DOTest doread = readData(new Long(1L), new Long(1L));
+        DOTest doread = test.readData(new Long(1L), new Long(1L));
 
         assertEquals(dotest, doread);
     }
@@ -127,7 +197,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
                 .thenReturn(dotest);
 
         try {
-            readData(new Long(1L), new Long(2L));
+            test.readData(new Long(1L), new Long(2L));
             fail();
         } catch (CacheException e) {
         }
@@ -137,13 +207,13 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
     public void testReadNegativeNotFound() throws Exception {
 
         em = getEntityManager(true);
+        test = new DataTest(pub);
 
         Mockito.when(em.getReference(DOTest.class, new Long(1L)))
                 .thenThrow(new EntityNotFoundException());
 
         try {
-            init(em, DOTest.class, pub);
-            readData(new Long(1L), null);
+            test.readData(new Long(1L), null);
             fail();
         } catch (NotFoundException e) {
         }
@@ -153,14 +223,14 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
     public void testReadNegativeDeleted() throws Exception {
 
         em = getEntityManager(true);
+        test = new DataTest(pub);
 
         dotest.setLastOperation(Operation.DELETED);
         Mockito.when(em.getReference(DOTest.class, new Long(1L)))
                 .thenReturn(dotest);
 
         try {
-            init(em, DOTest.class, pub);
-            readData(new Long(1L), null);
+            test.readData(new Long(1L), null);
             fail();
         } catch (NotFoundException e) {
         }
@@ -182,22 +252,23 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
                 .thenReturn(old);
         Mockito.when(em.merge(dotest)).thenReturn(dotest);
 
-        updateData(dotest);
+        test.updateData(dotest, null);
 
         old.setLastOperation(Operation.CREATED);
         old.setPublished(Boolean.FALSE);
 
-        updateData(dotest);
+        test.updateData(dotest, null);
 
         dotest.setETag(null);
 
-        updateData(dotest);
+        test.updateData(dotest, null);
     }
 
     @Test
     public void testUpdateNegativeFind() throws Exception {
 
         em = getEntityManager(true);
+        test = new DataTest(pub);
 
         dotest.setId(new Long(1L));
 
@@ -205,8 +276,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
                 .thenThrow(new EntityNotFoundException());
 
         try {
-            init(em, DOTest.class, pub);
-            updateData(dotest);
+            test.updateData(dotest, null);
             fail();
         } catch (NotFoundException e) {
         }
@@ -216,6 +286,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
     public void testUpdateNegativeDeleted() throws Exception {
 
         em = getEntityManager(true);
+        test = new DataTest(pub);
 
         dotest.setId(new Long(1L));
         dotest.setLastOperation(Operation.DELETED);
@@ -225,8 +296,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
                 .thenReturn(dotest);
 
         try {
-            init(em, DOTest.class, pub);
-            updateData(dotest);
+            test.updateData(dotest, null);
             fail();
         } catch (NotFoundException e) {
         }
@@ -236,6 +306,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
     public void testUpdateNegativeEtag() throws Exception {
 
         em = getEntityManager(true);
+        test = new DataTest(pub);
 
         dotest.setId(new Long(1L));
         dotest.setETag(new Long(1L));
@@ -250,8 +321,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
                 .thenReturn(old);
 
         try {
-            init(em, DOTest.class, pub);
-            updateData(dotest, new Long(1));
+            test.updateData(dotest, new Long(1));
             fail();
         } catch (CacheException e) {
         }
@@ -266,13 +336,14 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
         Mockito.when(em.getReference(DOTest.class, new Long(1L)))
                 .thenReturn(old);
 
-        deleteData(new Long(1L));
+        test.deleteData(new Long(1L));
     }
 
     @Test
     public void testDeleteNegativeFind() throws Exception {
 
         em = getEntityManager(true);
+        test = new DataTest(pub);
 
         dotest.setId(new Long(1L));
 
@@ -280,8 +351,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
                 .thenThrow(new EntityNotFoundException());
 
         try {
-            init(em, DOTest.class, pub);
-            deleteData(new Long(1L));
+            test.deleteData(new Long(1L));
             fail();
         } catch (NotFoundException e) {
         }
@@ -291,6 +361,7 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
     public void testDeleteNegativeDeleted() throws Exception {
 
         em = getEntityManager(true);
+        test = new DataTest(pub);
 
         dotest.setId(new Long(1L));
         dotest.setLastOperation(Operation.DELETED);
@@ -299,22 +370,9 @@ public class DataPersistenceTest extends DataPersistence<DOTest> {
                 .thenReturn(dotest);
 
         try {
-            init(em, DOTest.class, pub);
-            deleteData(new Long(1L));
+            test.deleteData(new Long(1L));
             fail();
         } catch (NotFoundException e) {
         }
-    }
-
-    @Override
-    public void publishUnpublished() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void publishAll() {
-        // TODO Auto-generated method stub
-
     }
 }

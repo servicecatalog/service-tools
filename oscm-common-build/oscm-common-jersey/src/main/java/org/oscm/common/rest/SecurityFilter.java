@@ -33,16 +33,13 @@ public class SecurityFilter implements ContainerRequestFilter {
             throws WebApplicationException {
 
         if (!request.getSecurityContext().isSecure()) {
-            SecurityException se = new SecurityException(
-                    Messages.NOT_SECURE.error(), Messages.NOT_SECURE.message());
+            SecurityException se = new SecurityException(Messages.NOT_SECURE);
 
             throw new ExceptionMapper().toWebException(se);
         }
 
         if (request.getSecurityContext().getUserPrincipal() == null) {
-            TokenException te = new TokenException(
-                    Messages.NOT_AUTHENTICATED.error(),
-                    Messages.NOT_AUTHENTICATED.message());
+            TokenException te = new TokenException(Messages.NOT_AUTHENTICATED);
 
             throw new ExceptionMapper().toWebException(te);
         }

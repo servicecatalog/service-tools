@@ -56,10 +56,10 @@ public class GsonMessageProvider implements MessageBodyWriter<Representation>,
     }
 
     @Override
-    public Representation readFrom(Class<Representation> type,
-            Type genericType, Annotation[] annotations, MediaType mediaType,
-            MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-            throws IOException {
+    public Representation readFrom(Class<Representation> type, Type genericType,
+            Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, String> httpHeaders,
+            InputStream entityStream) throws IOException {
 
         InputStreamReader reader = new InputStreamReader(entityStream, CHARSET);
 
@@ -68,10 +68,8 @@ public class GsonMessageProvider implements MessageBodyWriter<Representation>,
             return gson.fromJson(reader, genericType);
 
         } catch (JsonSyntaxException e) {
-
             ValidationException ve = new ValidationException(
-                    Messages.JSON_FORMAT.error(),
-                    Messages.JSON_FORMAT.message(), e);
+                    Messages.JSON_FORMAT, null, e);
 
             throw new ExceptionMapper().toWebException(ve);
 
@@ -96,8 +94,8 @@ public class GsonMessageProvider implements MessageBodyWriter<Representation>,
     public void writeTo(Representation rep, Class<?> type, Type genericType,
             Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders,
-            OutputStream entityStream) throws IOException,
-            WebApplicationException {
+            OutputStream entityStream)
+            throws IOException, WebApplicationException {
 
         OutputStreamWriter writer = new OutputStreamWriter(entityStream,
                 CHARSET);
@@ -114,9 +112,8 @@ public class GsonMessageProvider implements MessageBodyWriter<Representation>,
             gson.toJson(rep, genericType, writer);
 
         } catch (JsonSyntaxException e) {
-            InternalException ie = new InternalException(
-                    Messages.JSON_FORMAT.error(),
-                    Messages.JSON_FORMAT.message(), e);
+            InternalException ie = new InternalException(Messages.JSON_FORMAT,
+                    e);
 
             throw new ExceptionMapper().toWebException(ie);
         } finally {

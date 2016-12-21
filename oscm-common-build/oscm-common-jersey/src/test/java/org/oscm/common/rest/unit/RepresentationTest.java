@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.enums.Operation;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.rest.Representation;
 
 /**
@@ -53,7 +53,7 @@ public class RepresentationTest {
         }
 
         @Override
-        public void validateCreate() throws ComponentException {
+        public void validateCreate() throws ServiceException {
         }
 
         @Override
@@ -65,7 +65,7 @@ public class RepresentationTest {
         }
 
         @Override
-        public void validateUpdate() throws ComponentException {
+        public void validateUpdate() throws ServiceException {
         }
     }
 

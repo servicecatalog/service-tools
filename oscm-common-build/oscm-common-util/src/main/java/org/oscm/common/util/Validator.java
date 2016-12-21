@@ -43,8 +43,7 @@ public class Validator {
 
         if (url != null) {
             if (!url.matches(PATTERN_URL)) {
-                throw new ValidationException(Messages.INVALID_URL.error(),
-                        property, Messages.INVALID_URL.message());
+                throw new ValidationException(Messages.INVALID_URL, property);
             }
         }
     }
@@ -63,8 +62,7 @@ public class Validator {
 
         if (text != null) {
             if (!text.matches(PATTERN_TEXT)) {
-                throw new ValidationException(Messages.INVALID_TEXT.error(),
-                        property, Messages.INVALID_TEXT.message());
+                throw new ValidationException(Messages.INVALID_TEXT, property);
             }
         }
     }
@@ -83,8 +81,8 @@ public class Validator {
 
         if (language != null) {
             if (!isoLanguages.contains(language)) {
-                throw new ValidationException(Messages.INVALID_LANGUAGE.error(),
-                        property, Messages.INVALID_LANGUAGE.message());
+                throw new ValidationException(Messages.INVALID_LANGUAGE,
+                        property);
             }
         }
     }
@@ -108,8 +106,7 @@ public class Validator {
         try {
             return Integer.valueOf(number);
         } catch (NumberFormatException e) {
-            throw new ValidationException(Messages.INVALID_NUMBER.error(),
-                    property, Messages.INVALID_NUMBER.message());
+            throw new ValidationException(Messages.INVALID_NUMBER, property);
         }
     }
 
@@ -132,8 +129,7 @@ public class Validator {
         try {
             return Long.valueOf(number);
         } catch (NumberFormatException e) {
-            throw new ValidationException(Messages.INVALID_NUMBER.error(),
-                    property, Messages.INVALID_NUMBER.message());
+            throw new ValidationException(Messages.INVALID_NUMBER, property);
         }
     }
 
@@ -150,8 +146,7 @@ public class Validator {
             throws ValidationException {
 
         if (obj == null) {
-            throw new ValidationException(Messages.IS_NULL.error(), property,
-                    Messages.IS_NULL.message());
+            throw new ValidationException(Messages.IS_NULL, property);
         }
     }
 
@@ -171,12 +166,10 @@ public class Validator {
 
         if (first != null && second != null) {
             if (!first.equals(second)) {
-                throw new ValidationException(Messages.NOT_EQUAL.error(),
-                        property, Messages.NOT_EQUAL.message());
+                throw new ValidationException(Messages.NOT_EQUAL, property);
             }
         } else if (first != second) {
-            throw new ValidationException(Messages.NOT_EQUAL.error(), property,
-                    Messages.NOT_EQUAL.message());
+            throw new ValidationException(Messages.NOT_EQUAL, property);
         }
     }
 

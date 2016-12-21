@@ -13,7 +13,7 @@ import java.util.List;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.data.ParameterType;
 import org.oscm.common.interfaces.exceptions.CacheException;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.ConcurrencyException;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
@@ -39,7 +39,7 @@ public interface GenericPersistence {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public D create(D entity) throws ComponentException;
+        public D create(D entity) throws ServiceException;
     }
 
     public interface Read<D extends DataType, P extends ParameterType> {
@@ -57,7 +57,7 @@ public interface GenericPersistence {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public D read(P params) throws ComponentException;
+        public D read(P params) throws ServiceException;
 
         /**
          * Reads all entities specified by the given parameters.
@@ -70,7 +70,7 @@ public interface GenericPersistence {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public List<D> readAll(P params) throws ComponentException;
+        public List<D> readAll(P params) throws ServiceException;
 
         /**
          * Reads the entity specified by the given parameters. If the ETag is
@@ -89,7 +89,7 @@ public interface GenericPersistence {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public D readIfModified(P params) throws ComponentException;
+        public D readIfModified(P params) throws ServiceException;
     }
 
     public interface Update<D extends DataType, P extends ParameterType> {
@@ -107,7 +107,7 @@ public interface GenericPersistence {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public D update(D entity) throws ComponentException;
+        public D update(D entity) throws ServiceException;
 
         /**
          * Updates the given entity. If the ETag is set in the parameters, it
@@ -129,7 +129,7 @@ public interface GenericPersistence {
          *             if an unexpected error occurs
          */
         public D updateIfNotModified(D entity, P params)
-                throws ComponentException;
+                throws ServiceException;
     }
 
     public interface Delete<D extends DataType, P extends ParameterType> {
@@ -148,7 +148,7 @@ public interface GenericPersistence {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public D delete(P params) throws ComponentException;
+        public D delete(P params) throws ServiceException;
     }
 
     public interface Crud<D extends DataType, P extends ParameterType>

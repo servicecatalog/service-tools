@@ -10,7 +10,7 @@ package org.oscm.common.rest;
 
 import java.util.Collection;
 
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -44,7 +44,7 @@ public class RCollection<T extends Representation> extends Representation {
     }
 
     @Override
-    public void validateCreate() throws ComponentException {
+    public void validateCreate() throws ServiceException {
 
         if (items != null) {
             for (T item : items) {
@@ -54,7 +54,7 @@ public class RCollection<T extends Representation> extends Representation {
     }
 
     @Override
-    public void validateUpdate() throws ComponentException {
+    public void validateUpdate() throws ServiceException {
 
         if (items != null) {
             for (T item : items) {

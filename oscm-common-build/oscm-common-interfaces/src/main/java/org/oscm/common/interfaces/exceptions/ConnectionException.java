@@ -8,65 +8,41 @@
 
 package org.oscm.common.interfaces.exceptions;
 
+import org.oscm.common.interfaces.config.ErrorKey;
+
 /**
  * Connection exception for connectivity errors and events
  * 
  * @author miethaner
  */
-public class ConnectionException extends ComponentException {
+public class ConnectionException extends ServiceException {
 
     private static final long serialVersionUID = 1981755503432130845L;
 
     /**
      * Creates new connection exception
      * 
-     * @param error
-     *            the error code
-     * @param message
-     *            the error message
+     * @param errorKey
+     *            the enum key for the error
+     * @param values
+     *            the values for message placeholders
      */
-    public ConnectionException(Integer error, String message) {
-        super(error, message);
+    public ConnectionException(ErrorKey errorKey, String... values) {
+        super(errorKey, values);
     }
 
     /**
      * Creates new connection exception
      * 
-     * @param error
-     *            the error code
-     * @param message
-     *            the error message
-     * @param moreInfo
-     *            the additional information
-     */
-    public ConnectionException(Integer error, String message, String moreInfo) {
-        super(error, message, moreInfo);
-    }
-
-    /**
-     * Creates new connection exception
-     * 
-     * @param error
-     *            the error code
-     * @param message
-     *            the error message
+     * @param errorKey
+     *            the enum key for the error
      * @param e
-     *            the causing exception. Its message will be saved as additional
-     *            information
+     *            the causing exception.
+     * @param values
+     *            the values for message placeholders
      */
-    public ConnectionException(Integer error, String message, Throwable e) {
-        super(error, message, e);
-    }
-
-    /**
-     * Creates new connection exception
-     * 
-     * @param error
-     *            the error code
-     * @param e
-     *            the causing exception. Its message will be reused.
-     */
-    public ConnectionException(Integer error, Throwable e) {
-        super(error, e);
+    public ConnectionException(ErrorKey errorKey, Throwable e,
+            String... values) {
+        super(errorKey, e, values);
     }
 }

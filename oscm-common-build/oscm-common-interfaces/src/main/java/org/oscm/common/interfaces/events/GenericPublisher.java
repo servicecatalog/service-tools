@@ -10,7 +10,7 @@ package org.oscm.common.interfaces.events;
 
 import org.oscm.common.interfaces.data.Callback;
 import org.oscm.common.interfaces.data.DataType;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.ConnectionException;
 
 /**
@@ -30,5 +30,5 @@ public interface GenericPublisher<D extends DataType> {
      * @throws ConnectionException
      *             if connection to topic handler failed
      */
-    public void publish(D content, Callback callback) throws ComponentException;
+    public void publish(D content, Callback callback) throws ServiceException;
 }

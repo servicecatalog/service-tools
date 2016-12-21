@@ -9,7 +9,7 @@
 package org.oscm.common.interfaces.persistence;
 
 import org.oscm.common.interfaces.data.DataType;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 
@@ -33,5 +33,5 @@ public interface GenericProxyListener<D extends DataType> {
      * @throws InternalException
      *             if an unexpected error occurs
      */
-    public void handleEvent(D content) throws ComponentException;
+    public void handleEvent(D content) throws ServiceException;
 }

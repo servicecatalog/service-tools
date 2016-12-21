@@ -8,65 +8,40 @@
 
 package org.oscm.common.interfaces.exceptions;
 
+import org.oscm.common.interfaces.config.ErrorKey;
+
 /**
  * Component exception for unexpected internal errors
  * 
  * @author miethaner
  */
-public class InternalException extends ComponentException {
+public class InternalException extends ServiceException {
 
     private static final long serialVersionUID = 1397618428214541396L;
 
     /**
      * Creates new internal exception
      * 
-     * @param error
-     *            the error code
-     * @param message
-     *            the error message
+     * @param errorKey
+     *            the enum key for the error
+     * @param values
+     *            the values for message placeholders
      */
-    public InternalException(Integer error, String message, String moreInfo) {
-        super(error, message, moreInfo);
+    public InternalException(ErrorKey errorKey, String... values) {
+        super(errorKey, values);
     }
 
     /**
      * Creates new internal exception
      * 
-     * @param error
-     *            the error code
-     * @param message
-     *            the error message
-     * @param moreInfo
-     *            the additional information
-     */
-    public InternalException(Integer error, String message, Throwable e) {
-        super(error, message, e);
-    }
-
-    /**
-     * Creates new internal exception
-     * 
-     * @param error
-     *            the error code
-     * @param message
-     *            the error message
+     * @param errorKey
+     *            the enum key for the error
      * @param e
-     *            the causing exception. Its message will be saved as additional
-     *            information
+     *            the causing exception.
+     * @param values
+     *            the values for message placeholders
      */
-    public InternalException(Integer error, String message) {
-        super(error, message);
-    }
-
-    /**
-     * Creates new internal exception
-     * 
-     * @param error
-     *            the error code
-     * @param e
-     *            the causing exception. Its message will be reused.
-     */
-    public InternalException(Integer error, Throwable e) {
-        super(error, e);
+    public InternalException(ErrorKey errorKey, Throwable e, String... values) {
+        super(errorKey, e, values);
     }
 }

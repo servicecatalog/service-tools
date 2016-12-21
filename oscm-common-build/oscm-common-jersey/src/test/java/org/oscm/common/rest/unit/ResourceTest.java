@@ -24,9 +24,10 @@ import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.ExtendedUriInfo;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.config.VersionKey;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.exceptions.SecurityException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.security.SecurityToken;
 import org.oscm.common.rest.Backend;
 import org.oscm.common.rest.Representation;
@@ -40,7 +41,28 @@ import org.oscm.common.rest.Resource;
  */
 public class ResourceTest extends Resource {
 
-    public static final int VERSION_1 = 1;
+    public static final VersionKey VERSION_1 = new VersionKey() {
+
+        @Override
+        public int getMinor() {
+            return 0;
+        }
+
+        @Override
+        public int getMajor() {
+            return 1;
+        }
+
+        @Override
+        public String getKeyName() {
+            return null;
+        }
+
+        @Override
+        public int getFix() {
+            return 0;
+        }
+    };
 
     private class MockRepresentation extends Representation {
         @Override
@@ -48,7 +70,7 @@ public class ResourceTest extends Resource {
         }
 
         @Override
-        public void validateUpdate() throws ComponentException {
+        public void validateUpdate() throws ServiceException {
         }
     }
 
@@ -128,7 +150,7 @@ public class ResourceTest extends Resource {
 
         ContainerRequest request = Mockito.mock(ContainerRequest.class);
         Mockito.when(request.getProperty(RequestParameters.PARAM_VERSION))
-                .thenReturn(new Integer(VERSION_1));
+                .thenReturn(VERSION_1);
 
         SecurityToken token = Mockito.mock(SecurityToken.class);
         Mockito.when(request.getProperty(RequestParameters.PARAM_TOKEN))
@@ -152,7 +174,7 @@ public class ResourceTest extends Resource {
 
         ContainerRequest request = Mockito.mock(ContainerRequest.class);
         Mockito.when(request.getProperty(RequestParameters.PARAM_VERSION))
-                .thenReturn(new Integer(VERSION_1));
+                .thenReturn(VERSION_1);
 
         SecurityToken token = Mockito.mock(SecurityToken.class);
         Mockito.when(request.getProperty(RequestParameters.PARAM_TOKEN))
@@ -180,7 +202,7 @@ public class ResourceTest extends Resource {
 
         ContainerRequest request = Mockito.mock(ContainerRequest.class);
         Mockito.when(request.getProperty(RequestParameters.PARAM_VERSION))
-                .thenReturn(new Integer(VERSION_1));
+                .thenReturn(VERSION_1);
 
         SecurityToken token = Mockito.mock(SecurityToken.class);
         Mockito.when(request.getProperty(RequestParameters.PARAM_TOKEN))
@@ -204,7 +226,7 @@ public class ResourceTest extends Resource {
 
         ContainerRequest request = Mockito.mock(ContainerRequest.class);
         Mockito.when(request.getProperty(RequestParameters.PARAM_VERSION))
-                .thenReturn(new Integer(VERSION_1));
+                .thenReturn(VERSION_1);
 
         SecurityToken token = Mockito.mock(SecurityToken.class);
         Mockito.when(request.getProperty(RequestParameters.PARAM_TOKEN))
@@ -223,7 +245,7 @@ public class ResourceTest extends Resource {
 
         ContainerRequest request = Mockito.mock(ContainerRequest.class);
         Mockito.when(request.getProperty(RequestParameters.PARAM_VERSION))
-                .thenReturn(new Integer(VERSION_1));
+                .thenReturn(VERSION_1);
 
         SecurityToken token = Mockito.mock(SecurityToken.class);
         Mockito.when(request.getProperty(RequestParameters.PARAM_TOKEN))
@@ -246,10 +268,10 @@ public class ResourceTest extends Resource {
         SecurityToken token = Mockito.mock(SecurityToken.class);
 
         Mockito.when(requestWith.getProperty(RequestParameters.PARAM_VERSION))
-                .thenReturn(new Integer(VERSION_1));
+                .thenReturn(VERSION_1);
         Mockito.when(requestWithoutToken
                 .getProperty(RequestParameters.PARAM_VERSION))
-                .thenReturn(new Integer(VERSION_1));
+                .thenReturn(VERSION_1);
         Mockito.when(requestWith.getProperty(RequestParameters.PARAM_TOKEN))
                 .thenReturn(token);
 

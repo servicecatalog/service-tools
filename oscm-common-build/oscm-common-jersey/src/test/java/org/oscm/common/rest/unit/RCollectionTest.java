@@ -17,7 +17,7 @@ import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.rest.RCollection;
 import org.oscm.common.rest.Representation;
 
@@ -35,7 +35,7 @@ public class RCollectionTest {
         }
 
         @Override
-        public void validateUpdate() throws ComponentException {
+        public void validateUpdate() throws ServiceException {
         }
 
     }

@@ -2,25 +2,32 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2016                                           
  *                                                                                                                                 
- *  Creation Date: Dec 9, 2016                                                      
+ *  Creation Date: Dec 21, 2016                                                      
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.hibernate.unit;
+package org.oscm.common.interfaces.data;
 
 import org.junit.Test;
-import org.oscm.common.hibernate.ConnectionManager;
 
 /**
- * Unit test for ConnectionManager
+ * Unit tests for Versionable.
  * 
  * @author miethaner
  */
-public class ConnectionManagerTest {
+public class VersionableTest {
 
-    @Test(expected = RuntimeException.class)
-    public void testWithoutInit() {
+    public static final Versionable VERSION = new Versionable() {
+    };
 
-        ConnectionManager.getInstance().getEntityManager();
+    /**
+     * Call default methods for coverage
+     */
+    @Test
+    public void testDefaultMethods() {
+
+        VERSION.convert();
+        VERSION.update();
     }
+
 }

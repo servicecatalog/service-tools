@@ -10,7 +10,7 @@ package org.oscm.common.interfaces.external;
 
 import org.oscm.common.interfaces.data.Callback;
 import org.oscm.common.interfaces.data.DataType;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.ConnectionException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 
@@ -39,5 +39,5 @@ public interface GenericExternal<D extends DataType> {
      *             if url or content are not valid
      */
     public void send(String url, D content, Callback success, Callback failure)
-            throws ComponentException;
+            throws ServiceException;
 }

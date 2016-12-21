@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.oscm.common.interfaces.data.Callback;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * Super class for REST clients
@@ -40,7 +40,7 @@ public class RestClient {
                             } else {
                                 success.callback();
                             }
-                        } catch (ComponentException e) {
+                        } catch (ServiceException e) {
                             // TODO Log error
                         }
 
@@ -50,7 +50,7 @@ public class RestClient {
                     public void failed(Throwable throwable) {
                         try {
                             failure.callback();
-                        } catch (ComponentException e) {
+                        } catch (ServiceException e) {
                             // TODO Log error
                         }
                     }

@@ -19,8 +19,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
+import org.oscm.common.interfaces.config.VersionKey;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
+import org.oscm.common.util.ServiceConfiguration;
 
 /**
  * Request filter for validating the requested version and comparing with
@@ -33,12 +35,6 @@ public class VersionFilter implements ContainerRequestFilter {
 
     public static final String PATTERN_VERSION = "v[0-9]+";
     public static final int OFFSET_VERSION = 1;
-
-    private static int[] apiVersions = {};
-
-    public static void setApiVersions(int[] apiVersions) {
-        VersionFilter.apiVersions = apiVersions;
-    }
 
     @Context
     private ResourceInfo resourceInfo;
@@ -60,7 +56,7 @@ public class VersionFilter implements ContainerRequestFilter {
 
             String version = params.get(RequestParameters.PARAM_VERSION).get(0);
 
-            int vnr = validateVersion(version);
+            VersionKey versionKey = validateVersion(version);
 
             Method method = resourceInfo.getResourceMethod();
 
@@ -69,10 +65,10 @@ public class VersionFilter implements ContainerRequestFilter {
                 Annotation annotation = method.getAnnotation(Since.class);
                 Since since = (Since) annotation;
 
-                if (vnr < since.value()) {
+                if (versionKey.compareVersion(since.major(), since.minor(),
+                        since.fix()) < 0) {
                     NotFoundException nfe = new NotFoundException(
-                            Messages.METHOD_VERSION.error(),
-                            Messages.METHOD_VERSION.message());
+                            Messages.METHOD_VERSION);
 
                     throw new ExceptionMapper().toWebException(nfe);
                 }
@@ -82,22 +78,20 @@ public class VersionFilter implements ContainerRequestFilter {
                 Annotation annotation = method.getAnnotation(Until.class);
                 Until until = (Until) annotation;
 
-                if (vnr >= until.value()) {
+                if (versionKey.compareVersion(until.major(), until.minor(),
+                        until.fix()) >= 0) {
                     NotFoundException nfe = new NotFoundException(
-                            Messages.METHOD_VERSION.error(),
-                            Messages.METHOD_VERSION.message());
+                            Messages.METHOD_VERSION);
 
                     throw new ExceptionMapper().toWebException(nfe);
                 }
             }
 
-            request.setProperty(RequestParameters.PARAM_VERSION, new Integer(
-                    vnr));
+            request.setProperty(RequestParameters.PARAM_VERSION, versionKey);
 
         } else {
             NotFoundException nfe = new NotFoundException(
-                    Messages.INVALID_VERSION.error(),
-                    Messages.INVALID_VERSION.message());
+                    Messages.INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
@@ -109,46 +103,45 @@ public class VersionFilter implements ContainerRequestFilter {
      * 
      * @param version
      *            the version string
-     * @return the version as integer
+     * @return the corresponding version key
      * @throws WebApplicationException
      */
-    private int validateVersion(String version) throws WebApplicationException {
+    private VersionKey validateVersion(String version)
+            throws WebApplicationException {
 
         if (version == null) {
             NotFoundException nfe = new NotFoundException(
-                    Messages.INVALID_VERSION.error(),
-                    Messages.INVALID_VERSION.message());
+                    Messages.INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
 
         if (!version.matches(PATTERN_VERSION)) {
             NotFoundException nfe = new NotFoundException(
-                    Messages.INVALID_VERSION.error(),
-                    Messages.INVALID_VERSION.message());
+                    Messages.INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
 
         int vnr = Integer.parseInt(version.substring(OFFSET_VERSION));
 
-        boolean exists = false;
-        for (int i : apiVersions) {
-            if (i == vnr) {
-                exists = true;
+        VersionKey versionKey = null;
+        for (VersionKey key : ServiceConfiguration.getInstance()
+                .getVersions()) {
+            if (key.getCompiledVersion() == vnr) {
+                versionKey = key;
                 break;
             }
         }
 
-        if (!exists) {
+        if (versionKey == null) {
             NotFoundException nfe = new NotFoundException(
-                    Messages.INVALID_VERSION.error(),
-                    Messages.INVALID_VERSION.message());
+                    Messages.INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
 
-        return vnr;
+        return versionKey;
     }
 
 }

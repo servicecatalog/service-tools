@@ -2,7 +2,7 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2016                                           
  *                                                                                                                                 
- *  Creation Date: Jul 13, 2016                                                      
+ *  Creation Date: Jun 22, 2016                                                      
  *                                                                              
  *******************************************************************************/
 
@@ -11,28 +11,31 @@ package org.oscm.common.interfaces.exceptions;
 import org.oscm.common.interfaces.config.ErrorKey;
 
 /**
- * Component exception for security events and errors (e.g. permissions)
+ * Super class for all service specific exceptions
  * 
  * @author miethaner
  */
-public class SecurityException extends ServiceException {
+public class ServiceException extends Exception {
 
-    private static final long serialVersionUID = 6780718172186488863L;
+    private static final long serialVersionUID = -4770733030290897811L;
+
+    private Integer error;
 
     /**
-     * Creates new security exception
+     * Creates new service exception
      * 
      * @param errorKey
      *            the enum key for the error
      * @param values
      *            the values for message placeholders
      */
-    public SecurityException(ErrorKey errorKey, String... values) {
-        super(errorKey, values);
+    public ServiceException(ErrorKey errorKey, String... values) {
+        super(errorKey.getMessage(values));
+        this.error = errorKey.getId();
     }
 
     /**
-     * Creates new security exception
+     * Creates new service exception
      * 
      * @param errorKey
      *            the enum key for the error
@@ -41,7 +44,27 @@ public class SecurityException extends ServiceException {
      * @param values
      *            the values for message placeholders
      */
-    public SecurityException(ErrorKey errorKey, Throwable e, String... values) {
-        super(errorKey, e, values);
+    public ServiceException(ErrorKey errorKey, Throwable e, String... values) {
+        super(errorKey.getMessage(values), e);
+        this.error = errorKey.getId();
+    }
+
+    /**
+     * Gets the error code. Returns null if not set.
+     * 
+     * @return the error code or null
+     */
+    public Integer getError() {
+        return error;
+    }
+
+    /**
+     * Sets the error code.
+     * 
+     * @param error
+     *            the error code. Can be null.
+     */
+    public void setError(Integer error) {
+        this.error = error;
     }
 }

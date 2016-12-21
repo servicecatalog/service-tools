@@ -13,8 +13,8 @@ import java.util.TreeSet;
 
 import org.oscm.common.interfaces.config.ServiceKey;
 import org.oscm.common.interfaces.enums.Messages;
-import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.SecurityException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.security.SecurityToken;
 
 /**
@@ -32,18 +32,17 @@ public class Security {
      *            the key of the calling service
      * @param token
      *            the security token
-     * @throws ComponentException
+     * @throws ServiceException
      */
     public static void validatePermission(ServiceKey service,
-            SecurityToken token) throws ComponentException {
+            SecurityToken token) throws ServiceException {
 
         ServiceConfiguration config = ServiceConfiguration.getInstance();
 
         if (config.isServiceRestricted(service)) {
 
             if (token == null) {
-                throw new SecurityException(Messages.NOT_AUTHENTICATED.error(),
-                        Messages.NOT_AUTHENTICATED.message());
+                throw new SecurityException(Messages.NOT_AUTHENTICATED);
             }
 
             Set<String> configRoles = config.getRolesForService(service);
@@ -54,12 +53,10 @@ public class Security {
                 intersection.retainAll(userRoles);
 
                 if (intersection.isEmpty()) {
-                    throw new SecurityException(Messages.NOT_AUTHORIZED.error(),
-                            Messages.NOT_AUTHORIZED.message());
+                    throw new SecurityException(Messages.NOT_AUTHORIZED);
                 }
             } else {
-                throw new SecurityException(Messages.NOT_AUTHORIZED.error(),
-                        Messages.NOT_AUTHORIZED.message());
+                throw new SecurityException(Messages.NOT_AUTHORIZED);
             }
         }
     }
@@ -71,10 +68,10 @@ public class Security {
      *            the security token
      * @param userId
      *            the user id
-     * @throws ComponentException
+     * @throws ServiceException
      */
     public static void validateUserId(SecurityToken token, Long userId)
-            throws ComponentException {
+            throws ServiceException {
         if (token == null || token.getUserId() == null
                 || userId != null && !token.getUserId().equals(userId)) {
             throw new SecurityException(null, ""); // TODO add error message
@@ -89,10 +86,10 @@ public class Security {
      *            the security token
      * @param organizationId
      *            the organization id
-     * @throws ComponentException
+     * @throws ServiceException
      */
     public static void validateOrganizationId(SecurityToken token,
-            Long organizationId) throws ComponentException {
+            Long organizationId) throws ServiceException {
         if (token == null || token.getOrganizationId() == null
                 || organizationId != null
                         && !token.getOrganizationId().equals(organizationId)) {
@@ -107,10 +104,10 @@ public class Security {
      *            the security token
      * @param tenantId
      *            the tenant id
-     * @throws ComponentException
+     * @throws ServiceException
      */
     public static void validateTenantId(SecurityToken token, Long tenantId)
-            throws ComponentException {
+            throws ServiceException {
         if (token == null || token.getTenantId() == null
                 || tenantId != null && !token.getTenantId().equals(tenantId)) {
             throw new SecurityException(null, ""); // TODO add error message

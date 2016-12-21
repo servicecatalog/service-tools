@@ -15,7 +15,7 @@ import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.security.SecurityToken;
 import org.oscm.common.rest.RequestParameters;
 
@@ -68,7 +68,7 @@ public class RequestParametersTest {
         try {
             params.validateETag();
             assertEquals(null, params.getETag());
-        } catch (ComponentException e) {
+        } catch (ServiceException e) {
             fail();
         }
 
@@ -78,7 +78,7 @@ public class RequestParametersTest {
         try {
             params.validateETag();
             assertEquals(new Long(1L), params.getETag());
-        } catch (ComponentException e) {
+        } catch (ServiceException e) {
             fail();
         }
 
@@ -88,7 +88,7 @@ public class RequestParametersTest {
         try {
             params.validateETag();
             assertEquals(new Long(1L), params.getETag());
-        } catch (ComponentException e) {
+        } catch (ServiceException e) {
             fail();
         }
 
@@ -98,7 +98,7 @@ public class RequestParametersTest {
         try {
             params.validateETag();
             fail();
-        } catch (ComponentException e) {
+        } catch (ServiceException e) {
         }
 
         params = new TestParameters();
@@ -107,7 +107,7 @@ public class RequestParametersTest {
         try {
             params.validateETag();
             fail();
-        } catch (ComponentException e) {
+        } catch (ServiceException e) {
         }
     }
 

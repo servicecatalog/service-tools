@@ -8,12 +8,14 @@
 
 package org.oscm.common.interfaces.exceptions;
 
+import org.oscm.common.interfaces.config.ErrorKey;
+
 /**
  * Component exception for validation events and errors
  * 
  * @author miethaner
  */
-public class ValidationException extends ComponentException {
+public class ValidationException extends ServiceException {
 
     private static final long serialVersionUID = 971181144195903482L;
 
@@ -22,91 +24,34 @@ public class ValidationException extends ComponentException {
     /**
      * Creates new validation exception
      * 
-     * @param error
-     *            the error code
-     * @param message
-     *            the error message
-     */
-    public ValidationException(Integer error, String message) {
-        super(error, message);
-    }
-
-    /**
-     * Creates new validation exception
-     * 
-     * @param error
-     *            the error code
-     * @param e
-     *            the causing exception. Its message will be reused.
-     */
-    public ValidationException(Integer error, Throwable e) {
-        super(error, e);
-    }
-
-    /**
-     * Creates new validation exception
-     * 
-     * @param error
-     *            the error code
+     * @param errorKey
+     *            the enum key for the error
      * @param property
      *            the property name
-     * @param message
-     *            the error message
+     * @param values
+     *            the values for message placeholders
      */
-    public ValidationException(Integer error, String property, String message) {
-        super(error, message);
+    public ValidationException(ErrorKey errorKey, String property,
+            String... values) {
+        super(errorKey, values);
         this.property = property;
     }
 
     /**
      * Creates new validation exception
      * 
-     * @param error
-     *            the error code
-     * @param message
-     *            the error message
-     * @param e
-     *            the causing exception. Its message will be saved as additional
-     *            information
-     */
-    public ValidationException(Integer error, String message, Throwable e) {
-        super(error, message, e);
-    }
-
-    /**
-     * Creates new validation exception
-     * 
-     * @param error
-     *            the error code
+     * @param errorKey
+     *            the enum key for the error
      * @param property
      *            the property name
-     * @param message
-     *            the error message
      * @param e
-     *            the causing exception. Its message will be saved as additional
-     *            information
+     *            the causing exception.
+     * @param values
+     *            the values for message placeholders
      */
-    public ValidationException(Integer error, String property, String message,
-            Throwable e) {
-        super(error, message, e);
-        this.property = property;
-    }
-
-    /**
-     * Creates new validation exception
-     * 
-     * @param error
-     *            the error code
-     * @param property
-     *            the property name
-     * @param message
-     *            the error message
-     * @param moreInfo
-     *            the additional information
-     */
-    public ValidationException(Integer error, String property, String message,
-            String moreInfo) {
-        super(error, message, moreInfo);
+    public ValidationException(ErrorKey errorKey, String property, Throwable e,
+            String... values) {
+        super(errorKey, e, values);
         this.property = property;
     }
 

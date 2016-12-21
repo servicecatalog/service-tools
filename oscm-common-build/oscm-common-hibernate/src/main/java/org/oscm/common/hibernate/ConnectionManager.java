@@ -21,7 +21,7 @@ import javax.persistence.Persistence;
  */
 public class ConnectionManager {
 
-    private static ConnectionManager cm;
+    private static ConnectionManager cm = null;
 
     /**
      * Returns the singleton instance of the connection manager.
@@ -30,7 +30,7 @@ public class ConnectionManager {
      */
     public static ConnectionManager getInstance() {
         if (cm == null) {
-            cm = new ConnectionManager();
+            throw new RuntimeException("Database connection not initialized");
         }
 
         return cm;
@@ -51,7 +51,7 @@ public class ConnectionManager {
     }
 
     /**
-     * Initialization method for test only purposes.
+     * Initialization method for test purposes only.
      * 
      * @param emf
      *            the entity manager factory
@@ -61,9 +61,6 @@ public class ConnectionManager {
     }
 
     private EntityManagerFactory emf;
-
-    private ConnectionManager() {
-    }
 
     private ConnectionManager(String unit, Map<String, String> properties) {
 
@@ -80,11 +77,7 @@ public class ConnectionManager {
      * @return the entity manager
      */
     public EntityManager getEntityManager() {
-        if (emf != null) {
-            return emf.createEntityManager();
-        } else {
-            throw new RuntimeException("Database connection not initialized");
-        }
+        return emf.createEntityManager();
     }
 
 }

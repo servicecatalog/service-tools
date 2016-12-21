@@ -20,17 +20,21 @@
     <groupId>org.oscm.common</groupId>
     <artifactId>oscm-common-interfaces</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <scope>provided</scope>
    </dependency>
    
    <dependency>
     <groupId>org.oscm.common</groupId>
     <artifactId>oscm-common-util</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <scope>provided</scope>
    </dependency>
    
     <!-- Third party libraries -->
+    
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>0.10.1.0</version>
+    </dependency>
 
     <dependency>
       <groupId>com.google.code.gson</groupId>

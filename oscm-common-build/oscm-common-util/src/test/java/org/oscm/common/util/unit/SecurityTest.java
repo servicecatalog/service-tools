@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.config.ConfigurationKey;
 import org.oscm.common.interfaces.config.ServiceKey;
+import org.oscm.common.interfaces.config.VersionKey;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.security.SecurityToken;
 import org.oscm.common.util.Security;
@@ -71,8 +72,8 @@ public class SecurityTest {
 
         Importer importer = new Importer(
                 new HashSet<>(Arrays.asList(ServiceKey.PUBLIC_ROLE)));
-        ServiceConfiguration.init(importer, new ServiceKey[] { key },
-                new ConfigurationKey[] {});
+        ServiceConfiguration.init(importer, new VersionKey[] {},
+                new ServiceKey[] { key }, new ConfigurationKey[] {});
 
         SecurityToken token = Mockito.mock(SecurityToken.class);
 
@@ -80,8 +81,8 @@ public class SecurityTest {
 
         importer = new Importer(
                 new HashSet<>(Arrays.asList(ServiceKey.PRIVATE_ROLE)));
-        ServiceConfiguration.init(importer, new ServiceKey[] { key },
-                new ConfigurationKey[] {});
+        ServiceConfiguration.init(importer, new VersionKey[] {},
+                new ServiceKey[] { key }, new ConfigurationKey[] {});
 
         Set<String> roles = new TreeSet<>();
         roles.add(ServiceKey.PRIVATE_ROLE);
@@ -95,8 +96,8 @@ public class SecurityTest {
 
         Importer importer = new Importer(
                 new HashSet<>(Arrays.asList(ServiceKey.PRIVATE_ROLE)));
-        ServiceConfiguration.init(importer, new ServiceKey[] { key },
-                new ConfigurationKey[] {});
+        ServiceConfiguration.init(importer, new VersionKey[] {},
+                new ServiceKey[] { key }, new ConfigurationKey[] {});
 
         try {
             Security.validatePermission(key, null);

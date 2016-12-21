@@ -8,6 +8,7 @@
 
 package org.oscm.common.hibernate;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +19,11 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 
+import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.enums.Operation;
 import org.oscm.common.interfaces.exceptions.CacheException;
-import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * Super class for all proxy persistence classes
@@ -33,26 +35,17 @@ public class ProxyPersistence<P extends ProxyObject> {
     private EntityManager entityManager;
     private Class<P> clazz;
 
-    protected void init(EntityManager entityManager, Class<P> clazz) {
-        this.entityManager = entityManager;
-        this.clazz = clazz;
+    @SuppressWarnings("unchecked")
+    public ProxyPersistence() {
+        this.entityManager = ConnectionManager.getInstance().getEntityManager();
+
+        this.clazz = (Class<P>) ((ParameterizedType) this.getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @Override
     protected void finalize() throws Throwable {
         entityManager.close();
-    }
-
-    /**
-     * Reads the proxy entity from the persistence.
-     * 
-     * @param id
-     *            the entity id
-     * @return the entity
-     * @throws ComponentException
-     */
-    protected P readProxy(Long id) throws ComponentException {
-        return readProxy(id, null);
     }
 
     /**
@@ -64,43 +57,29 @@ public class ProxyPersistence<P extends ProxyObject> {
      * @param etag
      *            the etag to compare (ignored if null)
      * @return the entity
-     * @throws ComponentException
+     * @throws ServiceException
      */
-    protected P readProxy(Long id, Long etag) throws ComponentException {
+    protected P readProxy(Long id, Long etag) throws ServiceException {
 
         try {
             P entity = entityManager.getReference(clazz, id);
 
             if (entity.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(null, "");
+                throw new NotFoundException(Messages.ERROR, "");
                 // TODO add error message
             }
 
             if (etag != null && etag.equals(entity.getETag())) {
-                throw new CacheException(null, "");
+                throw new CacheException(Messages.ERROR, "");
                 // TODO add error message
             }
 
             return entity;
 
         } catch (EntityNotFoundException e) {
-            throw new NotFoundException(null, "", e); // TODO add error message
+            throw new NotFoundException(Messages.ERROR, e); // TODO add error
+                                                            // message
         }
-    }
-
-    /**
-     * Reads all entities for the given query with the given parameters.
-     * 
-     * @param id
-     *            the entity id
-     * @param params
-     *            the map of parameters
-     * @return the entity
-     * @throws ComponentException
-     */
-    protected List<P> readAllProxy(String namedQuery,
-            Map<String, Object> params) {
-        return readAllProxy(namedQuery, params, null, null);
     }
 
     /**
@@ -116,7 +95,7 @@ public class ProxyPersistence<P extends ProxyObject> {
      * @param offset
      *            the position of the first result (can be null)
      * @return the entity
-     * @throws ComponentException
+     * @throws ServiceException
      */
     protected List<P> readAllProxy(String namedQuery,
             Map<String, Object> params, Long limit, Long offset) {
@@ -145,10 +124,10 @@ public class ProxyPersistence<P extends ProxyObject> {
      * @param parameters
      *            the map of parameters
      * @return the entity
-     * @throws ComponentException
+     * @throws ServiceException
      */
     protected P readSingleProxy(String namedQuery,
-            Map<String, Object> parameters) throws ComponentException {
+            Map<String, Object> parameters) throws ServiceException {
 
         TypedQuery<P> query = entityManager.createNamedQuery(namedQuery, clazz);
 
@@ -159,7 +138,8 @@ public class ProxyPersistence<P extends ProxyObject> {
         try {
             return query.getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
-            throw new NotFoundException(null, ""); // TODO add error message
+            throw new NotFoundException(Messages.ERROR, ""); // TODO add error
+                                                             // message
         }
     }
 
@@ -168,9 +148,9 @@ public class ProxyPersistence<P extends ProxyObject> {
      * 
      * @param entity
      *            the entity to merge
-     * @throws ComponentException
+     * @throws ServiceException
      */
-    protected void mergeProxy(P entity) throws ComponentException {
+    protected void mergeProxy(P entity) throws ServiceException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();

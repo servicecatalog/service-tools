@@ -13,7 +13,7 @@ import java.util.List;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.data.ParameterType;
 import org.oscm.common.interfaces.exceptions.CacheException;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.ConcurrencyException;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
@@ -41,7 +41,7 @@ public interface GenericService {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public Long create(D content, P params) throws ComponentException;
+        public Long create(D content, P params) throws ServiceException;
     }
 
     public interface Read<D extends DataType, P extends ParameterType> {
@@ -61,7 +61,7 @@ public interface GenericService {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public D read(P params) throws ComponentException;
+        public D read(P params) throws ServiceException;
 
         /**
          * Reads all entities specified by the given parameters
@@ -74,7 +74,7 @@ public interface GenericService {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public List<D> readAll(P params) throws ComponentException;
+        public List<D> readAll(P params) throws ServiceException;
     }
 
     public interface Update<D extends DataType, P extends ParameterType> {
@@ -96,7 +96,7 @@ public interface GenericService {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public void update(D content, P params) throws ComponentException;
+        public void update(D content, P params) throws ServiceException;
     }
 
     public interface Delete<P extends ParameterType> {
@@ -113,7 +113,7 @@ public interface GenericService {
          * @throws InternalException
          *             if an unexpected error occurs
          */
-        public void delete(P params) throws ComponentException;
+        public void delete(P params) throws ServiceException;
     }
 
     public interface Crud<D extends DataType, P extends ParameterType>

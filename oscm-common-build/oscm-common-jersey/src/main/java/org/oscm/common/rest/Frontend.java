@@ -12,7 +12,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * Interfaces for REST endpoints
@@ -41,10 +41,10 @@ public interface Frontend {
          *            the request parameters
          * @return the response with the representation
          * @throws WebApplicationException
-         * @throws ComponentException
+         * @throws ServiceException
          */
         public Response getItem(Request request, P params)
-                throws WebApplicationException, ComponentException;
+                throws WebApplicationException, ServiceException;
 
         /**
          * Gets all valid entity representations and wraps them in the response.
@@ -55,10 +55,10 @@ public interface Frontend {
          *            the request parameters
          * @return the response with the representations
          * @throws WebApplicationException
-         * @throws ComponentException
+         * @throws ServiceException
          */
         public Response getCollection(Request request, P params)
-                throws WebApplicationException, ComponentException;
+                throws WebApplicationException, ServiceException;
     }
 
     /**
@@ -85,10 +85,10 @@ public interface Frontend {
          *            the request parameters
          * @return the response with the location
          * @throws WebApplicationException
-         * @throws ComponentException
+         * @throws ServiceException
          */
         public Response postCollection(Request request, R content, P params)
-                throws WebApplicationException, ComponentException;
+                throws WebApplicationException, ServiceException;
     }
 
     /**
@@ -115,10 +115,10 @@ public interface Frontend {
          *            the request parameters
          * @return the response without content
          * @throws WebApplicationException
-         * @throws ComponentException
+         * @throws ServiceException
          */
         public Response putItem(Request request, R content, P params)
-                throws WebApplicationException, ComponentException;
+                throws WebApplicationException, ServiceException;
     }
 
     /**
@@ -140,10 +140,10 @@ public interface Frontend {
          *            the request parameters
          * @return the response without content
          * @throws WebApplicationException
-         * @throws ComponentException
+         * @throws ServiceException
          */
         public Response deleteItem(Request request, P params)
-                throws WebApplicationException, ComponentException;
+                throws WebApplicationException, ServiceException;
     }
 
     /**

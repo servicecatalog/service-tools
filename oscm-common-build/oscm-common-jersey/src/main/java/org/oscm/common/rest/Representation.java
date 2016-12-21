@@ -13,7 +13,7 @@ import javax.validation.ValidationException;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.data.Versionable;
 import org.oscm.common.interfaces.enums.Operation;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -85,7 +85,7 @@ public abstract class Representation implements DataType, Versionable {
      * @throws ValidationException
      *             if not valid.
      */
-    public abstract void validateCreate() throws ComponentException;
+    public abstract void validateCreate() throws ServiceException;
 
     /**
      * Validates the content and format of the fields to be legitimate for an
@@ -94,6 +94,6 @@ public abstract class Representation implements DataType, Versionable {
      * @throws ValidationException
      *             if not valid.
      */
-    public abstract void validateUpdate() throws ComponentException;
+    public abstract void validateUpdate() throws ServiceException;
 
 }

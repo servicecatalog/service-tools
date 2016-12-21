@@ -20,14 +20,12 @@
     <groupId>org.oscm.common</groupId>
     <artifactId>oscm-common-interfaces</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <scope>provided</scope>
    </dependency>
    
    <dependency>
     <groupId>org.oscm.common</groupId>
     <artifactId>oscm-common-util</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <scope>provided</scope>
    </dependency>
    
     <!-- Third party libraries -->

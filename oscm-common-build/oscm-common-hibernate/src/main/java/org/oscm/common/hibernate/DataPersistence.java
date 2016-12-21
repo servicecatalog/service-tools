@@ -9,6 +9,7 @@
 package org.oscm.common.hibernate;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +22,13 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 
+import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.enums.Operation;
 import org.oscm.common.interfaces.events.GenericPublisher;
 import org.oscm.common.interfaces.exceptions.CacheException;
-import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * Super class for all data persistence classes.
@@ -42,36 +44,26 @@ public abstract class DataPersistence<D extends DataObject> {
     private GenericPublisher<? super D> publisher;
 
     /**
-     * Initializes the super class with the entity manager and others. The super
-     * class takes care of closing the entity manager when the object is
-     * destroyed.
-     * 
-     * @param entityManager
-     *            the entity manager
-     * @param clazz
-     *            the class of the entity
+     * Constructs new data persistence.
      */
-    protected void init(EntityManager entityManager, Class<D> clazz) {
-        init(entityManager, clazz, null);
+    public DataPersistence() {
+        this(null);
     }
 
     /**
-     * Initializes the super class with the entity manager and others. The super
-     * class takes care of closing the entity manager when the object is
-     * destroyed.
+     * Constructs new data persistence. Changes will be published with the given
+     * publisher.
      * 
-     * @param entityManager
-     *            the entity manager
-     * @param clazz
-     *            the class of the entity
      * @param publisher
-     *            the publisher resource
+     *            the publisher to inform of changes
      */
-    protected void init(EntityManager entityManager, Class<D> clazz,
-            GenericPublisher<? super D> publisher) {
-        this.entityManager = entityManager;
-        this.clazz = clazz;
+    @SuppressWarnings("unchecked")
+    public DataPersistence(GenericPublisher<? super D> publisher) {
+        this.entityManager = ConnectionManager.getInstance().getEntityManager();
         this.publisher = publisher;
+
+        this.clazz = (Class<D>) ((ParameterizedType) this.getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @Override
@@ -85,9 +77,9 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param entity
      *            the entity to create
      * @return the entity id
-     * @throws ComponentException
+     * @throws ServiceException
      */
-    protected D createData(D entity) throws ComponentException {
+    protected D createData(D entity) throws ServiceException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -102,7 +94,7 @@ public abstract class DataPersistence<D extends DataObject> {
             transaction.commit();
 
             if (publisher != null) {
-                publisher.publish(entity, () -> confirm(entity));
+                publisher.publish(entity, () -> confirm(entity.getId()));
             }
 
             return entity;
@@ -111,20 +103,9 @@ public abstract class DataPersistence<D extends DataObject> {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw new InternalException(null, "", e); // TODO add error message
+            throw new InternalException(Messages.ERROR, e); // TODO add error
+                                                            // message
         }
-    }
-
-    /**
-     * Reads the data entity from the persistence.
-     * 
-     * @param id
-     *            the entity id
-     * @return the entity
-     * @throws ComponentException
-     */
-    protected D readData(Long id) throws ComponentException {
-        return readData(id, null);
     }
 
     /**
@@ -136,43 +117,29 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param etag
      *            the etag to compare (ignored if null)
      * @return the entity
-     * @throws ComponentException
+     * @throws ServiceException
      */
-    protected D readData(Long id, Long etag) throws ComponentException {
+    protected D readData(Long id, Long etag) throws ServiceException {
 
         try {
             D entity = entityManager.getReference(clazz, id);
 
             if (entity.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(null, "");
+                throw new NotFoundException(Messages.ERROR, "");
                 // TODO add error message
             }
 
             if (etag != null && etag.equals(entity.getETag())) {
-                throw new CacheException(null, "");
+                throw new CacheException(Messages.ERROR, "");
                 // TODO add error message
             }
 
             return entity;
 
         } catch (EntityNotFoundException e) {
-            throw new NotFoundException(null, "", e); // TODO add error message
+            throw new NotFoundException(Messages.ERROR, e); // TODO add error
+                                                            // message
         }
-    }
-
-    /**
-     * Reads all entities for the given query with the given parameters.
-     * 
-     * @param namedQuery
-     *            the identifier of the named query to read all entities
-     * @param params
-     *            the map of parameters
-     * @return the entity
-     * @throws ComponentException
-     */
-    protected List<D> readAllData(String namedQuery,
-            Map<String, Object> params) {
-        return readAllData(namedQuery, params, null, null);
     }
 
     /**
@@ -188,7 +155,7 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param offset
      *            the position of the first result (can be null)
      * @return the entity
-     * @throws ComponentException
+     * @throws ServiceException
      */
     protected List<D> readAllData(String namedQuery, Map<String, Object> params,
             Long limit, Long offset) {
@@ -217,10 +184,10 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param parameters
      *            the map of parameters
      * @return the entity
-     * @throws ComponentException
+     * @throws ServiceException
      */
     protected D readSingleData(String namedQuery,
-            Map<String, Object> parameters) throws ComponentException {
+            Map<String, Object> parameters) throws ServiceException {
 
         TypedQuery<D> query = entityManager.createNamedQuery(namedQuery, clazz);
 
@@ -231,7 +198,8 @@ public abstract class DataPersistence<D extends DataObject> {
         try {
             return query.getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
-            throw new NotFoundException(null, ""); // TODO add error message
+            throw new NotFoundException(Messages.ERROR, ""); // TODO add error
+                                                             // message
         }
     }
 
@@ -240,32 +208,23 @@ public abstract class DataPersistence<D extends DataObject> {
      * 
      * @param entity
      *            the entity to update with
-     * @throws ComponentException
+     * @throws ServiceException
      */
-    protected D updateData(D entity) throws ComponentException {
-        return updateData(entity, null);
-    }
-
-    /**
-     * Updates the given entity and publishes it.
-     * 
-     * @param entity
-     *            the entity to update with
-     * @throws ComponentException
-     */
-    protected D updateData(D entity, Long etag) throws ComponentException {
+    protected D updateData(D entity, Long etag) throws ServiceException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             D old = entityManager.getReference(clazz, entity.getId());
 
             if (old.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(null, ""); // TODO add error message
+                throw new NotFoundException(Messages.ERROR, ""); // TODO add
+                                                                 // error
+                                                                 // message
             }
 
             if (etag != null) {
                 if (!entity.getETag().equals(old.getETag())) {
-                    throw new CacheException(null, "");
+                    throw new CacheException(Messages.ERROR, "");
                     // TODO add error message
                 }
             } else {
@@ -287,7 +246,7 @@ public abstract class DataPersistence<D extends DataObject> {
             transaction.commit();
 
             if (publisher != null) {
-                publisher.publish(newEntity, () -> confirm(newEntity));
+                publisher.publish(newEntity, () -> confirm(newEntity.getId()));
             }
 
             return entity;
@@ -295,7 +254,8 @@ public abstract class DataPersistence<D extends DataObject> {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw new NotFoundException(null, "", e); // TODO add error message
+            throw new NotFoundException(Messages.ERROR, e); // TODO add error
+                                                            // message
         }
     }
 
@@ -304,9 +264,9 @@ public abstract class DataPersistence<D extends DataObject> {
      * 
      * @param id
      *            the entity id
-     * @throws ComponentException
+     * @throws ServiceException
      */
-    protected D deleteData(Long id) throws ComponentException {
+    protected D deleteData(Long id) throws ServiceException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -314,7 +274,9 @@ public abstract class DataPersistence<D extends DataObject> {
             D entity = entityManager.getReference(clazz, id);
 
             if (entity.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(null, ""); // TODO add error message
+                throw new NotFoundException(Messages.ERROR, ""); // TODO add
+                                                                 // error
+                                                                 // message
             }
 
             transaction.begin();
@@ -324,7 +286,7 @@ public abstract class DataPersistence<D extends DataObject> {
             transaction.commit();
 
             if (publisher != null) {
-                publisher.publish(entity, () -> confirm(entity));
+                publisher.publish(entity, () -> confirm(id));
             }
 
             return entity;
@@ -333,21 +295,27 @@ public abstract class DataPersistence<D extends DataObject> {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw new NotFoundException(null, "", e); // TODO add error message
+            throw new NotFoundException(Messages.ERROR, e); // TODO add error
+                                                            // message
         }
     }
 
     /**
-     * Confirm the publishing of the given entity.
+     * Confirm the publishing of the entity with the given id.
      * 
-     * @param entity
-     *            the published entity
-     * @throws ComponentException
+     * @param id
+     *            the entity id
+     * @throws ServiceException
      */
-    protected void confirm(D entity) throws ComponentException {
-        EntityTransaction transaction = entityManager.getTransaction();
+    protected void confirm(Long id) throws ServiceException {
+        // new entitymanager needed because this method is used in callbacks
+        // that can be called from different threads
+        EntityManager localEm = ConnectionManager.getInstance()
+                .getEntityManager();
+        EntityTransaction transaction = localEm.getTransaction();
 
         transaction.begin();
+        D entity = localEm.getReference(clazz, id);
         entity.setPublished(Boolean.TRUE);
         transaction.commit();
     }
@@ -360,23 +328,24 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param id
      *            the id of the entity
      * @return the foreign data entity
-     * @throws ComponentException
+     * @throws ServiceException
      */
     protected <F extends DataObject> F readForeignData(Class<F> foreign,
-            Long id) throws ComponentException {
+            Long id) throws ServiceException {
 
         try {
             F entity = entityManager.getReference(foreign, id);
 
             if (entity.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(null, "");
+                throw new NotFoundException(Messages.ERROR, "");
                 // TODO add error message
             }
 
             return entity;
 
         } catch (EntityNotFoundException e) {
-            throw new NotFoundException(null, "", e); // TODO add error message
+            throw new NotFoundException(Messages.ERROR, e); // TODO add error
+                                                            // message
         }
     }
 
@@ -388,32 +357,33 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param id
      *            the id of the entity
      * @return the foreign proxy entity
-     * @throws ComponentException
+     * @throws ServiceException
      */
     protected <F extends ProxyObject> F readForeignProxy(Class<F> foreign,
-            Long id) throws ComponentException {
+            Long id) throws ServiceException {
 
         try {
             F entity = entityManager.getReference(foreign, id);
 
             if (entity.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(null, "");
+                throw new NotFoundException(Messages.ERROR, "");
                 // TODO add error message
             }
 
             return entity;
 
         } catch (EntityNotFoundException e) {
-            throw new NotFoundException(null, "", e); // TODO add error message
+            throw new NotFoundException(Messages.ERROR, e); // TODO add error
+                                                            // message
         }
     }
 
     /**
      * Publish all unpublished entities.
      * 
-     * @throws ComponentException
+     * @throws ServiceException
      */
-    public void publishUnpublished() throws ComponentException {
+    public void publishUnpublished() throws ServiceException {
         if (publisher != null) {
 
             String queryName;
@@ -426,10 +396,11 @@ public abstract class DataPersistence<D extends DataObject> {
                         "Unable to find query name to read all unpublished entities");
             }
 
-            List<D> list = readAllData(queryName, Collections.emptyMap());
+            List<D> list = readAllData(queryName, Collections.emptyMap(), null,
+                    null);
 
-            for (D action : list) {
-                publisher.publish(action, () -> confirm(action));
+            for (D entity : list) {
+                publisher.publish(entity, () -> confirm(entity.getId()));
             }
         }
     }
@@ -437,9 +408,9 @@ public abstract class DataPersistence<D extends DataObject> {
     /**
      * (Re-)Publish all entities.
      * 
-     * @throws ComponentException
+     * @throws ServiceException
      */
-    public void publishAll() throws ComponentException {
+    public void publishAll() throws ServiceException {
         if (publisher != null) {
 
             String queryName;
@@ -452,18 +423,19 @@ public abstract class DataPersistence<D extends DataObject> {
                         "Unable to find query name to read all entities");
             }
 
-            List<D> list = readAllData(queryName, Collections.emptyMap());
+            List<D> list = readAllData(queryName, Collections.emptyMap(), null,
+                    null);
 
             EntityTransaction transaction = entityManager.getTransaction();
 
             transaction.begin();
             for (D action : list) {
-                action.setPublished(Boolean.TRUE);
+                action.setPublished(Boolean.FALSE);
             }
             transaction.commit();
 
-            for (D action : list) {
-                publisher.publish(action, () -> confirm(action));
+            for (D entity : list) {
+                publisher.publish(entity, () -> confirm(entity.getId()));
             }
         }
     }

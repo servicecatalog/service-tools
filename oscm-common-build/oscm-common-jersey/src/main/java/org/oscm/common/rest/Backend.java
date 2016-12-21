@@ -10,7 +10,7 @@ package org.oscm.common.rest;
 
 import javax.ws.rs.WebApplicationException;
 
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * Interfaces for backend commands.
@@ -41,7 +41,7 @@ public interface Backend {
          * @throws WebApplicationException
          */
         public R get(P params) throws WebApplicationException,
-                ComponentException;
+                ServiceException;
     }
 
     /**
@@ -69,7 +69,7 @@ public interface Backend {
          * @throws WebApplicationException
          */
         public Long post(R content, P params) throws WebApplicationException,
-                ComponentException;
+                ServiceException;
     }
 
     /**
@@ -95,7 +95,7 @@ public interface Backend {
          * @throws WebApplicationException
          */
         public void put(R content, P params) throws WebApplicationException,
-                ComponentException;
+                ServiceException;
     }
 
     /**
@@ -117,7 +117,7 @@ public interface Backend {
          * @throws WebApplicationException
          */
         public void delete(P params) throws WebApplicationException,
-                ComponentException;
+                ServiceException;
     }
 
 }

@@ -24,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.junit.Test;
-import org.oscm.common.interfaces.exceptions.ComponentException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.rest.GsonMessageProvider;
 import org.oscm.common.rest.Representation;
 
@@ -74,7 +74,7 @@ public class GsonMessageProviderTest {
         }
 
         @Override
-        public void validateUpdate() throws ComponentException {
+        public void validateUpdate() throws ServiceException {
         }
     }
 

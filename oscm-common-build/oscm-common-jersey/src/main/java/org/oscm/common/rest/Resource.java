@@ -17,10 +17,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
+import org.oscm.common.interfaces.config.VersionKey;
 import org.oscm.common.interfaces.enums.Messages;
-import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.exceptions.SecurityException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 import org.oscm.common.interfaces.security.SecurityToken;
 
@@ -52,7 +53,7 @@ public abstract class Resource {
      */
     protected <R extends Representation, P extends RequestParameters> Response get(
             Request request, Backend.Get<R, P> backend, P params, boolean id)
-            throws WebApplicationException, ComponentException {
+            throws WebApplicationException, ServiceException {
 
         extractProperties(request, params);
 
@@ -86,7 +87,7 @@ public abstract class Resource {
      */
     protected <R extends Representation, P extends RequestParameters> Response post(
             Request request, Backend.Post<R, P> backend, R content, P params)
-            throws WebApplicationException, ComponentException {
+            throws WebApplicationException, ServiceException {
 
         extractProperties(request, params);
 
@@ -122,7 +123,7 @@ public abstract class Resource {
      */
     protected <R extends Representation, P extends RequestParameters> Response put(
             Request request, Backend.Put<R, P> backend, R content, P params)
-            throws WebApplicationException, ComponentException {
+            throws WebApplicationException, ServiceException {
 
         extractProperties(request, params);
 
@@ -151,7 +152,7 @@ public abstract class Resource {
      */
     protected <P extends RequestParameters> Response delete(Request request,
             Backend.Delete<P> backend, P params)
-            throws WebApplicationException, ComponentException {
+            throws WebApplicationException, ServiceException {
 
         extractProperties(request, params);
 
@@ -173,24 +174,24 @@ public abstract class Resource {
      * @throws WebApplicationException
      */
     protected void extractProperties(Request request, RequestParameters params)
-            throws ComponentException {
+            throws ServiceException {
 
         ContainerRequestContext cr = (ContainerRequestContext) request;
-        Object version = cr.getProperty(RequestParameters.PARAM_VERSION);
+        VersionKey version = (VersionKey) cr
+                .getProperty(RequestParameters.PARAM_VERSION);
 
         if (version == null) {
-            throw new NotFoundException(Messages.INVALID_VERSION.error(),
-                    Messages.INVALID_VERSION.message());
+            throw new NotFoundException(Messages.INVALID_VERSION);
         }
-        params.setVersion((Integer) version);
+        params.setVersion(new Integer(version.getCompiledVersion()));
 
-        Object token = cr.getProperty(RequestParameters.PARAM_TOKEN);
+        SecurityToken token = (SecurityToken) cr
+                .getProperty(RequestParameters.PARAM_TOKEN);
 
         if (token == null) {
-            throw new SecurityException(Messages.NOT_AUTHENTICATED.error(),
-                    Messages.NOT_AUTHENTICATED.message());
+            throw new SecurityException(Messages.NOT_AUTHENTICATED);
         }
-        params.setSecurityToken((SecurityToken) token);
+        params.setSecurityToken(token);
     }
 
     /**
@@ -203,12 +204,11 @@ public abstract class Resource {
      * @throws WebApplicationException
      */
     protected void prepareParams(RequestParameters params, boolean withId)
-            throws ComponentException {
+            throws ServiceException {
 
         if (withId) {
             if (params.getId() == null) {
-                throw new NotFoundException(Messages.INVALID_ID.error(),
-                        Messages.INVALID_ID.message());
+                throw new NotFoundException(Messages.INVALID_ID);
             }
         }
 
@@ -230,11 +230,10 @@ public abstract class Resource {
      * @throws WebApplicationException
      */
     protected void prepareData(Representation content, RequestParameters params,
-            boolean create) throws ComponentException {
+            boolean create) throws ServiceException {
 
         if (content == null) {
-            throw new ValidationException(Messages.NO_CONTENT.error(),
-                    Messages.NO_CONTENT.message());
+            throw new ValidationException(Messages.NO_CONTENT, null);
         }
 
         if (create) {

@@ -23,5 +23,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Since {
 
-    int value();
+    int major();
+
+    int minor() default 0;
+
+    int fix() default 0;
 }

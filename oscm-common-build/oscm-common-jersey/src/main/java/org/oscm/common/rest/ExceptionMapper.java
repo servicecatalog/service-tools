@@ -15,25 +15,25 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
 import org.oscm.common.interfaces.exceptions.CacheException;
-import org.oscm.common.interfaces.exceptions.ComponentException;
 import org.oscm.common.interfaces.exceptions.ConcurrencyException;
 import org.oscm.common.interfaces.exceptions.ConflictException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.exceptions.SecurityException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TokenException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Exception mapper for component exceptions to format them in the correct json
+ * Exception mapper for service exceptions to format them in the correct json
  * format
  * 
  * @author miethaner
  */
 @Provider
 public class ExceptionMapper
-        implements javax.ws.rs.ext.ExceptionMapper<ComponentException> {
+        implements javax.ws.rs.ext.ExceptionMapper<ServiceException> {
 
     @SuppressWarnings("unused")
     private static class ExceptionBody extends Representation {
@@ -55,9 +55,6 @@ public class ExceptionMapper
 
         @SerializedName(FIELD_MESSAGE)
         private String message;
-
-        @SerializedName(FIELD_MORE_INFO)
-        private String moreInfo;
 
         public int getCode() {
             return code;
@@ -91,25 +88,17 @@ public class ExceptionMapper
             this.message = message;
         }
 
-        public String getMoreInfo() {
-            return moreInfo;
-        }
-
-        public void setMoreInfo(String moreInfo) {
-            this.moreInfo = moreInfo;
-        }
-
         @Override
         public void validateCreate() throws WebApplicationException {
         }
 
         @Override
-        public void validateUpdate() throws ComponentException {
+        public void validateUpdate() throws ServiceException {
         }
     }
 
     @Override
-    public Response toResponse(ComponentException exception) {
+    public Response toResponse(ServiceException exception) {
 
         ExceptionBody body = new ExceptionBody();
 
@@ -128,27 +117,25 @@ public class ExceptionMapper
             body.setCode(Status.UNAUTHORIZED.getStatusCode());
         } catch (SecurityException e) {
             body.setCode(Status.FORBIDDEN.getStatusCode());
-        } catch (ComponentException e) {
+        } catch (ServiceException e) {
             body.setCode(Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
 
         body.setError(exception.getError());
         body.setMessage(exception.getMessage());
-        body.setMoreInfo(exception.getMoreInfo());
 
         return Response.status(body.getCode()).entity(body)
                 .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 
     /**
-     * Converts a component exception to a web application exception
+     * Converts a service exception to a web application exception
      * 
      * @param exception
-     *            the component exception
+     *            the service exception
      * @return the web application exception
      */
-    public WebApplicationException toWebException(
-            ComponentException exception) {
+    public WebApplicationException toWebException(ServiceException exception) {
         return new WebApplicationException(toResponse(exception));
     }
 
