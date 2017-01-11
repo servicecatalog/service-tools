@@ -8,6 +8,8 @@
 
 package org.oscm.common.rest;
 
+import java.util.UUID;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -38,17 +40,20 @@ public class ExceptionMapper
     @SuppressWarnings("unused")
     private static class ExceptionBody extends Representation {
 
+        private static final String FIELD_STATUS = "status";
+        private static final String FIELD_REFERENCE_ID = "ref_id";
         private static final String FIELD_CODE = "code";
-        private static final String FIELD_ERROR = "error";
         private static final String FIELD_PROPERTY = "property";
         private static final String FIELD_MESSAGE = "message";
-        private static final String FIELD_MORE_INFO = "more_info";
+
+        @SerializedName(FIELD_STATUS)
+        private int status;
+
+        @SerializedName(FIELD_REFERENCE_ID)
+        private UUID referenceId;
 
         @SerializedName(FIELD_CODE)
-        private int code;
-
-        @SerializedName(FIELD_ERROR)
-        private Integer error;
+        private Integer code;
 
         @SerializedName(FIELD_PROPERTY)
         private String property;
@@ -56,20 +61,28 @@ public class ExceptionMapper
         @SerializedName(FIELD_MESSAGE)
         private String message;
 
-        public int getCode() {
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+
+        public UUID getReferenceId() {
+            return referenceId;
+        }
+
+        public void setReferenceId(UUID referenceId) {
+            this.referenceId = referenceId;
+        }
+
+        public Integer getCode() {
             return code;
         }
 
-        public void setCode(int code) {
+        public void setCode(Integer code) {
             this.code = code;
-        }
-
-        public Integer getError() {
-            return error;
-        }
-
-        public void setError(Integer error) {
-            this.error = error;
         }
 
         public String getProperty() {
@@ -105,26 +118,27 @@ public class ExceptionMapper
         try {
             throw exception;
         } catch (ValidationException e) {
-            body.setCode(Status.BAD_REQUEST.getStatusCode());
+            body.setStatus(Status.BAD_REQUEST.getStatusCode());
             body.setProperty(e.getProperty());
         } catch (NotFoundException e) {
-            body.setCode(Status.NOT_FOUND.getStatusCode());
+            body.setStatus(Status.NOT_FOUND.getStatusCode());
         } catch (CacheException e) {
-            body.setCode(Status.NOT_MODIFIED.getStatusCode());
+            body.setStatus(Status.NOT_MODIFIED.getStatusCode());
         } catch (ConcurrencyException | ConflictException e) {
-            body.setCode(Status.CONFLICT.getStatusCode());
+            body.setStatus(Status.CONFLICT.getStatusCode());
         } catch (TokenException e) {
-            body.setCode(Status.UNAUTHORIZED.getStatusCode());
+            body.setStatus(Status.UNAUTHORIZED.getStatusCode());
         } catch (SecurityException e) {
-            body.setCode(Status.FORBIDDEN.getStatusCode());
+            body.setStatus(Status.FORBIDDEN.getStatusCode());
         } catch (ServiceException e) {
-            body.setCode(Status.INTERNAL_SERVER_ERROR.getStatusCode());
+            body.setStatus(Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
 
-        body.setError(exception.getError());
+        body.setReferenceId(exception.getId());
+        body.setCode(exception.getCode());
         body.setMessage(exception.getMessage());
 
-        return Response.status(body.getCode()).entity(body)
+        return Response.status(body.getStatus()).entity(body)
                 .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 

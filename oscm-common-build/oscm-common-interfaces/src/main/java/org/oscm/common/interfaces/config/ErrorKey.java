@@ -27,7 +27,7 @@ public interface ErrorKey {
      * 
      * @return the error id.
      */
-    public Integer getId();
+    public Integer getCode();
 
     /**
      * Gets the error message.

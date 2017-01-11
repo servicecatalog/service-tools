@@ -8,6 +8,8 @@
 
 package org.oscm.common.interfaces.exceptions;
 
+import java.util.UUID;
+
 import org.oscm.common.interfaces.config.ErrorKey;
 
 /**
@@ -19,7 +21,8 @@ public class ServiceException extends Exception {
 
     private static final long serialVersionUID = -4770733030290897811L;
 
-    private Integer error;
+    private UUID id;
+    private Integer code;
 
     /**
      * Creates new service exception
@@ -31,7 +34,8 @@ public class ServiceException extends Exception {
      */
     public ServiceException(ErrorKey errorKey, String... values) {
         super(errorKey.getMessage(values));
-        this.error = errorKey.getId();
+        this.id = UUID.randomUUID();
+        this.code = errorKey.getCode();
     }
 
     /**
@@ -46,7 +50,17 @@ public class ServiceException extends Exception {
      */
     public ServiceException(ErrorKey errorKey, Throwable e, String... values) {
         super(errorKey.getMessage(values), e);
-        this.error = errorKey.getId();
+        this.id = UUID.randomUUID();
+        this.code = errorKey.getCode();
+    }
+
+    /**
+     * Gets the unique identifier for this exception.
+     * 
+     * @return the exception id
+     */
+    public UUID getId() {
+        return id;
     }
 
     /**
@@ -54,17 +68,7 @@ public class ServiceException extends Exception {
      * 
      * @return the error code or null
      */
-    public Integer getError() {
-        return error;
-    }
-
-    /**
-     * Sets the error code.
-     * 
-     * @param error
-     *            the error code. Can be null.
-     */
-    public void setError(Integer error) {
-        this.error = error;
+    public Integer getCode() {
+        return code;
     }
 }

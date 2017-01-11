@@ -49,11 +49,11 @@ public class ExceptionMapperTest {
         }
 
         @Override
-        public Integer getId() {
-            return ERROR;
+        public Integer getCode() {
+            return CODE;
         }
     };
-    private static final Integer ERROR = new Integer(1);
+    private static final Integer CODE = new Integer(1);
     private static final String PROPERTY = "prop";
     private static final String MESSAGE = "test";
 
@@ -98,8 +98,9 @@ public class ExceptionMapperTest {
         JsonObject obj = gson.fromJson(json, JsonObject.class);
 
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(),
-                obj.get("code").getAsInt());
-        assertEquals(ERROR.intValue(), obj.get("error").getAsInt());
+                obj.get("status").getAsInt());
+        assertEquals(36, obj.get("ref_id").getAsString().length());
+        assertEquals(CODE.intValue(), obj.get("code").getAsInt());
         assertEquals(PROPERTY, obj.get("property").getAsString());
         assertEquals(MESSAGE, obj.get("message").getAsString());
 

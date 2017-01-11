@@ -44,11 +44,11 @@ public enum Messages implements ErrorKey {
 
     UNSUPPORTED_METHOD(20, "The method is not supported by this service"); //
 
-    private final int error;
+    private final int code;
     private final String message;
 
     private Messages(int error, String message) {
-        this.error = error;
+        this.code = error;
         this.message = message;
     }
 
@@ -58,8 +58,8 @@ public enum Messages implements ErrorKey {
     }
 
     @Override
-    public Integer getId() {
-        return new Integer(error);
+    public Integer getCode() {
+        return new Integer(code);
     }
 
     @Override

@@ -43,14 +43,13 @@ public class ExceptionTest {
         }
 
         @Override
-        public Integer getId() {
+        public Integer getCode() {
             return ONE;
         }
     };
     private static final String TEST = "test";
     private static final String CAUSE = "cause";
     private static final Integer ONE = new Integer(1);
-    private static final Integer TWO = new Integer(2);
 
     private Exception exception = new Exception(CAUSE);
 
@@ -62,10 +61,6 @@ public class ExceptionTest {
 
         e = new ServiceException(KEY, exception);
         validateException(e, ONE, TEST, exception);
-
-        e = new ServiceException(KEY, exception);
-        e.setError(TWO);
-        validateException(e, TWO, TEST, exception);
     }
 
     @Test
@@ -168,7 +163,7 @@ public class ExceptionTest {
     private void validateException(ServiceException e, Integer error,
             String message, Exception cause) {
 
-        assertEquals(error, e.getError());
+        assertEquals(error, e.getCode());
         assertEquals(message, e.getMessage());
         assertEquals(cause, e.getCause());
     }
