@@ -26,7 +26,7 @@ import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.enums.Operation;
 import org.oscm.common.interfaces.events.GenericPublisher;
 import org.oscm.common.interfaces.exceptions.CacheException;
-import org.oscm.common.interfaces.exceptions.InternalException;
+import org.oscm.common.interfaces.exceptions.ConflictException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 
@@ -72,14 +72,16 @@ public abstract class DataPersistence<D extends DataObject> {
     }
 
     /**
-     * Creates a new entity in the persistence and publishes it.
+     * Creates a new entity in the persistence and publishes it if necessary.
      * 
      * @param entity
      *            the entity to create
+     * @param publish
+     *            true if entity has to be published
      * @return the entity id
      * @throws ServiceException
      */
-    protected D createData(D entity) throws ServiceException {
+    protected D createData(D entity, boolean publish) throws ServiceException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -87,13 +89,12 @@ public abstract class DataPersistence<D extends DataObject> {
             entity.setId(null);
             entity.setETag(ETAG_INIT);
             entity.setLastOperation(Operation.CREATED);
-            entity.setPublished(
-                    publisher != null ? Boolean.FALSE : Boolean.TRUE);
+            entity.setPublished(new Boolean(!publish));
             entityManager.persist(entity);
             entityManager.flush();
             transaction.commit();
 
-            if (publisher != null) {
+            if (publish && publisher != null) {
                 publisher.publish(entity, () -> confirm(entity.getId()));
             }
 
@@ -103,7 +104,7 @@ public abstract class DataPersistence<D extends DataObject> {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw new InternalException(Messages.ERROR, e); // TODO add error
+            throw new ConflictException(Messages.ERROR, e); // TODO add error
                                                             // message
         }
     }
@@ -204,22 +205,24 @@ public abstract class DataPersistence<D extends DataObject> {
     }
 
     /**
-     * Updates the given entity and publishes it.
+     * Updates the given entity and publishes it if necessary.
      * 
      * @param entity
      *            the entity to update with
+     * @param publish
+     *            true if entity has to be published
      * @throws ServiceException
      */
-    protected D updateData(D entity, Long etag) throws ServiceException {
+    protected D updateData(D entity, Long etag, boolean publish)
+            throws ServiceException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             D old = entityManager.getReference(clazz, entity.getId());
 
             if (old.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(Messages.ERROR, ""); // TODO add
-                                                                 // error
-                                                                 // message
+                throw new NotFoundException(Messages.ERROR, "");
+                // TODO add error message
             }
 
             if (etag != null) {
@@ -239,13 +242,12 @@ public abstract class DataPersistence<D extends DataObject> {
             } else {
                 entity.setLastOperation(Operation.UPDATED);
             }
-            entity.setPublished(
-                    publisher != null ? Boolean.FALSE : Boolean.TRUE);
+            entity.setPublished(new Boolean(!publish));
 
             D newEntity = entityManager.merge(entity);
             transaction.commit();
 
-            if (publisher != null) {
+            if (publish && publisher != null) {
                 publisher.publish(newEntity, () -> confirm(newEntity.getId()));
             }
 
@@ -260,13 +262,15 @@ public abstract class DataPersistence<D extends DataObject> {
     }
 
     /**
-     * Deletes (soft) the given entity and publishes it.
+     * Deletes (soft) the given entity and publishes it if necessary.
      * 
      * @param id
      *            the entity id
+     * @param publish
+     *            true if entity has to be published
      * @throws ServiceException
      */
-    protected D deleteData(Long id) throws ServiceException {
+    protected D deleteData(Long id, boolean publish) throws ServiceException {
 
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -281,11 +285,10 @@ public abstract class DataPersistence<D extends DataObject> {
 
             transaction.begin();
             entity.setLastOperation(Operation.DELETED);
-            entity.setPublished(
-                    publisher != null ? Boolean.FALSE : Boolean.TRUE);
+            entity.setPublished(new Boolean(!publish));
             transaction.commit();
 
-            if (publisher != null) {
+            if (publish && publisher != null) {
                 publisher.publish(entity, () -> confirm(id));
             }
 
