@@ -9,9 +9,8 @@
 package org.oscm.common.interfaces.persistence;
 
 import org.oscm.common.interfaces.data.DataType;
-import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.InternalException;
-import org.oscm.common.interfaces.exceptions.NotFoundException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * Generic interface for merging incoming events into persistence
@@ -26,12 +25,8 @@ public interface GenericProxyListener<D extends DataType> {
      * 
      * @param content
      *            the entity content
-     * @throws ValidationException
-     *             if parameters are not valid
-     * @throws NotFoundException
-     *             if entity does not exists
      * @throws InternalException
      *             if an unexpected error occurs
      */
-    public void handleEvent(D content) throws ServiceException;
+    public void handleProxy(D content) throws ServiceException;
 }

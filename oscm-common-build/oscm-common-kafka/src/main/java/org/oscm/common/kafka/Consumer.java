@@ -18,7 +18,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
-import org.oscm.common.interfaces.persistence.GenericProxyListener;
 
 /**
  * Super class for threads that consume kafka records and hands them over to a
@@ -28,11 +27,16 @@ import org.oscm.common.interfaces.persistence.GenericProxyListener;
  */
 public abstract class Consumer<R extends Representation> implements Runnable {
 
+    public interface Handler<H extends Representation> {
+
+        public void handleEvent(H rep) throws ServiceException;
+    }
+
     private final AtomicBoolean closed = new AtomicBoolean(false);
     private Thread thread;
 
     private KafkaConsumer<Long, R> consumer;
-    private GenericProxyListener<? super R> listener;
+    private Handler<R> handler;
     private Class<R> clazz;
 
     /**
@@ -48,8 +52,8 @@ public abstract class Consumer<R extends Representation> implements Runnable {
      *            if true, reread all records
      */
     @SuppressWarnings("unchecked")
-    public Consumer(String topic, GenericProxyListener<? super R> listener) {
-        this.listener = listener;
+    public Consumer(String topic, Handler<R> handler) {
+        this.handler = handler;
 
         this.clazz = (Class<R>) ((ParameterizedType) this.getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
@@ -70,7 +74,7 @@ public abstract class Consumer<R extends Representation> implements Runnable {
                     rep.update();
 
                     try {
-                        listener.handleEvent(rep);
+                        handler.handleEvent(rep);
                     } catch (ServiceException e) {
                         // TODO Log error
                     }

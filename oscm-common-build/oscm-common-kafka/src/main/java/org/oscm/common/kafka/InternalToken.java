@@ -6,12 +6,14 @@
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.rest;
+package org.oscm.common.kafka;
 
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
+import org.oscm.common.interfaces.config.ServiceKey;
 import org.oscm.common.interfaces.security.SecurityToken;
 
 /**
@@ -19,42 +21,26 @@ import org.oscm.common.interfaces.security.SecurityToken;
  * 
  * @author miethaner
  */
-public class Token implements SecurityToken {
-
-    private Long userId;
-    private Long organizationId;
-    private Long tenantId;
-    private Set<String> roles = new HashSet<>();
-
-    public Token(Long userId, Long organizationId, Long tenantId,
-            Set<String> roles) {
-        this.userId = userId;
-        this.organizationId = organizationId;
-        this.tenantId = tenantId;
-        this.roles = roles;
-    }
+public class InternalToken implements SecurityToken {
 
     @Override
     public Long getUserId() {
-        return userId;
+        return new Long(0);
     }
 
     @Override
     public Long getOrganizationId() {
-        return organizationId;
+        return new Long(0);
     }
 
     @Override
     public Long getTenantId() {
-        return tenantId;
+        return new Long(0);
     }
 
     @Override
     public Set<String> getRoles() {
-        if (roles != null) {
-            return Collections.unmodifiableSet(roles);
-        } else {
-            return Collections.emptySet();
-        }
+        return Collections.unmodifiableSet(
+                new TreeSet<>(Arrays.asList(ServiceKey.PRIVATE_ROLE)));
     }
 }
