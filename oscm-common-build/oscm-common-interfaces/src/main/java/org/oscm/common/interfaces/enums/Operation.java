@@ -14,5 +14,5 @@ package org.oscm.common.interfaces.enums;
  * @author miethaner
  */
 public enum Operation {
-    CREATED, UPDATED, DELETED, SUSPENDED
+    CREATED, UPDATED, DELETED
 }

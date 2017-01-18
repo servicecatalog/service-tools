@@ -22,7 +22,7 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
  * 
  * @author miethaner
  */
-public class Producer<R extends Representation> {
+public abstract class Producer<R extends Representation> {
 
     private KafkaProducer<Long, R> producer;
     private Class<R> clazz;

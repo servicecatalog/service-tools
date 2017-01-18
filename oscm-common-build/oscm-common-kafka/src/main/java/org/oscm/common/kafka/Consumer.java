@@ -21,7 +21,7 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * Super class for threads that consume kafka records and hands them over to a
- * proxy listener.
+ * event handler.
  * 
  * @author miethaner
  */

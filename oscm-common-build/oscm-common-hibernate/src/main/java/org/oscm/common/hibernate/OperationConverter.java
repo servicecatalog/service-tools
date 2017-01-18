@@ -25,7 +25,6 @@ public class OperationConverter
     public static final String CREATE_VALUE = "C";
     public static final String UPDATE_VALUE = "U";
     public static final String DELETE_VALUE = "D";
-    public static final String SUSPEND_VALUE = "S";
 
     @Override
     public String convertToDatabaseColumn(Operation operation) {
@@ -45,9 +44,6 @@ public class OperationConverter
             break;
         case DELETED:
             value = DELETE_VALUE;
-            break;
-        case SUSPENDED:
-            value = SUSPEND_VALUE;
             break;
         }
 
@@ -72,9 +68,6 @@ public class OperationConverter
             break;
         case DELETE_VALUE:
             operation = Operation.DELETED;
-            break;
-        case SUSPEND_VALUE:
-            operation = Operation.SUSPENDED;
             break;
         }
 

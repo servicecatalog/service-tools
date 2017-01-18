@@ -26,10 +26,8 @@ public class GsonSerializerTest {
 
     private static final long ID = 1L;
     private static final String OLD_ID = "old";
-    private static final String NEW_ID = "new";
     private static final String JSON = "{\"id\": \"" + ID + "\", \"id1\": \""
             + OLD_ID + "\"}";
-    private static final int V1 = 1;
     private static final int V2 = 2;
 
     @SuppressWarnings("unused")
@@ -63,6 +61,7 @@ public class GsonSerializerTest {
                 MockRepresentation.class);
         MockRepresentation rep = gs.deserialize("topic",
                 JSON.getBytes(GsonSerializer.CHARSET));
+        gs.close();
 
         assertNotNull(rep);
     }

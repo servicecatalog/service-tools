@@ -31,8 +31,6 @@ public class OperationConverterTest {
                 oc.convertToDatabaseColumn(Operation.UPDATED));
         assertEquals(OperationConverter.DELETE_VALUE,
                 oc.convertToDatabaseColumn(Operation.DELETED));
-        assertEquals(OperationConverter.SUSPEND_VALUE,
-                oc.convertToDatabaseColumn(Operation.SUSPENDED));
         assertEquals("", oc.convertToDatabaseColumn(null));
     }
 
@@ -46,8 +44,6 @@ public class OperationConverterTest {
                 oc.convertToEntityAttribute(OperationConverter.UPDATE_VALUE));
         assertEquals(Operation.DELETED,
                 oc.convertToEntityAttribute(OperationConverter.DELETE_VALUE));
-        assertEquals(Operation.SUSPENDED,
-                oc.convertToEntityAttribute(OperationConverter.SUSPEND_VALUE));
         assertEquals(null, oc.convertToEntityAttribute(null));
     }
 
