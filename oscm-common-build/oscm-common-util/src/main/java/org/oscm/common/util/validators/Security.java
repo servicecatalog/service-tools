@@ -6,7 +6,7 @@
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.util;
+package org.oscm.common.util.validators;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -16,6 +16,7 @@ import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.security.SecurityToken;
+import org.oscm.common.util.ServiceConfiguration;
 
 /**
  * Common class for validating permissions and security tokens.

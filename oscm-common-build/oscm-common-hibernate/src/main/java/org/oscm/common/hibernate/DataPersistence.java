@@ -59,7 +59,7 @@ public abstract class DataPersistence<D extends DataObject> {
      */
     @SuppressWarnings("unchecked")
     public DataPersistence(GenericPublisher<? super D> publisher) {
-        this.entityManager = ConnectionManager.getInstance().getEntityManager();
+        this.entityManager = HibernateManager.getInstance().getEntityManager();
         this.publisher = publisher;
 
         this.clazz = (Class<D>) ((ParameterizedType) this.getClass()
@@ -313,7 +313,7 @@ public abstract class DataPersistence<D extends DataObject> {
     protected void confirm(Long id) throws ServiceException {
         // new entitymanager needed because this method is used in callbacks
         // that can be called from different threads
-        EntityManager localEm = ConnectionManager.getInstance()
+        EntityManager localEm = HibernateManager.getInstance()
                 .getEntityManager();
         EntityTransaction transaction = localEm.getTransaction();
 

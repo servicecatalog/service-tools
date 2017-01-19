@@ -26,8 +26,8 @@ import org.oscm.common.interfaces.config.ServiceKey;
 import org.oscm.common.interfaces.config.VersionKey;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.security.SecurityToken;
-import org.oscm.common.util.Security;
 import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.validators.Security;
 
 /**
  * Unit test for Security

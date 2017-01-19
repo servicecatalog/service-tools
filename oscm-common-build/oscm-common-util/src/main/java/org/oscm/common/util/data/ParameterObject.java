@@ -6,7 +6,7 @@
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.util;
+package org.oscm.common.util.data;
 
 import org.oscm.common.interfaces.data.ParameterType;
 import org.oscm.common.interfaces.security.SecurityToken;

@@ -32,11 +32,11 @@ public abstract class Producer<R extends Representation> {
     @SuppressWarnings("unchecked")
     public Producer(String topic) {
         this.topic = topic;
-        this.version = ConnectionManager.getInstance()
+        this.version = KafkaManager.getInstance()
                 .getCompatibilityVersion();
         this.clazz = (Class<R>) ((ParameterizedType) this.getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
-        this.producer = ConnectionManager.getInstance().getProducer(clazz);
+        this.producer = KafkaManager.getInstance().getProducer(clazz);
     }
 
     /**

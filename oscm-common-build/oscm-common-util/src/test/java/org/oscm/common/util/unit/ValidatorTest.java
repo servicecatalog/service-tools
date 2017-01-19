@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.oscm.common.interfaces.exceptions.ValidationException;
-import org.oscm.common.util.Validator;
+import org.oscm.common.util.validators.Validator;
 
 /**
  * Unit test for Validator

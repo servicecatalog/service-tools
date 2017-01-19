@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.enums.Operation;
-import org.oscm.common.util.ValueObject;
+import org.oscm.common.util.data.ValueObject;
 
 /**
  * Unit test for DataObject

@@ -8,6 +8,7 @@
 
 package org.oscm.common.kafka;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,16 +23,16 @@ import org.oscm.common.interfaces.config.VersionKey;
  * 
  * @author miethaner
  */
-public class ConnectionManager {
+public class KafkaManager {
 
-    private static ConnectionManager cm;
+    private static KafkaManager cm;
 
     /**
-     * Returns the singleton instance of the connection manager.
+     * Returns the singleton instance of the kafka manager.
      * 
-     * @return the connection manager
+     * @return the kafka manager
      */
-    public static ConnectionManager getInstance() {
+    public static KafkaManager getInstance() {
         if (cm == null) {
             throw new RuntimeException("Kafka connection not initialized");
         }
@@ -49,19 +50,18 @@ public class ConnectionManager {
      *            the configuration for all producers
      */
     public static void init(VersionKey version,
-            Map<String, Object> consumerConfig,
-            Map<String, Object> producerConfig) {
-        cm = new ConnectionManager(version, consumerConfig, producerConfig);
+            Map<String, String> consumerConfig,
+            Map<String, String> producerConfig) {
+        cm = new KafkaManager(version, consumerConfig, producerConfig);
     }
 
     private Map<Class<?>, KafkaProducer<Long, ?>> producerMap;
     private VersionKey version;
-    private Map<String, Object> consumerConfig;
-    private Map<String, Object> producerConfig;
+    private Map<String, String> consumerConfig;
+    private Map<String, String> producerConfig;
 
-    private ConnectionManager(VersionKey version,
-            Map<String, Object> consumerConfig,
-            Map<String, Object> producerConfig) {
+    private KafkaManager(VersionKey version, Map<String, String> consumerConfig,
+            Map<String, String> producerConfig) {
         this.producerMap = new ConcurrentHashMap<>();
         this.version = version;
         this.consumerConfig = consumerConfig;
@@ -87,8 +87,8 @@ public class ConnectionManager {
     public <R extends Representation> KafkaConsumer<Long, R> getConsumer(
             Class<R> clazz) {
 
-        return new KafkaConsumer<>(consumerConfig, new LongDeserializer(),
-                new GsonSerializer<>(clazz));
+        return new KafkaConsumer<>(new HashMap<>(consumerConfig),
+                new LongDeserializer(), new GsonSerializer<>(clazz));
     }
 
     /**
@@ -103,8 +103,9 @@ public class ConnectionManager {
             Class<R> clazz) {
 
         if (!producerMap.containsKey(clazz)) {
-            producerMap.put(clazz, new KafkaProducer<>(producerConfig,
-                    new LongSerializer(), new GsonSerializer<>(clazz)));
+            producerMap.put(clazz,
+                    new KafkaProducer<>(new HashMap<>(producerConfig),
+                            new LongSerializer(), new GsonSerializer<>(clazz)));
         }
 
         return (KafkaProducer<Long, R>) producerMap.get(clazz);

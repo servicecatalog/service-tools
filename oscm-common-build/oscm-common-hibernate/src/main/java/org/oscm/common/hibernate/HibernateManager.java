@@ -19,16 +19,16 @@ import javax.persistence.Persistence;
  * 
  * @author miethaner
  */
-public class ConnectionManager {
+public class HibernateManager {
 
-    private static ConnectionManager cm = null;
+    private static HibernateManager cm = null;
 
     /**
-     * Returns the singleton instance of the connection manager.
+     * Returns the singleton instance of the hibernate manager.
      * 
-     * @return the connection manager
+     * @return the hibernate manager
      */
-    public static ConnectionManager getInstance() {
+    public static HibernateManager getInstance() {
         if (cm == null) {
             throw new RuntimeException("Database connection not initialized");
         }
@@ -47,7 +47,7 @@ public class ConnectionManager {
      *            the hibernate properties
      */
     public static void init(String unit, Map<String, String> properties) {
-        cm = new ConnectionManager(unit, properties);
+        cm = new HibernateManager(unit, properties);
     }
 
     /**
@@ -57,17 +57,17 @@ public class ConnectionManager {
      *            the entity manager factory
      */
     public static void init(EntityManagerFactory emf) {
-        cm = new ConnectionManager(emf);
+        cm = new HibernateManager(emf);
     }
 
     private EntityManagerFactory emf;
 
-    private ConnectionManager(String unit, Map<String, String> properties) {
+    private HibernateManager(String unit, Map<String, String> properties) {
 
         emf = Persistence.createEntityManagerFactory(unit, properties);
     }
 
-    private ConnectionManager(EntityManagerFactory emf) {
+    private HibernateManager(EntityManagerFactory emf) {
         this.emf = emf;
     }
 
@@ -80,4 +80,8 @@ public class ConnectionManager {
         return emf.createEntityManager();
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        emf.close();
+    }
 }

@@ -120,7 +120,26 @@ public class ServiceConfiguration {
     }
 
     /**
-     * Gets an immutable map of all available congiuration settings.
+     * Gets an immutable map of values for the configuration keys with the
+     * proprietary names as key.
+     * 
+     * @param configs
+     *            the configuration keys
+     * @return the immutable map
+     */
+    public Map<String, String> getProprietaryConfig(
+            ConfigurationKey[] configs) {
+        Map<String, String> map = new HashMap<>();
+
+        for (ConfigurationKey key : configs) {
+            map.put(key.getProprietaryName(), entries.get(key));
+        }
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    /**
+     * Gets an immutable map of all available configuration settings.
      * 
      * @return the immutable map
      */

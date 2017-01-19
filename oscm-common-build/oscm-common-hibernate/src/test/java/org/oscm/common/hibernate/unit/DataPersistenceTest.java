@@ -23,7 +23,7 @@ import javax.persistence.EntityTransaction;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.oscm.common.hibernate.ConnectionManager;
+import org.oscm.common.hibernate.HibernateManager;
 import org.oscm.common.hibernate.DataObject;
 import org.oscm.common.hibernate.DataPersistence;
 import org.oscm.common.hibernate.ProxyObject;
@@ -143,7 +143,7 @@ public class DataPersistenceTest {
     @SuppressWarnings("boxing")
     private EntityManager getEntityManager(boolean exception) {
         EntityManagerFactory emf = Mockito.mock(EntityManagerFactory.class);
-        ConnectionManager.init(emf);
+        HibernateManager.init(emf);
         EntityManager em = Mockito.mock(EntityManager.class);
         EntityTransaction et = Mockito.mock(EntityTransaction.class);
 

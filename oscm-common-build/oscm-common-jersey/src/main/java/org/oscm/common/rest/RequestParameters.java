@@ -16,7 +16,7 @@ import javax.ws.rs.WebApplicationException;
 import org.oscm.common.interfaces.data.ParameterType;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.security.SecurityToken;
-import org.oscm.common.util.Validator;
+import org.oscm.common.util.validators.Validator;
 
 /**
  * Super class for InjectParams

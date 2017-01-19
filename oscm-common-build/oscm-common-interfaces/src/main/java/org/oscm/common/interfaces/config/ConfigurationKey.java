@@ -16,7 +16,7 @@ package org.oscm.common.interfaces.config;
 public interface ConfigurationKey {
 
     /**
-     * Enum for the value type of configuration settings
+     * Enum for the value type of configuration settings.
      * 
      * @author miethaner
      */
@@ -25,28 +25,35 @@ public interface ConfigurationKey {
     }
 
     /**
-     * Gets the name of the configuration key
+     * Gets the name of the configuration key.
      * 
      * @return the configuration key name
      */
     public String getKeyName();
 
     /**
-     * Returns true if the setting is mandatory
+     * Gets the name of the proprietary property this key is meant for.
+     * 
+     * @return
+     */
+    public String getProprietaryName();
+
+    /**
+     * Returns true if the setting is mandatory.
      * 
      * @return true if mandatory
      */
     public boolean isMandatory();
 
     /**
-     * Gets the default value for the configuration key
+     * Gets the default value for the configuration key.
      * 
      * @return the default value
      */
     public String getDefaultValue();
 
     /**
-     * Gets the value type of the configuration value
+     * Gets the value type of the configuration value.
      * 
      * @return the value type
      */

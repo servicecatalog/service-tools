@@ -6,7 +6,7 @@
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.util;
+package org.oscm.common.util.validators;
 
 import java.util.Arrays;
 import java.util.HashSet;

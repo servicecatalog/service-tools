@@ -37,7 +37,7 @@ public class ProxyPersistence<P extends ProxyObject> {
 
     @SuppressWarnings("unchecked")
     public ProxyPersistence() {
-        this.entityManager = ConnectionManager.getInstance().getEntityManager();
+        this.entityManager = HibernateManager.getInstance().getEntityManager();
 
         this.clazz = (Class<P>) ((ParameterizedType) this.getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];

@@ -58,7 +58,7 @@ public abstract class Consumer<R extends Representation> implements Runnable {
         this.clazz = (Class<R>) ((ParameterizedType) this.getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
 
-        this.consumer = ConnectionManager.getInstance().getConsumer(clazz);
+        this.consumer = KafkaManager.getInstance().getConsumer(clazz);
         this.consumer.subscribe(Arrays.asList(topic));
     }
 
