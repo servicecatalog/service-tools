@@ -26,7 +26,7 @@ public interface ConfigurationImporter {
     public Map<String, Set<String>> readRoles();
 
     /**
-     * Reads all configuration key - value pairs form the source
+     * Reads all configuration key - value pairs form the source.
      * 
      * @return the map with the configuration settings
      */
