@@ -27,17 +27,25 @@ public class TokenTest {
 
     @Test
     public void testFields() {
-        
+
         Set<String> roles = new TreeSet<>();
         roles.add("test");
-        Token test = new Token(new Long(1), new Long(2), new Long(3), roles);
+        Token test = new Token();
+        test.setUserId(new Long(1));
+        test.setOrganizationId(new Long(2));
+        test.setTenantId(new Long(3));
+        test.setRoles(roles);
 
         assertEquals(new Long(1), test.getUserId());
         assertEquals(new Long(2), test.getOrganizationId());
         assertEquals(new Long(3), test.getTenantId());
         assertTrue(test.getRoles().contains("test"));
 
-        test = new Token(null, null, null, null);
+        test = new Token();
+        test.setUserId((Long) null);
+        test.setOrganizationId((Long) null);
+        test.setTenantId((Long) null);
+        test.setRoles((Set<String>) null);
 
         assertNull(test.getUserId());
         assertNull(test.getOrganizationId());

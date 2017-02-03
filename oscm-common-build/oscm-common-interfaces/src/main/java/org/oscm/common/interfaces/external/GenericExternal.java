@@ -10,8 +10,8 @@ package org.oscm.common.interfaces.external;
 
 import org.oscm.common.interfaces.data.Callback;
 import org.oscm.common.interfaces.data.DataType;
-import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.ConnectionException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 
 /**
@@ -22,7 +22,7 @@ import org.oscm.common.interfaces.exceptions.ValidationException;
 public interface GenericExternal<D extends DataType> {
 
     /**
-     * Sends the given content asynchronous to the given url and calls the
+     * Sends the given content asynchronously to the given url and calls the
      * corresponding callback if resolved.
      * 
      * @param url
@@ -38,6 +38,25 @@ public interface GenericExternal<D extends DataType> {
      * @throws ValidationException
      *             if url or content are not valid
      */
-    public void send(String url, D content, Callback success, Callback failure)
-            throws ServiceException;
+    public void sendAsync(String url, D content, Callback success,
+            Callback failure) throws ServiceException;
+
+    /**
+     * Sends the given content synchronously to the given url and blocks the
+     * thread until the call is resolved.
+     * 
+     * @param url
+     *            the target url
+     * @param content
+     *            the content to send
+     * @param success
+     *            the method to be called on success
+     * @param failure
+     *            the method to be called on failure
+     * @throws ConnectionException
+     *             if connetion to external system failed
+     * @throws ValidationException
+     *             if url or content are not valid
+     */
+    public void sendSync(String url, D content) throws ServiceException;
 }

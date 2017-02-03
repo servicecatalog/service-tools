@@ -8,6 +8,7 @@
 
 package org.oscm.common.rest;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,22 +22,43 @@ import org.oscm.common.interfaces.security.SecurityToken;
  */
 public class Token implements SecurityToken {
 
+    public static final String FIELD_USER_ID = "user_id";
+    public static final String FIELD_ORGANIZATION_ID = "organization_id";
+    public static final String FIELD_TENANT_ID = "tenant_id";
+    public static final String FIELD_ROLES = "roles";
+
     private Long userId;
     private Long organizationId;
     private Long tenantId;
     private Set<String> roles = new HashSet<>();
 
-    public Token(Long userId, Long organizationId, Long tenantId,
-            Set<String> roles) {
-        this.userId = userId;
-        this.organizationId = organizationId;
-        this.tenantId = tenantId;
-        this.roles = roles;
-    }
-
     @Override
     public Long getUserId() {
         return userId;
+    }
+
+    public String getUserIdString() {
+        if (userId != null) {
+            return userId.toString();
+        } else {
+            return null;
+        }
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setUserId(String userIdString) {
+        if (userIdString != null) {
+            try {
+                userId = Long.valueOf(userIdString);
+            } catch (NumberFormatException e) {
+                userId = null;
+            }
+        } else {
+            userId = null;
+        }
     }
 
     @Override
@@ -44,9 +66,57 @@ public class Token implements SecurityToken {
         return organizationId;
     }
 
+    public String getOrganizationIdString() {
+        if (organizationId != null) {
+            return organizationId.toString();
+        } else {
+            return null;
+        }
+    }
+
+    public void setOrganizationId(Long organizationId) {
+        this.organizationId = organizationId;
+    }
+
+    public void setOrganizationId(String organizationIdString) {
+        if (organizationIdString != null) {
+            try {
+                organizationId = Long.valueOf(organizationIdString);
+            } catch (NumberFormatException e) {
+                organizationId = null;
+            }
+        } else {
+            organizationId = null;
+        }
+    }
+
     @Override
     public Long getTenantId() {
         return tenantId;
+    }
+
+    public String getTenantIdString() {
+        if (tenantId != null) {
+            return tenantId.toString();
+        } else {
+            return null;
+        }
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public void setTenantId(String tenantIdString) {
+        if (tenantIdString != null) {
+            try {
+                tenantId = Long.valueOf(tenantIdString);
+            } catch (NumberFormatException e) {
+                tenantId = null;
+            }
+        } else {
+            tenantId = null;
+        }
     }
 
     @Override
@@ -55,6 +125,26 @@ public class Token implements SecurityToken {
             return Collections.unmodifiableSet(roles);
         } else {
             return Collections.emptySet();
+        }
+    }
+
+    public String[] getRolesArray() {
+        if (roles != null) {
+            return roles.toArray(new String[] {});
+        } else {
+            return new String[] {};
+        }
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
+
+    public void setRoles(String[] rolesArray) {
+        if (rolesArray != null) {
+            roles = new HashSet<>(Arrays.asList(rolesArray));
+        } else {
+            roles = null;
         }
     }
 }

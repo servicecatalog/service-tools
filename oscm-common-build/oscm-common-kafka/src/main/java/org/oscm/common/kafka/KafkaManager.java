@@ -25,7 +25,7 @@ import org.oscm.common.interfaces.config.VersionKey;
  */
 public class KafkaManager {
 
-    private static KafkaManager cm;
+    private static KafkaManager km;
 
     /**
      * Returns the singleton instance of the kafka manager.
@@ -33,17 +33,19 @@ public class KafkaManager {
      * @return the kafka manager
      */
     public static KafkaManager getInstance() {
-        if (cm == null) {
+        if (km == null) {
             throw new RuntimeException("Kafka connection not initialized");
         }
 
-        return cm;
+        return km;
     }
 
     /**
      * Initializes the connection manager with the given configurations. This
      * overwrites the previous connection manager instance.
      * 
+     * @param version
+     *            the compatibility version for producers.
      * @param consumerConfig
      *            the configuration for all consumers
      * @param producerConfig
@@ -52,7 +54,7 @@ public class KafkaManager {
     public static void init(VersionKey version,
             Map<String, String> consumerConfig,
             Map<String, String> producerConfig) {
-        cm = new KafkaManager(version, consumerConfig, producerConfig);
+        km = new KafkaManager(version, consumerConfig, producerConfig);
     }
 
     private Map<Class<?>, KafkaProducer<Long, ?>> producerMap;

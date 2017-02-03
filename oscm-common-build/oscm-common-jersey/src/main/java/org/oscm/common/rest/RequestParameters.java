@@ -33,6 +33,7 @@ public abstract class RequestParameters implements ParameterType {
     public static final String PARAM_LIMIT = "limit";
     public static final String PARAM_OFFSET = "offset";
 
+    public static final String AUTHORIZATION_PREFIX = "Bearer ";
     public static final String ETAG_WILDCARD = "*";
 
     private Integer version;

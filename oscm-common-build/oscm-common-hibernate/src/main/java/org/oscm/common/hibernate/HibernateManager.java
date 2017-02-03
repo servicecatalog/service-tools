@@ -21,7 +21,7 @@ import javax.persistence.Persistence;
  */
 public class HibernateManager {
 
-    private static HibernateManager cm = null;
+    private static HibernateManager hm = null;
 
     /**
      * Returns the singleton instance of the hibernate manager.
@@ -29,11 +29,11 @@ public class HibernateManager {
      * @return the hibernate manager
      */
     public static HibernateManager getInstance() {
-        if (cm == null) {
+        if (hm == null) {
             throw new RuntimeException("Database connection not initialized");
         }
 
-        return cm;
+        return hm;
     }
 
     /**
@@ -47,7 +47,7 @@ public class HibernateManager {
      *            the hibernate properties
      */
     public static void init(String unit, Map<String, String> properties) {
-        cm = new HibernateManager(unit, properties);
+        hm = new HibernateManager(unit, properties);
     }
 
     /**
@@ -57,7 +57,7 @@ public class HibernateManager {
      *            the entity manager factory
      */
     public static void init(EntityManagerFactory emf) {
-        cm = new HibernateManager(emf);
+        hm = new HibernateManager(emf);
     }
 
     private EntityManagerFactory emf;
