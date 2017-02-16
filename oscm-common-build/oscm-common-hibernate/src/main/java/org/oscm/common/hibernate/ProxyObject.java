@@ -36,7 +36,7 @@ public abstract class ProxyObject implements DataType {
     @Column(name = FIELD_ETAG, nullable = false)
     private Long etag;
 
-    @Column(name = FIELD_LAST_OPERATION, nullable = false)
+    @Column(name = FIELD_LAST_OPERATION, nullable = false, length = OperationConverter.LENGTH)
     private Operation lastOperation;
 
     public ProxyObject() {

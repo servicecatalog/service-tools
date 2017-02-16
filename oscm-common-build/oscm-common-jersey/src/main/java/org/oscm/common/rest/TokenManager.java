@@ -58,9 +58,8 @@ public class TokenManager {
     }
 
     /**
-     * Initializes the token manager with the keystore and truststore
-     * information and reads the encryption/decryption keys corresponding to the
-     * given aliases.
+     * Initializes the token manager with the keystore information and reads the
+     * encryption/decryption keys corresponding to the given alias.
      * 
      * @param keystoreLoc
      *            the location of the keystore
@@ -68,20 +67,10 @@ public class TokenManager {
      *            the password of the keystore
      * @param keystoreAlias
      *            the alias of the private key in the keystore
-     * @param truststoreLoc
-     *            the location of the truststore
-     * @param truststorePwd
-     *            the password of the truststore
-     * @param truststoreAlias
-     *            the alias of the certificate in the truststore
-     * @param expirationTime
-     *            the time until tokens expire
      */
     public static void init(String keystoreLoc, String keystorePwd,
-            String keystoreAlias, String truststoreLoc, String truststorePwd,
-            String truststoreAlias) {
-        tm = new TokenManager(keystoreLoc, keystorePwd, keystoreAlias,
-                truststoreLoc, truststorePwd, truststoreAlias);
+            String keystoreAlias) {
+        tm = new TokenManager(keystoreLoc, keystorePwd, keystoreAlias);
     }
 
     private PrivateKey privateKey;
@@ -89,8 +78,7 @@ public class TokenManager {
     private JWTVerifier verifier;
 
     private TokenManager(String keystoreLoc, String keystorePwd,
-            String keystoreAlias, String truststoreLoc, String truststorePwd,
-            String truststoreAlias) {
+            String keystoreAlias) {
 
         InputStream is = null;
         try {
@@ -108,13 +96,7 @@ public class TokenManager {
                         "Unable to load correct private key from keystore");
             }
 
-            is = new FileInputStream(truststoreLoc);
-            KeyStore truststore = KeyStore
-                    .getInstance(KeyStore.getDefaultType());
-            truststore.load(is, truststorePwd.toCharArray());
-            is.close();
-
-            Certificate cert = truststore.getCertificate(truststoreAlias);
+            Certificate cert = keystore.getCertificate(keystoreAlias);
 
             if (cert == null || cert.getPublicKey() == null
                     || !ALGORITHM.equals(cert.getPublicKey().getAlgorithm())) {

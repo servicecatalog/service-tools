@@ -8,6 +8,7 @@
 
 package org.oscm.common.interfaces.security;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -22,6 +23,10 @@ public interface SecurityToken {
     public static final String PROPERTY_ORGANIZATION_ID = "organization id";
     public static final String PROPERTY_TENANT_ID = "tenant id";
     public static final String PROPERTY_ROLES = "roles";
+
+    public enum Restrictions {
+        SUBJECT_ID, SUBJECT_RESOURCE;
+    }
 
     /**
      * Gets the user id of the token owner.
@@ -43,6 +48,13 @@ public interface SecurityToken {
      * @return the tenant id
      */
     public Long getTenantId();
+
+    /**
+     * Gets all restrictions that have been defined for the token owner.
+     * 
+     * @return the map of restrictions
+     */
+    public Map<String, String> getRestrictions();
 
     /**
      * Gets the roles of the token owner in an immutable set.

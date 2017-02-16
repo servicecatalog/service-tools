@@ -25,6 +25,7 @@ public class OperationConverter
     public static final String CREATE_VALUE = "C";
     public static final String UPDATE_VALUE = "U";
     public static final String DELETE_VALUE = "D";
+    public static final int LENGTH = 1;
 
     @Override
     public String convertToDatabaseColumn(Operation operation) {

@@ -11,6 +11,7 @@ package org.oscm.common.rest;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.oscm.common.interfaces.security.SecurityToken;
@@ -30,7 +31,8 @@ public class Token implements SecurityToken {
     private Long userId;
     private Long organizationId;
     private Long tenantId;
-    private Set<String> roles = new HashSet<>();
+    private Map<String, String> restrictions;
+    private Set<String> roles;
 
     @Override
     public Long getUserId() {
@@ -117,6 +119,27 @@ public class Token implements SecurityToken {
         } else {
             tenantId = null;
         }
+    }
+
+    @Override
+    public Map<String, String> getRestrictions() {
+        if (restrictions != null) {
+            return Collections.unmodifiableMap(restrictions);
+        } else {
+            return Collections.emptyMap();
+        }
+    }
+
+    public String getRestriction(Restrictions r) {
+        if (restrictions != null) {
+            return restrictions.get(r.name());
+        } else {
+            return null;
+        }
+    }
+
+    public void setRestrictions(Map<String, String> restrictions) {
+        this.restrictions = restrictions;
     }
 
     @Override

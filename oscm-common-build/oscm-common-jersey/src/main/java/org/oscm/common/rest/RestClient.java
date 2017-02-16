@@ -30,7 +30,8 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
  */
 public class RestClient {
 
-    private static final long EXPIRATION_TIME = 300000;
+    private static final long EXPIRATION_TIME_INTERNAL = 300000; // 5 min
+    private static final long EXPIRATION_TIME_EXTERNAL = 15552000000L; // 180 d
 
     public enum Method {
         POST, PUT, DELETE;
@@ -71,12 +72,14 @@ public class RestClient {
         }
     }
 
-    protected void sendAsync(Method method, String url, Token token,
-            Representation content, int status, Callback success,
+    protected void sendAsync(Method method, String url, boolean external,
+            Token token, Representation content, int status, Callback success,
             Callback failure) {
 
+        long time = external ? EXPIRATION_TIME_EXTERNAL
+                : EXPIRATION_TIME_INTERNAL;
         String tokenString = TokenManager.getInstance()
-                .createAndEncryptToken(token, EXPIRATION_TIME);
+                .createAndEncryptToken(token, time);
 
         AsyncInvoker invoker = getClient().target(url).request()
                 .header(HttpHeaders.AUTHORIZATION,
@@ -99,11 +102,14 @@ public class RestClient {
 
     }
 
-    protected void sendSync(Method method, String url, Token token,
-            Representation content, int status) throws ServiceException {
+    protected void sendSync(Method method, String url, boolean external,
+            Token token, Representation content, int status)
+            throws ServiceException {
 
+        long time = external ? EXPIRATION_TIME_EXTERNAL
+                : EXPIRATION_TIME_INTERNAL;
         String tokenString = TokenManager.getInstance()
-                .createAndEncryptToken(token, EXPIRATION_TIME);
+                .createAndEncryptToken(token, time);
 
         Invocation.Builder builder = getClient().target(url).request().header(
                 HttpHeaders.AUTHORIZATION,

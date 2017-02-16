@@ -44,7 +44,7 @@ public abstract class DataObject implements DataType {
     @Column(name = FIELD_ETAG, nullable = false)
     private Long etag;
 
-    @Column(name = FIELD_LAST_OPERATION, nullable = false)
+    @Column(name = FIELD_LAST_OPERATION, nullable = false, length = OperationConverter.LENGTH)
     private Operation lastOperation;
 
     @Column(name = FIELD_PUBLISHED, nullable = false)

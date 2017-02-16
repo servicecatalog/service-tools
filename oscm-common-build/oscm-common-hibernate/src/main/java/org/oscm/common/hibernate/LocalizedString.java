@@ -35,6 +35,9 @@ public class LocalizedString {
     public static final String FIELD_LANG_KEY = "lang_key";
     public static final String FIELD_TRANSLATION = "translation";
 
+    public static final int LENGTH_LANG_KEY = 3;
+    public static final int LENGTH_TRANSLATION = 500;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ls_seq")
     @SequenceGenerator(name = "ls_seq", allocationSize = 1000)
@@ -42,8 +45,8 @@ public class LocalizedString {
     private Long id;
 
     @ElementCollection
-    @MapKeyColumn(name = FIELD_LANG_KEY)
-    @Column(name = FIELD_TRANSLATION)
+    @MapKeyColumn(name = FIELD_LANG_KEY, length = LENGTH_LANG_KEY)
+    @Column(name = FIELD_TRANSLATION, length = 1)
     @CollectionTable(name = COLLECTION_NAME)
     private Map<String, String> translations;
 
