@@ -102,7 +102,7 @@ public class ExceptionMapper
         }
 
         @Override
-        public void validateCreate() throws WebApplicationException {
+        public void validateCreate() throws ServiceException {
         }
 
         @Override

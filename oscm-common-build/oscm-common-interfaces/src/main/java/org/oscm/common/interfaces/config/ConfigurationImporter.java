@@ -19,16 +19,22 @@ import java.util.Set;
 public interface ConfigurationImporter {
 
     /**
-     * Reads all key - set pairs for the service access roles from the source.
+     * Reads all access roles for the given service keys from the source.
+     * 
+     * @param keys
+     *            the service keys to import
      * 
      * @return the map with the roles for services
      */
-    public Map<String, Set<String>> readRoles();
+    public Map<ServiceKey, Set<String>> readRoles(ServiceKey[] keys);
 
     /**
-     * Reads all configuration key - value pairs form the source.
+     * Reads all values for the given configuration keys form the source.
+     * 
+     * @param keys
+     *            the configuration keys to import
      * 
      * @return the map with the configuration settings
      */
-    public Map<String, String> readEntries();
+    public Map<ConfigurationKey, String> readEntries(ConfigurationKey[] keys);
 }

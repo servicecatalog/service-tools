@@ -8,7 +8,7 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 
 /**
  * Component exception for not found events and errors (e.g. not found object)
@@ -22,26 +22,27 @@ public class NotFoundException extends ServiceException {
     /**
      * Creates new not found exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param values
      *            the values for message placeholders
      */
-    public NotFoundException(ErrorKey errorKey, String... values) {
-        super(errorKey, values);
+    public NotFoundException(MessageKey messageKey, String... values) {
+        super(messageKey, values);
     }
 
     /**
      * Creates new not found exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param e
      *            the causing exception.
      * @param values
      *            the values for message placeholders
      */
-    public NotFoundException(ErrorKey errorKey, Throwable e, String... values) {
-        super(errorKey, e, values);
+    public NotFoundException(MessageKey messageKey, Throwable e,
+            String... values) {
+        super(messageKey, e, values);
     }
 }

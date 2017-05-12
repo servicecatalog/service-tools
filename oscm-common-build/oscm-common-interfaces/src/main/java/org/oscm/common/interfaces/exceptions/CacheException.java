@@ -8,7 +8,7 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 
 /**
  * Component exception for cache events (e.g. data not modified)
@@ -22,26 +22,27 @@ public class CacheException extends ServiceException {
     /**
      * Creates new cache exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param values
      *            the values for message placeholders
      */
-    public CacheException(ErrorKey errorKey, String... values) {
-        super(errorKey, values);
+    public CacheException(MessageKey messageKey, String... values) {
+        super(messageKey, values);
     }
 
     /**
      * Creates new cache exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param e
-     *            the causing exception.
+     *            the causing exception
      * @param values
      *            the values for message placeholders
      */
-    public CacheException(ErrorKey errorKey, Throwable e, String... values) {
-        super(errorKey, e, values);
+    public CacheException(MessageKey messageKey, Throwable e,
+            String... values) {
+        super(messageKey, e, values);
     }
 }

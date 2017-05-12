@@ -8,7 +8,7 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 
 /**
  * Component exception for security events and errors (e.g. permissions)
@@ -22,26 +22,27 @@ public class SecurityException extends ServiceException {
     /**
      * Creates new security exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param values
      *            the values for message placeholders
      */
-    public SecurityException(ErrorKey errorKey, String... values) {
-        super(errorKey, values);
+    public SecurityException(MessageKey messageKey, String... values) {
+        super(messageKey, values);
     }
 
     /**
      * Creates new security exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param e
      *            the causing exception.
      * @param values
      *            the values for message placeholders
      */
-    public SecurityException(ErrorKey errorKey, Throwable e, String... values) {
-        super(errorKey, e, values);
+    public SecurityException(MessageKey messageKey, Throwable e,
+            String... values) {
+        super(messageKey, e, values);
     }
 }

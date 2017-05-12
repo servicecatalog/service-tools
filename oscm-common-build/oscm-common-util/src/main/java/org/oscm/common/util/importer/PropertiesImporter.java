@@ -17,7 +17,9 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.oscm.common.interfaces.config.ConfigurationImporter;
+import org.oscm.common.interfaces.config.ConfigurationKey;
 import org.oscm.common.interfaces.config.ConfigurationLoader;
+import org.oscm.common.interfaces.config.ServiceKey;
 
 /**
  * Importer class for property sources.
@@ -33,16 +35,21 @@ public class PropertiesImporter implements ConfigurationImporter {
     }
 
     @Override
-    public Map<String, Set<String>> readRoles() {
+    public Map<ServiceKey, Set<String>> readRoles(ServiceKey[] keys) {
         try {
             Properties p = new Properties();
             p.load(loader.loadConfiguration());
 
-            Map<String, Set<String>> roles = new HashMap<>();
-            for (Object key : p.keySet()) {
-                String value = p.getProperty((String) key);
-                roles.put((String) key,
-                        new HashSet<>(Arrays.asList(value.split(","))));
+            Map<ServiceKey, Set<String>> roles = new HashMap<>();
+            for (ServiceKey k : keys) {
+                if (p.containsKey(k.getKeyName())) {
+                    String value = p.getProperty(k.getKeyName());
+                    roles.put(k,
+                            new HashSet<>(Arrays.asList(value.split(","))));
+                } else {
+                    roles.put(k,
+                            new HashSet<>(Arrays.asList(k.getDefaultRole())));
+                }
             }
             return roles;
         } catch (IOException e) {
@@ -52,14 +59,24 @@ public class PropertiesImporter implements ConfigurationImporter {
     }
 
     @Override
-    public Map<String, String> readEntries() {
+    public Map<ConfigurationKey, String> readEntries(ConfigurationKey[] keys) {
         try {
             Properties p = new Properties();
             p.load(loader.loadConfiguration());
 
-            Map<String, String> entries = new HashMap<>();
-            for (Object key : p.keySet()) {
-                entries.put((String) key, p.getProperty((String) key));
+            Map<ConfigurationKey, String> entries = new HashMap<>();
+            for (ConfigurationKey k : keys) {
+                if (p.containsKey(k.getKeyName())) {
+                    entries.put(k, p.getProperty(k.getKeyName()));
+                } else {
+                    if (k.isMandatory()) {
+                        throw new RuntimeException(
+                                "Mandatory configuration entry "
+                                        + k.getKeyName() + " is missing");
+                    } else {
+                        entries.put(k, k.getDefaultValue());
+                    }
+                }
             }
             return entries;
         } catch (IOException e) {

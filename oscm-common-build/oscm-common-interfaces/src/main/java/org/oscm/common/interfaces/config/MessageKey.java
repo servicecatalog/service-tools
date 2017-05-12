@@ -9,32 +9,33 @@
 package org.oscm.common.interfaces.config;
 
 /**
- * Interface for enums that represent error keys.
+ * Interface for enums that represent message keys.
  * 
  * @author miethaner
  */
-public interface ErrorKey {
+public interface MessageKey {
 
     /**
-     * Gets the name of the error key.
+     * Gets the name of the message key.
      * 
-     * @return the error key name
+     * @return the message key name
      */
     public String getKeyName();
 
     /**
-     * Gets the error id.
+     * Gets the message id.
      * 
-     * @return the error id.
+     * @return the message id.
      */
     public Integer getCode();
 
     /**
-     * Gets the error message.
+     * Gets the corresponding message.
      * 
-     * @param values
-     *            the values for message placeholders
-     * @return the error message
+     * @param args
+     *            the values to replace placeholders with
+     * 
+     * @return the message
      */
-    public String getMessage(String... values);
+    public String getMessage(String... args);
 }

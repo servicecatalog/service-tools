@@ -17,13 +17,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.config.ConfigurationLoader;
 import org.oscm.common.interfaces.config.VersionKey;
+import org.oscm.common.util.importer.EnvironmentImporter;
 import org.oscm.common.util.importer.LocalLoader;
 import org.oscm.common.util.importer.PropertiesImporter;
+import org.oscm.common.util.logger.LogFormatter;
 
 /**
  * Startup class to orchestrate the application and its technologies.
@@ -32,19 +38,27 @@ import org.oscm.common.util.importer.PropertiesImporter;
  */
 public abstract class Application {
 
-    private static final String PARAM_LOCAL = "-local";
-    private static final String PARAM_REMOTE = "-remote";
-    private static final String PARAM_RESET = "-reset";
-    private static final String PARAM_PROPERTIES = "properties";
+    private static final String PARAM_CONFIG = "-c";
+    private static final String PARAM_CONFIG_ENV = "env";
+    private static final String PARAM_CONFIG_LOCAL = "local";
+    private static final String PARAM_CONFIG_REMOTE = "remote";
+    private static final String PARAM_CONFIG_PROPERTIES = "properties";
+    private static final String PARAM_LOGGER = "-l";
+    private static final String PARAM_LOGGER_STDOUT = "stdout";
+    private static final String PARAM_RESET = "-r";
 
     /**
      * Starts the application with the following parameter options:
      * <p>
-     * configuration source: -[local|remote] [properties|xml|yaml|json]
-     * &lt;location&gt; <br>
-     * determines the source, the type and the location of the configuration
+     * configuration source: -c [local|remote|env] {[properties|xml|yaml|json]
+     * &lt;location&gt;} <br>
+     * determines the source, the type and the location of the configuration.
      * <p>
-     * reset data connection: -reset <br>
+     * logger configuration: -l [stdout|file] &lt;level&gt;
+     * {&lt;location&gt;}<br>
+     * determines the destination and the log level for the application logger.
+     * <p>
+     * reset data connection: -r <br>
      * republishes all data and reconsumes all proxies
      * <p>
      * The main thread waits until any input on the command line is entered and
@@ -55,18 +69,28 @@ public abstract class Application {
      * @param params
      *            the parameters
      */
-    protected static void flow(Application app, String... params)
-            throws Exception {
+    protected void flow(String... params) throws Exception {
 
-        app.processParameters(params);
+        processParameters(params);
 
-        try {
-            app.start();
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println("Stopping service");
+                    stop();
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+        }));
 
-            System.in.read();
-        } finally {
-            app.stop();
-        }
+        System.out.println("Starting service");
+        start();
+
+        System.out.println("Press Ctrl + C to stop service");
+        Thread.currentThread().join();
+
     }
 
     protected boolean reset = false;
@@ -82,32 +106,104 @@ public abstract class Application {
      */
     protected void processParameters(String... params) throws Exception {
 
+        boolean config = false;
+        boolean log = false;
         ConfigurationLoader loader = null;
 
-        for (int i = 1; i < params.length; i++) {
+        Logger logger = Logger.getLogger("");
+        for (Handler h : logger.getHandlers()) {
+            logger.removeHandler(h);
+        }
+
+        for (int i = 0; i < params.length; i++) {
             switch (params[i]) {
-            case PARAM_LOCAL:
-                if (i + 2 >= params.length) {
-                    throw new RuntimeException("Incomplete parameters");
-                }
-                loader = new LocalLoader(params[i + 2]);
-                switch (params[i + 1]) {
-                case PARAM_PROPERTIES:
-                    importer = new PropertiesImporter(loader);
+            case PARAM_CONFIG:
+                i++;
+                config = true;
+
+                switch (params[i]) {
+                case PARAM_CONFIG_ENV:
+                    importer = new EnvironmentImporter();
                     break;
+
+                case PARAM_CONFIG_LOCAL:
+                    if (i + 1 >= params.length) {
+                        throw new RuntimeException(
+                                "Incomplete configuration parameters");
+                    }
+                    i++;
+
+                    loader = new LocalLoader(params[i + 1]);
+                    switch (params[i]) {
+                    case PARAM_CONFIG_PROPERTIES:
+                        importer = new PropertiesImporter(loader);
+                        break;
+                    default:
+                        throw new RuntimeException(
+                                "Unknown configuration type");
+                    }
+
+                    i++;
+                    break;
+
+                case PARAM_CONFIG_REMOTE:
+                    throw new RuntimeException(
+                            "Configuration loader not implemented");
+
                 default:
-                    throw new RuntimeException("Unknown configuration type");
+                    throw new RuntimeException(
+                            "Incomplete configuration parameters");
                 }
                 break;
-            case PARAM_REMOTE:
-                throw new RuntimeException(
-                        "Configuration loader not implemented");
+
+            case PARAM_LOGGER:
+                if (i + 1 >= params.length) {
+                    throw new RuntimeException();
+                }
+                i++;
+                log = true;
+
+                switch (params[i]) {
+                case PARAM_LOGGER_STDOUT:
+                    if (i + 1 >= params.length) {
+                        throw new RuntimeException("Incomplete parameters");
+                    }
+                    i++;
+
+                    LogFormatter lf = new LogFormatter();
+                    StreamHandler sh = new StreamHandler(System.out, lf);
+                    logger.addHandler(sh);
+
+                    Level logLevel;
+
+                    try {
+                        logLevel = Level.parse(params[i]);
+                    } catch (IllegalArgumentException e) {
+                        throw new RuntimeException("Unknown log level");
+                    }
+
+                    logger.setLevel(logLevel);
+                    break;
+
+                default:
+                    throw new RuntimeException("Incomplete logger parameters");
+                }
+
             case PARAM_RESET:
                 reset = true;
                 break;
+
             default:
                 throw new RuntimeException("Unknown parameter");
             }
+        }
+
+        if (!config) {
+            throw new RuntimeException("Configuration parameter is missing");
+        }
+
+        if (!log) {
+            throw new RuntimeException("Logging parameter is missing");
         }
     }
 
@@ -210,5 +306,4 @@ public abstract class Application {
             }
         }
     }
-
 }

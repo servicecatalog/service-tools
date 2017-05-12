@@ -8,7 +8,7 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 
 /**
  * Component exception for concurrency events and errors.
@@ -22,27 +22,27 @@ public class ConcurrencyException extends ServiceException {
     /**
      * Creates new concurrency exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param values
      *            the values for message placeholders
      */
-    public ConcurrencyException(ErrorKey errorKey, String... values) {
-        super(errorKey, values);
+    public ConcurrencyException(MessageKey messageKey, String... values) {
+        super(messageKey, values);
     }
 
     /**
      * Creates new concurrency exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param e
      *            the causing exception.
      * @param values
      *            the values for message placeholders
      */
-    public ConcurrencyException(ErrorKey errorKey, Throwable e,
+    public ConcurrencyException(MessageKey messageKey, Throwable e,
             String... values) {
-        super(errorKey, e, values);
+        super(messageKey, e, values);
     }
 }

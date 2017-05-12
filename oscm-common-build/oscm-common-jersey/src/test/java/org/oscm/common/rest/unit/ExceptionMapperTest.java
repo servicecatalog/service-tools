@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import javax.ws.rs.core.Response;
 
 import org.junit.Test;
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.ConcurrencyException;
 import org.oscm.common.interfaces.exceptions.ConflictException;
@@ -36,7 +36,7 @@ import com.google.gson.JsonObject;
  */
 public class ExceptionMapperTest {
 
-    private static final ErrorKey ERROR_KEY = new ErrorKey() {
+    private static final MessageKey ERROR_KEY = new MessageKey() {
 
         @Override
         public String getMessage(String... values) {

@@ -11,7 +11,7 @@ package org.oscm.common.interfaces.exceptions.unit;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.ConcurrencyException;
 import org.oscm.common.interfaces.exceptions.ConflictException;
@@ -30,7 +30,7 @@ import org.oscm.common.interfaces.exceptions.ValidationException;
  */
 public class ExceptionTest {
 
-    private static final ErrorKey KEY = new ErrorKey() {
+    private static final MessageKey KEY = new MessageKey() {
 
         @Override
         public String getMessage(String... values) {

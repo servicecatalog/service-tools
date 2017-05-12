@@ -8,7 +8,7 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 
 /**
  * Component exception for security token events and errors (e.g. token missing)
@@ -22,26 +22,27 @@ public class TokenException extends ServiceException {
     /**
      * Creates new token exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param values
      *            the values for message placeholders
      */
-    public TokenException(ErrorKey errorKey, String... values) {
-        super(errorKey, values);
+    public TokenException(MessageKey messageKey, String... values) {
+        super(messageKey, values);
     }
 
     /**
      * Creates new token exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param e
      *            the causing exception.
      * @param values
      *            the values for message placeholders
      */
-    public TokenException(ErrorKey errorKey, Throwable e, String... values) {
-        super(errorKey, e, values);
+    public TokenException(MessageKey messageKey, Throwable e,
+            String... values) {
+        super(messageKey, e, values);
     }
 }

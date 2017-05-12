@@ -8,48 +8,51 @@
 
 package org.oscm.common.interfaces.enums;
 
-import org.oscm.common.interfaces.config.ErrorKey;
+import java.text.MessageFormat;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import org.oscm.common.interfaces.config.MessageKey;
 
 /**
  * Enum for exceptions to provide error code and message.
  * 
  * @author miethaner
  */
-public enum Messages implements ErrorKey {
+public enum Messages implements MessageKey {
 
-    DEBUG(0, "Debug"), //
-    ERROR(1, "Error"), //
+    DEBUG(0), //
+    ERROR(1), //
 
-    JSON_FORMAT(2, "Invalid JSON format"), //
-    INVALID_ID(3, "ID not valid or unknown"), //
-    INVALID_VERSION(4, "Version not valid or unknown"), //
-    INVALID_ETAG(5, "Invalid ETag"), //
-    INVALID_NUMBER(6, "Invalid number"), //
-    INVALID_URL(7, "Invalid URL"), //
-    INVALID_TEXT(8, "Invalid text"), //
-    INVALID_LANGUAGE(9, "Invalid language ISO code"), //
-    IS_NULL(10, "Property is null"), //
-    NOT_EQUAL(11, "Properties are not equal"), //
-    METHOD_VERSION(12, "Method not available for used version"), //
-    BAD_PROPERTY(13, "Property does not match allowed pattern"), //
-    NO_CONTENT(14, "No content in request while expected"), //
-    MANDATORY_PROPERTY_NOT_PRESENT(15,
-            "One or more mandatory properties are not present"), //
+    JSON_FORMAT(2), //
+    INVALID_ID(3), //
+    INVALID_VERSION(4), //
+    INVALID_ETAG(5), //
+    INVALID_NUMBER(6), //
+    INVALID_URL(7), //
+    INVALID_TEXT(8), //
+    INVALID_LANGUAGE(9), //
+    IS_NULL(10), //
+    NOT_EQUAL(11), //
+    METHOD_VERSION(12), //
+    BAD_PROPERTY(13), //
+    NO_CONTENT(14), //
+    MANDATORY_PROPERTY_NOT_PRESENT(15), //
 
-    NOT_SECURE(16, "Connection is not secure"), //
-    NOT_AUTHENTICATED(17, "User is not authenticated"), //
-    NOT_AUTHORIZED(18, "User is not authorized for the operation"), //
+    NOT_SECURE(16), //
+    NOT_AUTHENTICATED(17), //
+    NOT_AUTHORIZED(18), //
 
-    LOGIN_FAILD(19, "Login failed"), //
+    LOGIN_FAILD(19), //
 
-    UNSUPPORTED_METHOD(20, "The method is not supported by this service"); //
+    UNSUPPORTED_METHOD(20); //
+
+    private static final String BUNDLE = "org.oscm.common.interferces.messages.Messages";
 
     private final int code;
-    private final String message;
 
-    private Messages(int error, String message) {
+    private Messages(int error) {
         this.code = error;
-        this.message = message;
     }
 
     @Override
@@ -64,6 +67,15 @@ public enum Messages implements ErrorKey {
 
     @Override
     public String getMessage(String... values) {
-        return message;
+        String msg;
+        try {
+            ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE);
+            msg = bundle.getString(Integer.toString(code));
+        } catch (MissingResourceException e) {
+            throw new RuntimeException(
+                    "Unable to find message resource bundle");
+        }
+
+        return MessageFormat.format(msg, (Object[]) values);
     }
 }

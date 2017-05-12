@@ -74,12 +74,13 @@ public class VersionFilterTest {
     private class Importer implements ConfigurationImporter {
 
         @Override
-        public Map<String, Set<String>> readRoles() {
+        public Map<ServiceKey, Set<String>> readRoles(ServiceKey[] keys) {
             return Collections.emptyMap();
         }
 
         @Override
-        public Map<String, String> readEntries() {
+        public Map<ConfigurationKey, String> readEntries(
+                ConfigurationKey[] keys) {
             return Collections.emptyMap();
         }
 

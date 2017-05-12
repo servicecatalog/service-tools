@@ -30,4 +30,11 @@ public interface ServiceKey {
      * @return the service key name
      */
     public String getKeyName();
+
+    /**
+     * Gets the default role for the service
+     * 
+     * @return the service default role
+     */
+    public String getDefaultRole();
 }

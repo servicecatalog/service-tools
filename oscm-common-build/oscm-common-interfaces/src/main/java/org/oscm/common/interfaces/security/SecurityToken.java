@@ -50,7 +50,7 @@ public interface SecurityToken {
     public Long getTenantId();
 
     /**
-     * Gets all restrictions that have been defined for the token owner.
+     * Gets all restrictions that have been defined for the token.
      * 
      * @return the map of restrictions
      */

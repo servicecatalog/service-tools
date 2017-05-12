@@ -8,7 +8,7 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 
 /**
  * Component exception for unexpected internal errors
@@ -22,26 +22,27 @@ public class InternalException extends ServiceException {
     /**
      * Creates new internal exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param values
      *            the values for message placeholders
      */
-    public InternalException(ErrorKey errorKey, String... values) {
-        super(errorKey, values);
+    public InternalException(MessageKey messageKey, String... values) {
+        super(messageKey, values);
     }
 
     /**
      * Creates new internal exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param e
      *            the causing exception.
      * @param values
      *            the values for message placeholders
      */
-    public InternalException(ErrorKey errorKey, Throwable e, String... values) {
-        super(errorKey, e, values);
+    public InternalException(MessageKey messageKey, Throwable e,
+            String... values) {
+        super(messageKey, e, values);
     }
 }

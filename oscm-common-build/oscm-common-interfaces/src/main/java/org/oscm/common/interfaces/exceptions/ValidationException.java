@@ -8,7 +8,7 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 
 /**
  * Component exception for validation events and errors
@@ -24,24 +24,24 @@ public class ValidationException extends ServiceException {
     /**
      * Creates new validation exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param property
      *            the property name
      * @param values
      *            the values for message placeholders
      */
-    public ValidationException(ErrorKey errorKey, String property,
+    public ValidationException(MessageKey messageKey, String property,
             String... values) {
-        super(errorKey, values);
+        super(messageKey, values);
         this.property = property;
     }
 
     /**
      * Creates new validation exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param property
      *            the property name
      * @param e
@@ -49,9 +49,9 @@ public class ValidationException extends ServiceException {
      * @param values
      *            the values for message placeholders
      */
-    public ValidationException(ErrorKey errorKey, String property, Throwable e,
-            String... values) {
-        super(errorKey, e, values);
+    public ValidationException(MessageKey messageKey, String property,
+            Throwable e, String... values) {
+        super(messageKey, e, values);
         this.property = property;
     }
 

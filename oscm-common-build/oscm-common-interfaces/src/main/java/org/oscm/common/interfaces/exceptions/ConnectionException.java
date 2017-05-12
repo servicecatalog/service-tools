@@ -8,7 +8,7 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 
 /**
  * Connection exception for connectivity errors and events
@@ -22,27 +22,27 @@ public class ConnectionException extends ServiceException {
     /**
      * Creates new connection exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param values
      *            the values for message placeholders
      */
-    public ConnectionException(ErrorKey errorKey, String... values) {
-        super(errorKey, values);
+    public ConnectionException(MessageKey messageKey, String... values) {
+        super(messageKey, values);
     }
 
     /**
      * Creates new connection exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param e
      *            the causing exception.
      * @param values
      *            the values for message placeholders
      */
-    public ConnectionException(ErrorKey errorKey, Throwable e,
+    public ConnectionException(MessageKey messageKey, Throwable e,
             String... values) {
-        super(errorKey, e, values);
+        super(messageKey, e, values);
     }
 }

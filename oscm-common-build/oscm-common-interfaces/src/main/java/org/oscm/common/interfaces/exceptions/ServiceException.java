@@ -10,7 +10,7 @@ package org.oscm.common.interfaces.exceptions;
 
 import java.util.UUID;
 
-import org.oscm.common.interfaces.config.ErrorKey;
+import org.oscm.common.interfaces.config.MessageKey;
 
 /**
  * Super class for all service specific exceptions
@@ -27,31 +27,32 @@ public class ServiceException extends Exception {
     /**
      * Creates new service exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param values
      *            the values for message placeholders
      */
-    public ServiceException(ErrorKey errorKey, String... values) {
-        super(errorKey.getMessage(values));
+    public ServiceException(MessageKey messageKey, String... values) {
+        super(messageKey.getMessage(values));
         this.id = UUID.randomUUID();
-        this.code = errorKey.getCode();
+        this.code = messageKey.getCode();
     }
 
     /**
      * Creates new service exception
      * 
-     * @param errorKey
-     *            the enum key for the error
+     * @param messageKey
+     *            the enum key for the message
      * @param e
      *            the causing exception.
      * @param values
      *            the values for message placeholders
      */
-    public ServiceException(ErrorKey errorKey, Throwable e, String... values) {
-        super(errorKey.getMessage(values), e);
+    public ServiceException(MessageKey messageKey, Throwable e,
+            String... values) {
+        super(messageKey.getMessage(values), e);
         this.id = UUID.randomUUID();
-        this.code = errorKey.getCode();
+        this.code = messageKey.getCode();
     }
 
     /**

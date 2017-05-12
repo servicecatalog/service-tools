@@ -18,11 +18,9 @@ import java.io.InputStream;
 public interface ConfigurationLoader {
 
     /**
-     * Loads the configuration file from the source by the given path.
+     * Loads the configuration from the source.
      * 
-     * @param path
-     *            the path to the file
-     * @return the input stream of the file
+     * @return the input stream of the configuration
      */
     public InputStream loadConfiguration();
 }

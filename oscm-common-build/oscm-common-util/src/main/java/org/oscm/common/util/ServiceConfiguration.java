@@ -67,40 +67,17 @@ public class ServiceConfiguration {
     private ServiceConfiguration() {
         this.roles = Collections.emptyMap();
         this.entries = Collections.emptyMap();
+        this.versions = Collections.emptySet();
     }
 
     private ServiceConfiguration(ConfigurationImporter importer,
             VersionKey[] versions, ServiceKey[] services,
             ConfigurationKey[] configs) {
-        this.roles = new HashMap<>();
-        this.entries = new HashMap<>();
         this.versions = new HashSet<>(Arrays.asList(versions));
 
-        Map<String, Set<String>> tmpRoles = importer.readRoles();
-        for (ServiceKey s : services) {
-            if (tmpRoles.containsKey(s.getKeyName())
-                    && tmpRoles.get(s.getKeyName()) != null
-                    && !tmpRoles.get(s.getKeyName()).isEmpty()) {
-                roles.put(s, tmpRoles.get(s.getKeyName()));
-            } else {
-                roles.put(s,
-                        new HashSet<>(Arrays.asList(ServiceKey.PRIVATE_ROLE)));
-            }
-        }
+        this.roles = importer.readRoles(services);
 
-        Map<String, String> tmpEntries = importer.readEntries();
-        for (ConfigurationKey c : configs) {
-            if (tmpEntries.containsKey(c.getKeyName())) {
-                entries.put(c, tmpEntries.get(c.getKeyName()));
-            } else {
-                if (c.isMandatory()) {
-                    throw new RuntimeException("Mandatory configuration entry "
-                            + c.getKeyName() + " is missing");
-                } else {
-                    entries.put(c, c.getDefaultValue());
-                }
-            }
-        }
+        this.entries = importer.readEntries(configs);
     }
 
     public Set<VersionKey> getVersions() {

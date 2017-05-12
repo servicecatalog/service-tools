@@ -42,6 +42,11 @@ public class SecurityTest {
         public String getKeyName() {
             return "key";
         }
+
+        @Override
+        public String getDefaultRole() {
+            return ServiceKey.PRIVATE_ROLE;
+        }
     };
 
     private class Importer implements ConfigurationImporter {
@@ -53,15 +58,16 @@ public class SecurityTest {
         }
 
         @Override
-        public Map<String, Set<String>> readRoles() {
-            Map<String, Set<String>> map = new HashMap<>();
-            map.put(key.getKeyName(), roles);
+        public Map<ServiceKey, Set<String>> readRoles(ServiceKey[] keys) {
+            Map<ServiceKey, Set<String>> map = new HashMap<>();
+            map.put(key, roles);
 
             return map;
         }
 
         @Override
-        public Map<String, String> readEntries() {
+        public Map<ConfigurationKey, String> readEntries(
+                ConfigurationKey[] keys) {
             return Collections.emptyMap();
         }
 
