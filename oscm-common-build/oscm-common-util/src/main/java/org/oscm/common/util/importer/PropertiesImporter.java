@@ -19,7 +19,7 @@ import java.util.Set;
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.config.ConfigurationKey;
 import org.oscm.common.interfaces.config.ConfigurationLoader;
-import org.oscm.common.interfaces.config.ServiceKey;
+import org.oscm.common.interfaces.config.ResourceKey;
 
 /**
  * Importer class for property sources.
@@ -35,13 +35,13 @@ public class PropertiesImporter implements ConfigurationImporter {
     }
 
     @Override
-    public Map<ServiceKey, Set<String>> readRoles(ServiceKey[] keys) {
+    public Map<ResourceKey, Set<String>> readRoles(ResourceKey[] keys) {
         try {
             Properties p = new Properties();
             p.load(loader.loadConfiguration());
 
-            Map<ServiceKey, Set<String>> roles = new HashMap<>();
-            for (ServiceKey k : keys) {
+            Map<ResourceKey, Set<String>> roles = new HashMap<>();
+            for (ResourceKey k : keys) {
                 if (p.containsKey(k.getKeyName())) {
                     String value = p.getProperty(k.getKeyName());
                     roles.put(k,

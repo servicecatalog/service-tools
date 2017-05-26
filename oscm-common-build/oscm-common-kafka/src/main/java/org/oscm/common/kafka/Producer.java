@@ -16,6 +16,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.oscm.common.interfaces.config.VersionKey;
 import org.oscm.common.interfaces.exceptions.ServiceException;
+import org.oscm.common.util.logger.ServiceLogger;
 
 /**
  * Super class for all publisher classes.
@@ -23,6 +24,9 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
  * @author miethaner
  */
 public abstract class Producer<R extends Representation> {
+
+    private static final ServiceLogger LOGGER = ServiceLogger
+            .getLogger(Producer.class);
 
     private KafkaProducer<Long, R> producer;
     private Class<R> clazz;
@@ -32,8 +36,7 @@ public abstract class Producer<R extends Representation> {
     @SuppressWarnings("unchecked")
     public Producer(String topic) {
         this.topic = topic;
-        this.version = KafkaManager.getInstance()
-                .getCompatibilityVersion();
+        this.version = KafkaManager.getInstance().getCompatibilityVersion();
         this.clazz = (Class<R>) ((ParameterizedType) this.getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
         this.producer = KafkaManager.getInstance().getProducer(clazz);
@@ -63,10 +66,10 @@ public abstract class Producer<R extends Representation> {
                             try {
                                 callback.callback();
                             } catch (ServiceException e) {
-                                // TODO log error
+                                LOGGER.error(e);
                             }
                         } else {
-                            // TODO log error
+                            LOGGER.exception(exception);
                         }
                     }
                 });

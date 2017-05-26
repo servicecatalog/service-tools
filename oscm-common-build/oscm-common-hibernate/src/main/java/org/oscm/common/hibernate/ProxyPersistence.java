@@ -65,20 +65,17 @@ public class ProxyPersistence<P extends ProxyObject> {
             P entity = entityManager.getReference(clazz, id);
 
             if (entity.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(Messages.ERROR, "");
-                // TODO add error message
+                throw new NotFoundException(Messages.ENTITY_NOT_FOUND);
             }
 
             if (etag != null && etag.equals(entity.getETag())) {
-                throw new CacheException(Messages.ERROR, "");
-                // TODO add error message
+                throw new CacheException(Messages.ENTITY_NOT_FOUND);
             }
 
             return entity;
 
         } catch (EntityNotFoundException e) {
-            throw new NotFoundException(Messages.ERROR, e); // TODO add error
-                                                            // message
+            throw new NotFoundException(Messages.ENTITY_NOT_FOUND, e);
         }
     }
 
@@ -138,8 +135,7 @@ public class ProxyPersistence<P extends ProxyObject> {
         try {
             return query.getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
-            throw new NotFoundException(Messages.ERROR, ""); // TODO add error
-                                                             // message
+            throw new NotFoundException(Messages.NO_RESULT);
         }
     }
 

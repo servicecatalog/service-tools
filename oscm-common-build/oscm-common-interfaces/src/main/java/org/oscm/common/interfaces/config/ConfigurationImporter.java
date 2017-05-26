@@ -26,7 +26,7 @@ public interface ConfigurationImporter {
      * 
      * @return the map with the roles for services
      */
-    public Map<ServiceKey, Set<String>> readRoles(ServiceKey[] keys);
+    public Map<ResourceKey, Set<String>> readRoles(ResourceKey[] keys);
 
     /**
      * Reads all values for the given configuration keys form the source.

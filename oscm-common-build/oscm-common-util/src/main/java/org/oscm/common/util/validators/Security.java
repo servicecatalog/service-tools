@@ -11,7 +11,7 @@ package org.oscm.common.util.validators;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.oscm.common.interfaces.config.ServiceKey;
+import org.oscm.common.interfaces.config.ResourceKey;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
@@ -30,24 +30,24 @@ public class Security {
      * Validates the permissions with given security token through checking the
      * configuration for restrictions and roles.
      * 
-     * @param service
-     *            the key of the calling service
+     * @param resource
+     *            the key of the calling resource
      * @param token
      *            the security token
      * @throws ServiceException
      */
-    public static void validatePermission(ServiceKey service,
+    public static void validatePermission(ResourceKey resource,
             SecurityToken token) throws ServiceException {
 
         ServiceConfiguration config = ServiceConfiguration.getInstance();
 
-        if (config.isServiceRestricted(service)) {
+        if (config.isResourceRestricted(resource)) {
 
             if (token == null) {
                 throw new SecurityException(Messages.NOT_AUTHENTICATED);
             }
 
-            Set<String> configRoles = config.getRolesForService(service);
+            Set<String> configRoles = config.getRolesForResource(resource);
             Set<String> userRoles = token.getRoles();
 
             if (configRoles != null && userRoles != null) {

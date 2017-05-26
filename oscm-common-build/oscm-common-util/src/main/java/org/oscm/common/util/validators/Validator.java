@@ -146,7 +146,7 @@ public class Validator {
             throws ValidationException {
 
         if (obj == null) {
-            throw new ValidationException(Messages.IS_NULL, property);
+            throw new ValidationException(Messages.PROPERTY_IS_NULL, property);
         }
     }
 
@@ -166,10 +166,10 @@ public class Validator {
 
         if (first != null && second != null) {
             if (!first.equals(second)) {
-                throw new ValidationException(Messages.NOT_EQUAL, property);
+                throw new ValidationException(Messages.PROPERTY_NOT_EQUAL, property);
             }
         } else if (first != second) {
-            throw new ValidationException(Messages.NOT_EQUAL, property);
+            throw new ValidationException(Messages.PROPERTY_NOT_EQUAL, property);
         }
     }
 

@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.config.ConfigurationKey;
-import org.oscm.common.interfaces.config.ServiceKey;
+import org.oscm.common.interfaces.config.ResourceKey;
 
 /**
  * Importer class for environment variables
@@ -26,12 +26,12 @@ import org.oscm.common.interfaces.config.ServiceKey;
 public class EnvironmentImporter implements ConfigurationImporter {
 
     @Override
-    public Map<ServiceKey, Set<String>> readRoles(ServiceKey[] keys) {
+    public Map<ResourceKey, Set<String>> readRoles(ResourceKey[] keys) {
 
         Map<String, String> env = System.getenv();
 
-        Map<ServiceKey, Set<String>> roles = new HashMap<>();
-        for (ServiceKey k : keys) {
+        Map<ResourceKey, Set<String>> roles = new HashMap<>();
+        for (ResourceKey k : keys) {
             if (env.containsKey(k.getKeyName())) {
                 String value = env.get(k.getKeyName());
                 roles.put(k, new HashSet<>(Arrays.asList(value.split(","))));

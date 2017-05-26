@@ -18,6 +18,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
+import org.oscm.common.util.logger.ServiceLogger;
 
 /**
  * Super class for threads that consume kafka records and hands them over to a
@@ -31,6 +32,9 @@ public abstract class Consumer<R extends Representation> implements Runnable {
 
         public void handleEvent(H rep) throws ServiceException;
     }
+
+    private static final ServiceLogger LOGGER = ServiceLogger
+            .getLogger(Consumer.class);
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
     private Thread thread;
@@ -76,7 +80,7 @@ public abstract class Consumer<R extends Representation> implements Runnable {
                     try {
                         handler.handleEvent(rep);
                     } catch (ServiceException e) {
-                        // TODO Log error
+                        LOGGER.error(e);
                     }
                 }
 

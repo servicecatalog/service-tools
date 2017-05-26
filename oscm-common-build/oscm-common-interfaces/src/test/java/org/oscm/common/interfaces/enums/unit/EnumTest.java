@@ -25,7 +25,7 @@ public class EnumTest {
     @Test
     public void testMessages() {
 
-        assertEquals("Debug", Messages.DEBUG.getMessage());
+        assertEquals("DEBUG: TEST", Messages.DEBUG.getMessage("TEST"));
         assertEquals(new Integer(0), Messages.DEBUG.getCode());
         assertEquals("DEBUG", Messages.DEBUG.getKeyName());
     }

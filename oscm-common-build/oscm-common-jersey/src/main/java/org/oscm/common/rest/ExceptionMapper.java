@@ -24,6 +24,7 @@ import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TokenException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
+import org.oscm.common.util.logger.ServiceLogger;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -36,6 +37,9 @@ import com.google.gson.annotations.SerializedName;
 @Provider
 public class ExceptionMapper
         implements javax.ws.rs.ext.ExceptionMapper<ServiceException> {
+
+    private static final ServiceLogger LOGGER = ServiceLogger
+            .getLogger(ExceptionMapper.class);
 
     @SuppressWarnings("unused")
     private static class ExceptionBody extends Representation {
@@ -118,19 +122,26 @@ public class ExceptionMapper
         try {
             throw exception;
         } catch (ValidationException e) {
+            LOGGER.debug(e);
             body.setStatus(Status.BAD_REQUEST.getStatusCode());
             body.setProperty(e.getProperty());
         } catch (NotFoundException e) {
+            LOGGER.debug(e);
             body.setStatus(Status.NOT_FOUND.getStatusCode());
         } catch (CacheException e) {
+            LOGGER.debug(e);
             body.setStatus(Status.NOT_MODIFIED.getStatusCode());
         } catch (ConcurrencyException | ConflictException e) {
+            LOGGER.error(e);
             body.setStatus(Status.CONFLICT.getStatusCode());
         } catch (TokenException e) {
+            LOGGER.warning(e);
             body.setStatus(Status.UNAUTHORIZED.getStatusCode());
         } catch (SecurityException e) {
+            LOGGER.warning(e);
             body.setStatus(Status.FORBIDDEN.getStatusCode());
         } catch (ServiceException e) {
+            LOGGER.error(e);
             body.setStatus(Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
 

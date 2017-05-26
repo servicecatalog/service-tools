@@ -104,8 +104,7 @@ public abstract class DataPersistence<D extends DataObject> {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw new ConflictException(Messages.ERROR, e); // TODO add error
-                                                            // message
+            throw new ConflictException(Messages.ENTITY_ALREADY_EXISTS, e);
         }
     }
 
@@ -126,20 +125,18 @@ public abstract class DataPersistence<D extends DataObject> {
             D entity = entityManager.getReference(clazz, id);
 
             if (entity.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(Messages.ERROR, "");
-                // TODO add error message
+                throw new NotFoundException(Messages.ENTITY_NOT_FOUND);
+
             }
 
             if (etag != null && etag.equals(entity.getETag())) {
-                throw new CacheException(Messages.ERROR, "");
-                // TODO add error message
+                throw new CacheException(Messages.ENTITY_NOT_MODIFIED);
             }
 
             return entity;
 
         } catch (EntityNotFoundException e) {
-            throw new NotFoundException(Messages.ERROR, e); // TODO add error
-                                                            // message
+            throw new NotFoundException(Messages.ENTITY_NOT_FOUND, e);
         }
     }
 
@@ -199,8 +196,7 @@ public abstract class DataPersistence<D extends DataObject> {
         try {
             return query.getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
-            throw new NotFoundException(Messages.ERROR, ""); // TODO add error
-                                                             // message
+            throw new NotFoundException(Messages.NO_RESULT, e);
         }
     }
 
@@ -221,14 +217,12 @@ public abstract class DataPersistence<D extends DataObject> {
             D old = entityManager.getReference(clazz, entity.getId());
 
             if (old.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(Messages.ERROR, "");
-                // TODO add error message
+                throw new NotFoundException(Messages.ENTITY_NOT_FOUND);
             }
 
             if (etag != null) {
                 if (!entity.getETag().equals(old.getETag())) {
-                    throw new CacheException(Messages.ERROR, "");
-                    // TODO add error message
+                    throw new CacheException(Messages.ENTITY_NOT_MODIFIED);
                 }
             } else {
                 entity.setETag(old.getETag());
@@ -256,8 +250,7 @@ public abstract class DataPersistence<D extends DataObject> {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw new NotFoundException(Messages.ERROR, e); // TODO add error
-                                                            // message
+            throw new NotFoundException(Messages.ENTITY_NOT_FOUND, e);
         }
     }
 
@@ -278,9 +271,7 @@ public abstract class DataPersistence<D extends DataObject> {
             D entity = entityManager.getReference(clazz, id);
 
             if (entity.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(Messages.ERROR, ""); // TODO add
-                                                                 // error
-                                                                 // message
+                throw new NotFoundException(Messages.ENTITY_NOT_FOUND);
             }
 
             transaction.begin();
@@ -298,8 +289,7 @@ public abstract class DataPersistence<D extends DataObject> {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            throw new NotFoundException(Messages.ERROR, e); // TODO add error
-                                                            // message
+            throw new NotFoundException(Messages.ENTITY_NOT_FOUND, e);
         }
     }
 
@@ -340,15 +330,13 @@ public abstract class DataPersistence<D extends DataObject> {
             F entity = entityManager.getReference(foreign, id);
 
             if (entity.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(Messages.ERROR, "");
-                // TODO add error message
+                throw new NotFoundException(Messages.ENTITY_NOT_FOUND);
             }
 
             return entity;
 
         } catch (EntityNotFoundException e) {
-            throw new NotFoundException(Messages.ERROR, e); // TODO add error
-                                                            // message
+            throw new NotFoundException(Messages.ENTITY_NOT_FOUND, e);
         }
     }
 
@@ -369,15 +357,13 @@ public abstract class DataPersistence<D extends DataObject> {
             F entity = entityManager.getReference(foreign, id);
 
             if (entity.getLastOperation() == Operation.DELETED) {
-                throw new NotFoundException(Messages.ERROR, "");
-                // TODO add error message
+                throw new NotFoundException(Messages.ENTITY_NOT_FOUND);
             }
 
             return entity;
 
         } catch (EntityNotFoundException e) {
-            throw new NotFoundException(Messages.ERROR, e); // TODO add error
-                                                            // message
+            throw new NotFoundException(Messages.ENTITY_NOT_FOUND, e);
         }
     }
 

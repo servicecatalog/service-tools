@@ -17,11 +17,11 @@ import java.util.Set;
 
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.config.ConfigurationKey;
-import org.oscm.common.interfaces.config.ServiceKey;
+import org.oscm.common.interfaces.config.ResourceKey;
 import org.oscm.common.interfaces.config.VersionKey;
 
 /**
- * Singleton class to manage configuration settings and service access roles.
+ * Singleton class to manage configuration settings and resource access roles.
  * 
  * @author miethaner
  */
@@ -44,23 +44,23 @@ public class ServiceConfiguration {
 
     /**
      * Initializes the service configuration from the given importer and saves
-     * the data corresponding to the given configuration and service keys. This
+     * the data corresponding to the given configuration and resource keys. This
      * overwrites the previous service configuration instance.
      * 
      * @param importer
      *            the handler for the configuration source
-     * @param services
-     *            the service keys
+     * @param resources
+     *            the resource keys
      * @param configs
      *            the configuration keys
      */
     public static void init(ConfigurationImporter importer,
-            VersionKey[] versions, ServiceKey[] services,
+            VersionKey[] versions, ResourceKey[] resources,
             ConfigurationKey[] configs) {
-        sc = new ServiceConfiguration(importer, versions, services, configs);
+        sc = new ServiceConfiguration(importer, versions, resources, configs);
     }
 
-    private Map<ServiceKey, Set<String>> roles;
+    private Map<ResourceKey, Set<String>> roles;
     private Map<ConfigurationKey, String> entries;
     private Set<VersionKey> versions;
 
@@ -71,7 +71,7 @@ public class ServiceConfiguration {
     }
 
     private ServiceConfiguration(ConfigurationImporter importer,
-            VersionKey[] versions, ServiceKey[] services,
+            VersionKey[] versions, ResourceKey[] services,
             ConfigurationKey[] configs) {
         this.versions = new HashSet<>(Arrays.asList(versions));
 
@@ -125,24 +125,24 @@ public class ServiceConfiguration {
     }
 
     /**
-     * Return true if the service of the given key is restricted.
+     * Return true if the resource of the given key is restricted.
      * 
-     * @param service
-     *            the service key
+     * @param resource
+     *            the resource key
      * @return true if restricted
      */
-    public boolean isServiceRestricted(ServiceKey service) {
-        return !roles.get(service).contains(ServiceKey.PUBLIC_ROLE);
+    public boolean isResourceRestricted(ResourceKey resource) {
+        return !roles.get(resource).contains(ResourceKey.PUBLIC_ROLE);
     }
 
     /**
-     * Gets all roles for the service of the given key.
+     * Gets all roles for the resource of the given key.
      * 
-     * @param service
-     *            the service key
+     * @param resource
+     *            the resource key
      * @return the set of roles
      */
-    public Set<String> getRolesForService(ServiceKey service) {
-        return Collections.unmodifiableSet(roles.get(service));
+    public Set<String> getRolesForResource(ResourceKey resource) {
+        return Collections.unmodifiableSet(roles.get(resource));
     }
 }

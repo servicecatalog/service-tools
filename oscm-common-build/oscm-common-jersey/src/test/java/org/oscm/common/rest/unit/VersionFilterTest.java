@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.config.ConfigurationKey;
-import org.oscm.common.interfaces.config.ServiceKey;
+import org.oscm.common.interfaces.config.ResourceKey;
 import org.oscm.common.interfaces.config.VersionKey;
 import org.oscm.common.rest.RequestParameters;
 import org.oscm.common.rest.Since;
@@ -74,7 +74,7 @@ public class VersionFilterTest {
     private class Importer implements ConfigurationImporter {
 
         @Override
-        public Map<ServiceKey, Set<String>> readRoles(ServiceKey[] keys) {
+        public Map<ResourceKey, Set<String>> readRoles(ResourceKey[] keys) {
             return Collections.emptyMap();
         }
 
@@ -92,7 +92,7 @@ public class VersionFilterTest {
 
         Importer importer = new Importer();
         ServiceConfiguration.init(importer, new VersionKey[] { versionKey },
-                new ServiceKey[] {}, new ConfigurationKey[] {});
+                new ResourceKey[] {}, new ConfigurationKey[] {});
 
         ResourceInfo resourceInfo = Mockito.mock(ResourceInfo.class);
 

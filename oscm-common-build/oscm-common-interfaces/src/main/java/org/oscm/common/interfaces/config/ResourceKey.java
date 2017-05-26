@@ -9,14 +9,14 @@
 package org.oscm.common.interfaces.config;
 
 /**
- * Interface for enums that represent service keys.
+ * Interface for enums that represent resource keys.
  * 
  * @author miethaner
  */
-public interface ServiceKey {
+public interface ResourceKey {
 
     /**
-     * No restrictions for a service with public role.
+     * No restrictions for a resource with public role.
      */
     public static final String PUBLIC_ROLE = "PUBLIC";
     /**
@@ -25,16 +25,16 @@ public interface ServiceKey {
     public static final String PRIVATE_ROLE = "PRIVATE";
 
     /**
-     * Gets the name of the service key
+     * Gets the name of the resource key
      * 
-     * @return the service key name
+     * @return the resource key name
      */
     public String getKeyName();
 
     /**
-     * Gets the default role for the service
+     * Gets the default role for the resource
      * 
-     * @return the service default role
+     * @return the resource default role
      */
     public String getDefaultRole();
 }

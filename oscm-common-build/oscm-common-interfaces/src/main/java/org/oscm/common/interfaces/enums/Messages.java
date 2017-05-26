@@ -22,32 +22,39 @@ import org.oscm.common.interfaces.config.MessageKey;
 public enum Messages implements MessageKey {
 
     DEBUG(0), //
+    INFO(0), //
     ERROR(1), //
 
-    JSON_FORMAT(2), //
-    INVALID_ID(3), //
-    INVALID_VERSION(4), //
-    INVALID_ETAG(5), //
-    INVALID_NUMBER(6), //
-    INVALID_URL(7), //
-    INVALID_TEXT(8), //
-    INVALID_LANGUAGE(9), //
-    IS_NULL(10), //
-    NOT_EQUAL(11), //
-    METHOD_VERSION(12), //
-    BAD_PROPERTY(13), //
-    NO_CONTENT(14), //
-    MANDATORY_PROPERTY_NOT_PRESENT(15), //
+    JSON_FORMAT(10), //
+    INVALID_ID(11), //
+    INVALID_VERSION(12), //
+    INVALID_ETAG(13), //
+    INVALID_NUMBER(14), //
+    INVALID_URL(15), //
+    INVALID_TEXT(16), //
+    INVALID_LANGUAGE(17), //
+    PROPERTY_IS_NULL(18), //
+    PROPERTY_NOT_EQUAL(19), //
+    BAD_PROPERTY(20), //
+    METHOD_VERSION(21), //
+    NO_CONTENT(22), //
+    MANDATORY_PROPERTY_NOT_PRESENT(23), //
 
-    NOT_SECURE(16), //
-    NOT_AUTHENTICATED(17), //
-    NOT_AUTHORIZED(18), //
+    NOT_SECURE(24), //
+    NOT_AUTHENTICATED(25), //
+    NOT_AUTHORIZED(26), //
 
-    LOGIN_FAILD(19), //
+    LOGIN_FAILD(27), //
 
-    UNSUPPORTED_METHOD(20); //
+    UNSUPPORTED_METHOD(28), //
 
-    private static final String BUNDLE = "org.oscm.common.interferces.messages.Messages";
+    ENTITY_ALREADY_EXISTS(29), //
+    ENTITY_NOT_FOUND(30), //
+    ENTITY_NOT_MODIFIED(31), //
+    ENTITY_NOT_UNIQUE(32), //
+    NO_RESULT(33); //
+
+    private static final String BUNDLE = "org.oscm.common.interfaces.messages.Messages";
 
     private final int code;
 

@@ -17,9 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -30,6 +28,7 @@ import org.oscm.common.util.importer.EnvironmentImporter;
 import org.oscm.common.util.importer.LocalLoader;
 import org.oscm.common.util.importer.PropertiesImporter;
 import org.oscm.common.util.logger.LogFormatter;
+import org.oscm.common.util.logger.ServiceLogger;
 
 /**
  * Startup class to orchestrate the application and its technologies.
@@ -110,11 +109,6 @@ public abstract class Application {
         boolean log = false;
         ConfigurationLoader loader = null;
 
-        Logger logger = Logger.getLogger("");
-        for (Handler h : logger.getHandlers()) {
-            logger.removeHandler(h);
-        }
-
         for (int i = 0; i < params.length; i++) {
             switch (params[i]) {
             case PARAM_CONFIG:
@@ -172,7 +166,6 @@ public abstract class Application {
 
                     LogFormatter lf = new LogFormatter();
                     StreamHandler sh = new StreamHandler(System.out, lf);
-                    logger.addHandler(sh);
 
                     Level logLevel;
 
@@ -182,7 +175,7 @@ public abstract class Application {
                         throw new RuntimeException("Unknown log level");
                     }
 
-                    logger.setLevel(logLevel);
+                    ServiceLogger.init(sh, logLevel);
                     break;
 
                 default:
