@@ -212,7 +212,7 @@ public abstract class Resource {
             }
         }
 
-        params.validateETag();
+        params.validateAndCopyETag();
         params.validateParameters();
         params.update();
     }

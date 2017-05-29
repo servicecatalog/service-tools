@@ -75,7 +75,7 @@ public class Security {
             throws ServiceException {
         if (token == null || token.getUserId() == null
                 || userId != null && !token.getUserId().equals(userId)) {
-            throw new SecurityException(null, ""); // TODO add error message
+            throw new SecurityException(Messages.NOT_AUTHORIZED);
         }
     }
 
@@ -94,7 +94,7 @@ public class Security {
         if (token == null || token.getOrganizationId() == null
                 || organizationId != null
                         && !token.getOrganizationId().equals(organizationId)) {
-            throw new SecurityException(null, ""); // TODO add error message
+            throw new SecurityException(Messages.NOT_AUTHORIZED);
         }
     }
 
@@ -111,7 +111,7 @@ public class Security {
             throws ServiceException {
         if (token == null || token.getTenantId() == null
                 || tenantId != null && !token.getTenantId().equals(tenantId)) {
-            throw new SecurityException(null, ""); // TODO add error message
+            throw new SecurityException(Messages.NOT_AUTHORIZED);
         }
     }
 
@@ -130,7 +130,7 @@ public class Security {
             throws ServiceException {
         if (token == null || token.getRestrictions() == null
                 || !token.getRestrictions().contains(value)) {
-            throw new SecurityException(null, ""); // TODO add error message
+            throw new SecurityException(Messages.NOT_AUTHORIZED);
         }
     }
 

@@ -109,7 +109,10 @@ public class ServiceConfiguration {
         Map<String, String> map = new HashMap<>();
 
         for (ConfigurationKey key : configs) {
-            map.put(key.getProprietaryName(), entries.get(key));
+            if (key.getProprietaryName() != null
+                    && key.getProprietaryName().length() > 0) {
+                map.put(key.getProprietaryName(), entries.get(key));
+            }
         }
 
         return Collections.unmodifiableMap(map);

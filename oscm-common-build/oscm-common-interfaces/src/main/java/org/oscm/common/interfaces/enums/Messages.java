@@ -51,8 +51,12 @@ public enum Messages implements MessageKey {
     ENTITY_ALREADY_EXISTS(29), //
     ENTITY_NOT_FOUND(30), //
     ENTITY_NOT_MODIFIED(31), //
-    ENTITY_NOT_UNIQUE(32), //
-    NO_RESULT(33); //
+    ENTITY_WAS_MODIFIED(32), //
+    ENTITY_NOT_UNIQUE(33), //
+    NO_RESULT(34), //
+
+    CONNECTION_FAILURE(35), //
+    BAD_RESPONSE(36); //
 
     private static final String BUNDLE = "org.oscm.common.interfaces.messages.Messages";
 

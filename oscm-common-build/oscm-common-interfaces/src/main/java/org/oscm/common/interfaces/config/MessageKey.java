@@ -32,10 +32,10 @@ public interface MessageKey {
     /**
      * Gets the corresponding message.
      * 
-     * @param args
+     * @param values
      *            the values to replace placeholders with
      * 
      * @return the message
      */
-    public String getMessage(String... args);
+    public String getMessage(String... values);
 }

@@ -57,7 +57,10 @@ public class ProxyPersistence<P extends ProxyObject> {
      * @param etag
      *            the etag to compare (ignored if null)
      * @return the entity
-     * @throws ServiceException
+     * @throws NotFoundException
+     *             if the entity was not found
+     * @throws CacheException
+     *             if the entity was not modified
      */
     protected P readProxy(Long id, Long etag) throws ServiceException {
 
@@ -69,7 +72,7 @@ public class ProxyPersistence<P extends ProxyObject> {
             }
 
             if (etag != null && etag.equals(entity.getETag())) {
-                throw new CacheException(Messages.ENTITY_NOT_FOUND);
+                throw new CacheException(Messages.ENTITY_NOT_MODIFIED);
             }
 
             return entity;
@@ -121,7 +124,8 @@ public class ProxyPersistence<P extends ProxyObject> {
      * @param parameters
      *            the map of parameters
      * @return the entity
-     * @throws ServiceException
+     * @throws NotFoundException
+     *             if the entity was not found
      */
     protected P readSingleProxy(String namedQuery,
             Map<String, Object> parameters) throws ServiceException {

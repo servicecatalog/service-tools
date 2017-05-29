@@ -36,7 +36,7 @@ import com.google.gson.annotations.SerializedName;
  */
 @Provider
 public class ExceptionMapper
-        implements javax.ws.rs.ext.ExceptionMapper<ServiceException> {
+        implements javax.ws.rs.ext.ExceptionMapper<Exception> {
 
     private static final ServiceLogger LOGGER = ServiceLogger
             .getLogger(ExceptionMapper.class);
@@ -115,7 +115,7 @@ public class ExceptionMapper
     }
 
     @Override
-    public Response toResponse(ServiceException exception) {
+    public Response toResponse(Exception exception) {
 
         ExceptionBody body = new ExceptionBody();
 
@@ -123,30 +123,45 @@ public class ExceptionMapper
             throw exception;
         } catch (ValidationException e) {
             LOGGER.debug(e);
+            body.setReferenceId(e.getId());
+            body.setCode(e.getCode());
             body.setStatus(Status.BAD_REQUEST.getStatusCode());
             body.setProperty(e.getProperty());
         } catch (NotFoundException e) {
             LOGGER.debug(e);
+            body.setReferenceId(e.getId());
+            body.setCode(e.getCode());
             body.setStatus(Status.NOT_FOUND.getStatusCode());
         } catch (CacheException e) {
             LOGGER.debug(e);
+            body.setReferenceId(e.getId());
+            body.setCode(e.getCode());
             body.setStatus(Status.NOT_MODIFIED.getStatusCode());
         } catch (ConcurrencyException | ConflictException e) {
             LOGGER.error(e);
+            body.setReferenceId(e.getId());
+            body.setCode(e.getCode());
             body.setStatus(Status.CONFLICT.getStatusCode());
         } catch (TokenException e) {
             LOGGER.warning(e);
+            body.setReferenceId(e.getId());
+            body.setCode(e.getCode());
             body.setStatus(Status.UNAUTHORIZED.getStatusCode());
         } catch (SecurityException e) {
             LOGGER.warning(e);
+            body.setReferenceId(e.getId());
+            body.setCode(e.getCode());
             body.setStatus(Status.FORBIDDEN.getStatusCode());
         } catch (ServiceException e) {
             LOGGER.error(e);
+            body.setReferenceId(e.getId());
+            body.setCode(e.getCode());
+            body.setStatus(Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        } catch (Exception e) {
+            LOGGER.exception(e);
             body.setStatus(Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
 
-        body.setReferenceId(exception.getId());
-        body.setCode(exception.getCode());
         body.setMessage(exception.getMessage());
 
         return Response.status(body.getStatus()).entity(body)

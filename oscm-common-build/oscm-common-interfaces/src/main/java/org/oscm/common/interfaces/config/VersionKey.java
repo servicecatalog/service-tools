@@ -58,7 +58,6 @@ public interface VersionKey {
      * integer if version is less than the given one, zero if equal and positive
      * if greater.
      * 
-     * 
      * @param major
      *            the major version number
      * @param minor
@@ -84,7 +83,6 @@ public interface VersionKey {
      * Compares the version number with the given one. Returns negative integer
      * if version is less than the given one, zero if equal and positive if
      * greater.
-     * 
      * 
      * @param version
      *            the version to compare with

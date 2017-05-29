@@ -13,10 +13,10 @@ import java.util.List;
 import org.oscm.common.interfaces.data.DataType;
 import org.oscm.common.interfaces.data.ParameterType;
 import org.oscm.common.interfaces.exceptions.CacheException;
-import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.ConcurrencyException;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 
 /**
@@ -37,7 +37,7 @@ public interface GenericService {
          *            the creation parameters
          * @return the ID of the created entity
          * @throws ValidationException
-         *             if parameters are not valid
+         *             if the parameters are not valid
          * @throws InternalException
          *             if an unexpected error occurs
          */
@@ -53,9 +53,9 @@ public interface GenericService {
          *            the read parameters
          * @return the specified entity
          * @throws ValidationException
-         *             if parameters are not valid
+         *             if the parameters are not valid
          * @throws NotFoundException
-         *             if entity does not exists
+         *             if the entity does not exists
          * @throws CacheException
          *             if the etag is equals the current one (not modified)
          * @throws InternalException
@@ -70,7 +70,7 @@ public interface GenericService {
          *            the read parameters
          * @return the list of entities
          * @throws ValidationException
-         *             if parameters are not valid
+         *             if the parameters are not valid
          * @throws InternalException
          *             if an unexpected error occurs
          */
@@ -88,9 +88,9 @@ public interface GenericService {
          *            the update parameters
          * @return the ID of the created entity
          * @throws ValidationException
-         *             if parameters are not valid
+         *             if the parameters are not valid
          * @throws NotFoundException
-         *             if entity does not exists
+         *             if the entity does not exists
          * @throws ConcurrencyException
          *             if the etag (if present) is not equals the current one
          * @throws InternalException
@@ -107,9 +107,9 @@ public interface GenericService {
          * @param params
          *            the deletion parameters
          * @throws ValidationException
-         *             if parameters are not valid
+         *             if the parameters are not valid
          * @throws NotFoundException
-         *             if entity does not exists
+         *             if the entity does not exists
          * @throws InternalException
          *             if an unexpected error occurs
          */

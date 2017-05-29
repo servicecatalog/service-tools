@@ -16,7 +16,8 @@ import org.oscm.common.interfaces.config.ConfigurationKey;
  * @author miethaner
  */
 public enum KafkaProducerConfig implements ConfigurationKey {
-    KAFKA_SERVERS("bootstrap.servers", true, "servers", Type.STRING); //
+    KAFKA_SERVERS("bootstrap.servers", true, "servers", Type.STRING), //
+    KAFKA_COMP_VERSION("", false, "0", Type.LONG); //
 
     private String proprietary;
     private boolean mandatory;

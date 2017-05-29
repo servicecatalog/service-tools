@@ -99,7 +99,7 @@ public abstract class RequestParameters implements ParameterType {
         this.etag = etag;
     }
 
-    public void validateETag()
+    public void validateAndCopyETag()
             throws WebApplicationException, ServiceException {
 
         if (noneMatch != null && !ETAG_WILDCARD.equals(noneMatch)) {

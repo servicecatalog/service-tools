@@ -66,7 +66,7 @@ public class RequestParametersTest {
         params.setNoneMatch("*");
 
         try {
-            params.validateETag();
+            params.validateAndCopyETag();
             assertEquals(null, params.getETag());
         } catch (ServiceException e) {
             fail();
@@ -76,7 +76,7 @@ public class RequestParametersTest {
         params.setMatch("1");
 
         try {
-            params.validateETag();
+            params.validateAndCopyETag();
             assertEquals(new Long(1L), params.getETag());
         } catch (ServiceException e) {
             fail();
@@ -86,7 +86,7 @@ public class RequestParametersTest {
         params.setNoneMatch("1");
 
         try {
-            params.validateETag();
+            params.validateAndCopyETag();
             assertEquals(new Long(1L), params.getETag());
         } catch (ServiceException e) {
             fail();
@@ -96,7 +96,7 @@ public class RequestParametersTest {
         params.setMatch("abc");
 
         try {
-            params.validateETag();
+            params.validateAndCopyETag();
             fail();
         } catch (ServiceException e) {
         }
@@ -105,7 +105,7 @@ public class RequestParametersTest {
         params.setNoneMatch("abc");
 
         try {
-            params.validateETag();
+            params.validateAndCopyETag();
             fail();
         } catch (ServiceException e) {
         }

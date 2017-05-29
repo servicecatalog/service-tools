@@ -15,7 +15,7 @@ import org.oscm.common.interfaces.enums.Operation;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Base class for jms representations
+ * Base class for kafka representations
  * 
  * @author miethaner
  */

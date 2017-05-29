@@ -22,6 +22,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.NonUniqueObjectException;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.enums.Operation;
 import org.oscm.common.interfaces.events.GenericPublisher;
@@ -79,7 +80,8 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param publish
      *            true if entity has to be published
      * @return the entity id
-     * @throws ServiceException
+     * @throws ConflictException
+     *             if the primary key already exists or a contraint is violated
      */
     protected D createData(D entity, boolean publish) throws ServiceException {
 
@@ -100,7 +102,8 @@ public abstract class DataPersistence<D extends DataObject> {
 
             return entity;
 
-        } catch (EntityExistsException | IllegalArgumentException e) {
+        } catch (EntityExistsException | NonUniqueObjectException
+                | IllegalArgumentException e) {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
@@ -117,7 +120,10 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param etag
      *            the etag to compare (ignored if null)
      * @return the entity
-     * @throws ServiceException
+     * @throws NotFoundException
+     *             if the entity was not found
+     * @throws CacheException
+     *             if the entity was not modified
      */
     protected D readData(Long id, Long etag) throws ServiceException {
 
@@ -182,7 +188,8 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param parameters
      *            the map of parameters
      * @return the entity
-     * @throws ServiceException
+     * @throws NotFoundException
+     *             if the entity was not found
      */
     protected D readSingleData(String namedQuery,
             Map<String, Object> parameters) throws ServiceException {
@@ -207,7 +214,10 @@ public abstract class DataPersistence<D extends DataObject> {
      *            the entity to update with
      * @param publish
      *            true if entity has to be published
-     * @throws ServiceException
+     * @throws NotFoundException
+     *             if the entity to update was not found
+     * @throws CacheException
+     *             if the entity was modified by other source
      */
     protected D updateData(D entity, Long etag, boolean publish)
             throws ServiceException {
@@ -222,7 +232,7 @@ public abstract class DataPersistence<D extends DataObject> {
 
             if (etag != null) {
                 if (!entity.getETag().equals(old.getETag())) {
-                    throw new CacheException(Messages.ENTITY_NOT_MODIFIED);
+                    throw new CacheException(Messages.ENTITY_WAS_MODIFIED);
                 }
             } else {
                 entity.setETag(old.getETag());
@@ -261,7 +271,8 @@ public abstract class DataPersistence<D extends DataObject> {
      *            the entity id
      * @param publish
      *            true if entity has to be published
-     * @throws ServiceException
+     * @throws NotFoundException
+     *             if the entity to delete was not found
      */
     protected D deleteData(Long id, boolean publish) throws ServiceException {
 
@@ -302,7 +313,7 @@ public abstract class DataPersistence<D extends DataObject> {
      */
     protected void confirm(Long id) throws ServiceException {
         // new entitymanager needed because this method is used in callbacks
-        // that can be called from different threads
+        // which can be called from different threads
         EntityManager localEm = HibernateManager.getInstance()
                 .getEntityManager();
         EntityTransaction transaction = localEm.getTransaction();
@@ -321,7 +332,8 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param id
      *            the id of the entity
      * @return the foreign data entity
-     * @throws ServiceException
+     * @throws NotFoundException
+     *             if the entity was not found
      */
     protected <F extends DataObject> F readForeignData(Class<F> foreign,
             Long id) throws ServiceException {
@@ -348,7 +360,8 @@ public abstract class DataPersistence<D extends DataObject> {
      * @param id
      *            the id of the entity
      * @return the foreign proxy entity
-     * @throws ServiceException
+     * @throws NotFoundException
+     *             if the entity was not found
      */
     protected <F extends ProxyObject> F readForeignProxy(Class<F> foreign,
             Long id) throws ServiceException {

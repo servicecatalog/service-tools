@@ -22,6 +22,7 @@ import org.oscm.common.interfaces.data.Callback;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.ConnectionException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
+import org.oscm.common.util.logger.ServiceLogger;
 
 /**
  * Super class for REST clients
@@ -29,6 +30,9 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
  * @author miethaner
  */
 public class RestClient {
+
+    private static final ServiceLogger LOGGER = ServiceLogger
+            .getLogger(RestClient.class);
 
     private static final long EXPIRATION_TIME_INTERNAL = 300000; // 5 min
     private static final long EXPIRATION_TIME_EXTERNAL = 15552000000L; // 180 d
@@ -58,7 +62,7 @@ public class RestClient {
                     success.callback();
                 }
             } catch (ServiceException e) {
-                // TODO Log error
+                LOGGER.error(e);
             }
         }
 
@@ -67,7 +71,7 @@ public class RestClient {
             try {
                 failure.callback();
             } catch (ServiceException e) {
-                // TODO Log error
+                LOGGER.error(e);
             }
         }
     }
@@ -130,8 +134,7 @@ public class RestClient {
         }
 
         if (response == null || response.getStatus() != status) {
-            throw new ConnectionException(Messages.ERROR);
-            // TODO add error message
+            throw new ConnectionException(Messages.BAD_RESPONSE);
         }
     }
 

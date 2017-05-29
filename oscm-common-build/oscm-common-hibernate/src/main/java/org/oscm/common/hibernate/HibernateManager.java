@@ -15,7 +15,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 /**
- * Singleton class for managing hibernate database connection.
+ * Singleton class for managing the hibernate database connection.
  * 
  * @author miethaner
  */

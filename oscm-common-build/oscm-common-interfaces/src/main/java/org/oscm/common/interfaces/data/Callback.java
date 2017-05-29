@@ -17,5 +17,10 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
  */
 public interface Callback {
 
+    /**
+     * Callback method with service exceptions.
+     * 
+     * @throws ServiceException
+     */
     public void callback() throws ServiceException;
 }
