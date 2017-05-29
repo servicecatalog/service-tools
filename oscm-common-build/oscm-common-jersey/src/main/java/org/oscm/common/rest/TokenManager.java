@@ -69,8 +69,9 @@ public class TokenManager {
      *            the alias of the private key in the keystore
      */
     public static void init(String keystoreLoc, String keystorePwd,
-            String keystoreAlias) {
-        tm = new TokenManager(keystoreLoc, keystorePwd, keystoreAlias);
+            String keystoreAlias, String privateKeyPwd) {
+        tm = new TokenManager(keystoreLoc, keystorePwd, keystoreAlias,
+                privateKeyPwd);
     }
 
     private PrivateKey privateKey;
@@ -78,7 +79,7 @@ public class TokenManager {
     private JWTVerifier verifier;
 
     private TokenManager(String keystoreLoc, String keystorePwd,
-            String keystoreAlias) {
+            String keystoreAlias, String privateKeyPwd) {
 
         InputStream is = null;
         try {
@@ -88,7 +89,7 @@ public class TokenManager {
             is.close();
 
             privateKey = (PrivateKey) keystore.getKey(keystoreAlias,
-                    keystorePwd.toCharArray());
+                    privateKeyPwd.toCharArray());
 
             if (privateKey == null
                     || !ALGORITHM.equals(privateKey.getAlgorithm())) {
@@ -144,11 +145,13 @@ public class TokenManager {
                         token.getOrganizationIdString())
                 .withClaim(Token.FIELD_TENANT_ID, token.getTenantIdString())
                 .withArrayClaim(Token.FIELD_ROLES, token.getRolesArray())
+                .withArrayClaim(Token.FIELD_RESTRICTIONS,
+                        token.getRestrictionsArray())
                 .sign(Algorithm.RSA256((RSAKey) privateKey));
     }
 
     /**
-     * Decrypts and decodes the JSON web token and verifes it.
+     * Decrypts and decodes the JSON web token and verifies it.
      * 
      * @param tokenString
      *            the encoded token
@@ -168,6 +171,8 @@ public class TokenManager {
             token.setTenantId(jwt.getClaim(Token.FIELD_TENANT_ID).asString());
             token.setRoles(
                     jwt.getClaim(Token.FIELD_ROLES).asArray(String.class));
+            token.setRestrictions(jwt.getClaim(Token.FIELD_RESTRICTIONS)
+                    .asArray(String.class));
 
             return token;
         } catch (JWTVerificationException e) {

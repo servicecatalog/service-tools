@@ -16,7 +16,6 @@ import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.security.SecurityToken;
-import org.oscm.common.interfaces.security.SecurityToken.Restrictions;
 import org.oscm.common.util.ServiceConfiguration;
 
 /**
@@ -117,8 +116,7 @@ public class Security {
     }
 
     /**
-     * Validates the given value with the one of the given restriction from the
-     * given token.
+     * Validates the given value with the restrictions from the given token.
      * 
      * @param token
      *            the security token
@@ -128,13 +126,10 @@ public class Security {
      *            the restriction value
      * @throws ServiceException
      */
-    public static void validateRestriction(SecurityToken token,
-            Restrictions restriction, String value) throws ServiceException {
-        if (token == null || restriction == null
-                || token.getRestrictions() == null
-                || token.getRestrictions().get(restriction.name()) == null
-                || !token.getRestrictions().get(restriction.name())
-                        .equals(value)) {
+    public static void validateRestriction(SecurityToken token, String value)
+            throws ServiceException {
+        if (token == null || token.getRestrictions() == null
+                || !token.getRestrictions().contains(value)) {
             throw new SecurityException(null, ""); // TODO add error message
         }
     }

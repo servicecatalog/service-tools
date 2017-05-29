@@ -20,6 +20,7 @@ public enum JerseyConfig implements ConfigurationKey {
     JERSEY_CONTEXT("", false, "oscm", Type.STRING), //
     JERSEY_KEYSTORE_LOCATION("", true, "./keystore.jks", Type.STRING), //
     JERSEY_KEYSTORE_PASSWORD("", true, "changeit", Type.STRING), //
+    JERSEY_KEYSTORE_PK_PASSWORD("", true, "changeit", Type.STRING), //
     JERSEY_KEYSTORE_ALIAS("", true, "oscm", Type.STRING); //
 
     private String proprietary;

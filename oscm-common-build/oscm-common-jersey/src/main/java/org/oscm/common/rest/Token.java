@@ -11,7 +11,6 @@ package org.oscm.common.rest;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.oscm.common.interfaces.security.SecurityToken;
@@ -26,12 +25,13 @@ public class Token implements SecurityToken {
     public static final String FIELD_USER_ID = "user_id";
     public static final String FIELD_ORGANIZATION_ID = "organization_id";
     public static final String FIELD_TENANT_ID = "tenant_id";
+    public static final String FIELD_RESTRICTIONS = "restrictions";
     public static final String FIELD_ROLES = "roles";
 
     private Long userId;
     private Long organizationId;
     private Long tenantId;
-    private Map<String, String> restrictions;
+    private Set<String> restrictions;
     private Set<String> roles;
 
     @Override
@@ -122,24 +122,32 @@ public class Token implements SecurityToken {
     }
 
     @Override
-    public Map<String, String> getRestrictions() {
+    public Set<String> getRestrictions() {
         if (restrictions != null) {
-            return Collections.unmodifiableMap(restrictions);
+            return Collections.unmodifiableSet(restrictions);
         } else {
-            return Collections.emptyMap();
+            return Collections.emptySet();
         }
     }
 
-    public String getRestriction(Restrictions r) {
+    public String[] getRestrictionsArray() {
         if (restrictions != null) {
-            return restrictions.get(r.name());
+            return restrictions.toArray(new String[] {});
         } else {
-            return null;
+            return new String[] {};
         }
     }
 
-    public void setRestrictions(Map<String, String> restrictions) {
+    public void setRestrictions(Set<String> restrictions) {
         this.restrictions = restrictions;
+    }
+
+    public void setRestrictions(String[] restrictionsArray) {
+        if (restrictionsArray != null) {
+            restrictions = new HashSet<>(Arrays.asList(restrictionsArray));
+        } else {
+            restrictions = null;
+        }
     }
 
     @Override
