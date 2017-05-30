@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.oscm.common.interfaces.config.VersionKey;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
-import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.security.SecurityToken;
 import org.oscm.common.rest.Backend;
@@ -299,30 +298,6 @@ public class ResourceTest extends Resource {
             delete(requestWithoutId, backendDelete, params);
             fail();
         } catch (NotFoundException e) {
-        }
-
-        try {
-            get(requestWithoutToken, backendGet, params, false);
-            fail();
-        } catch (SecurityException e) {
-        }
-
-        try {
-            post(requestWithoutToken, backendPost, null, params);
-            fail();
-        } catch (SecurityException e) {
-        }
-
-        try {
-            put(requestWithoutToken, backendPut, null, params);
-            fail();
-        } catch (SecurityException e) {
-        }
-
-        try {
-            delete(requestWithoutToken, backendDelete, params);
-            fail();
-        } catch (SecurityException e) {
         }
 
         try {
