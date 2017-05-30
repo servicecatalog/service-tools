@@ -71,11 +71,11 @@ public class ServiceConfiguration {
     }
 
     private ServiceConfiguration(ConfigurationImporter importer,
-            VersionKey[] versions, ResourceKey[] services,
+            VersionKey[] versions, ResourceKey[] resources,
             ConfigurationKey[] configs) {
         this.versions = new HashSet<>(Arrays.asList(versions));
 
-        this.roles = importer.readRoles(services);
+        this.roles = importer.readRoles(resources);
 
         this.entries = importer.readEntries(configs);
     }
@@ -135,7 +135,11 @@ public class ServiceConfiguration {
      * @return true if restricted
      */
     public boolean isResourceRestricted(ResourceKey resource) {
-        return !roles.get(resource).contains(ResourceKey.PUBLIC_ROLE);
+        if (roles.get(resource) != null) {
+            return !roles.get(resource).contains(ResourceKey.PUBLIC_ROLE);
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -146,6 +150,10 @@ public class ServiceConfiguration {
      * @return the set of roles
      */
     public Set<String> getRolesForResource(ResourceKey resource) {
-        return Collections.unmodifiableSet(roles.get(resource));
+        if (roles.get(resource) != null) {
+            return Collections.unmodifiableSet(roles.get(resource));
+        } else {
+            return Collections.emptySet();
+        }
     }
 }

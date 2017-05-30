@@ -16,20 +16,24 @@
   <build>
     <finalName>${project.name}</finalName>
     <plugins>
-     <plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.6</version>
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-        </configuration>
+        <version>3.0.0</version>
         <executions>
           <execution>
+            <id>jar-with-dependencies</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <finalName>oscm-tools</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+            </configuration>
           </execution>
         </executions>
       </plugin>

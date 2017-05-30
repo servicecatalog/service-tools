@@ -8,22 +8,12 @@
 
 package org.oscm.common.util;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.StreamHandler;
 
-import org.apache.ibatis.jdbc.ScriptRunner;
+import org.flywaydb.core.Flyway;
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.config.ConfigurationLoader;
-import org.oscm.common.interfaces.config.VersionKey;
 import org.oscm.common.util.importer.EnvironmentImporter;
 import org.oscm.common.util.importer.LocalLoader;
 import org.oscm.common.util.importer.PropertiesImporter;
@@ -227,76 +217,11 @@ public abstract class Application {
      * @param dbPassword
      *            the database password
      */
-    protected void upgradeDatabase(List<VersionKey> versions, String dbDriver,
-            String dbUrl, String dbUser, String dbPassword) {
+    protected void upgradeDatabase(String dbUrl, String dbUser,
+            String dbPassword) {
 
-        try {
-            Class.forName(dbDriver);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new RuntimeException(
-                    "DriverClass '" + dbDriver + "' could not be found");
-        }
-
-        Connection conn;
-        try {
-            conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Could not connect to the database");
-        }
-
-        try {
-            conn.setAutoCommit(false);
-
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT version FROM Version");
-
-            int version = 0;
-
-            if (rs.next()) {
-                version = rs.getInt(1);
-            }
-
-            versions.sort((v1, v2) -> v1.compareVersion(v2));
-
-            ClassLoader classloader = Thread.currentThread()
-                    .getContextClassLoader();
-
-            ScriptRunner runner = new ScriptRunner(conn);
-            runner.setAutoCommit(false);
-
-            for (VersionKey v : versions) {
-                if (v.getCompiledVersion() > version) {
-                    InputStream is = classloader.getResourceAsStream(
-                            "sql/" + v.getCompiledVersion() + ".sql");
-
-                    if (is != null) {
-                        runner.runScript(new InputStreamReader(is));
-                    }
-                }
-            }
-
-            PreparedStatement pstmt = conn
-                    .prepareStatement("UPDATE Version SET version = ?");
-            pstmt.setInt(1,
-                    versions.get(versions.size() - 1).getCompiledVersion());
-            pstmt.execute();
-
-            conn.commit();
-        } catch (Exception e) {
-            try {
-                conn.rollback();
-            } catch (SQLException e1) {
-                // igore
-            }
-            throw new RuntimeException("Unable to upgrade database");
-        } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new RuntimeException("Could not close resources");
-            }
-        }
+        Flyway flyway = new Flyway();
+        flyway.setDataSource(dbUrl, dbUser, dbPassword);
+        flyway.migrate();
     }
 }
