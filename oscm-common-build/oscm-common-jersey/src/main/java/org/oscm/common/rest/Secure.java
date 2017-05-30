@@ -1,31 +1,25 @@
 /*******************************************************************************
  *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                           
+ *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: May 9, 2016                                                      
+ *  Creation Date: May 30, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
 package org.oscm.common.rest;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+
+import javax.ws.rs.NameBinding;
 
 /**
- * Custom annotation for REST method versioning. Annotated methods can not be
- * called for versions smaller than the given one.
+ * Custom annotation for REST method security. Annotated methods will be check
+ * for secure connection and authentication.
  * 
  * @author miethaner
  */
+@NameBinding
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Since {
-
-    int major();
-
-    int minor() default 0;
-
-    int fix() default 0;
+public @interface Secure {
 }

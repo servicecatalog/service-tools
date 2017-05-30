@@ -14,8 +14,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Custom annotation for REST method versioning. Cant be called for versions
- * equal or greater than value.
+ * Custom annotation for REST method versioning. Annotated methods can not be
+ * called for versions equal or greater than the given one.
  * 
  * @author miethaner
  */

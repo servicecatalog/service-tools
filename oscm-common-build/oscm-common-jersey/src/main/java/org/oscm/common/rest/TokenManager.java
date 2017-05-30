@@ -8,18 +8,7 @@
 
 package org.oscm.common.rest;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.interfaces.RSAKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import org.oscm.common.interfaces.enums.Messages;
@@ -39,7 +28,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
  */
 public class TokenManager {
 
-    private static final String ALGORITHM = "RSA";
     private static final String ISSUER = "OSCM";
 
     private static TokenManager tm;
@@ -58,76 +46,32 @@ public class TokenManager {
     }
 
     /**
-     * Initializes the token manager with the keystore information and reads the
-     * encryption/decryption keys corresponding to the given alias.
+     * Initializes the token manager with the given secret.
      * 
-     * @param keystoreLoc
-     *            the location of the keystore
-     * @param keystorePwd
-     *            the password of the keystore
-     * @param keystoreAlias
-     *            the alias of the private key in the keystore
+     * @param secret
+     *            the secret used for hmac
      */
-    public static void init(String keystoreLoc, String keystorePwd,
-            String keystoreAlias, String privateKeyPwd) {
-        tm = new TokenManager(keystoreLoc, keystorePwd, keystoreAlias,
-                privateKeyPwd);
+    public static void init(String secret) {
+        tm = new TokenManager(secret);
     }
 
-    private PrivateKey privateKey;
-    private PublicKey publicKey;
+    private String secret;
     private JWTVerifier verifier;
 
-    private TokenManager(String keystoreLoc, String keystorePwd,
-            String keystoreAlias, String privateKeyPwd) {
+    private TokenManager(String secret) {
 
-        InputStream is = null;
-        try {
-            is = new FileInputStream(keystoreLoc);
-            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore.load(is, keystorePwd.toCharArray());
-            is.close();
+        this.secret = secret;
 
-            privateKey = (PrivateKey) keystore.getKey(keystoreAlias,
-                    privateKeyPwd.toCharArray());
-
-            if (privateKey == null
-                    || !ALGORITHM.equals(privateKey.getAlgorithm())) {
-                throw new RuntimeException(
-                        "Unable to load correct private key from keystore");
-            }
-
-            Certificate cert = keystore.getCertificate(keystoreAlias);
-
-            if (cert == null || cert.getPublicKey() == null
-                    || !ALGORITHM.equals(cert.getPublicKey().getAlgorithm())) {
-                throw new RuntimeException(
-                        "Unable to load correct public key form truststore");
-            }
-
-            publicKey = cert.getPublicKey();
-
-            verifier = JWT.require(Algorithm.RSA256((RSAKey) publicKey))
-                    .withIssuer(ISSUER).build();
-
-        } catch (KeyStoreException | NoSuchAlgorithmException
-                | CertificateException | IOException
-                | UnrecoverableKeyException e) {
-            throw new RuntimeException("Unable to initialize token manager", e);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e1) {
-                    // ignore
-                }
-            }
-        }
+        verifier = JWT
+                .require(Algorithm
+                        .HMAC512(secret.getBytes(StandardCharsets.UTF_8)))
+                .withIssuer(ISSUER).build();
     }
 
     /**
      * Create a new JSON web token with the given expiration time from the given
-     * service token. Also encodes the jwt and sign it with the configured key.
+     * service token. Also encodes the jwt and sign it with the configured
+     * secret.
      * 
      * @param token
      *            the service token
@@ -147,11 +91,12 @@ public class TokenManager {
                 .withArrayClaim(Token.FIELD_ROLES, token.getRolesArray())
                 .withArrayClaim(Token.FIELD_RESTRICTIONS,
                         token.getRestrictionsArray())
-                .sign(Algorithm.RSA256((RSAKey) privateKey));
+                .sign(Algorithm
+                        .HMAC512(secret.getBytes(StandardCharsets.UTF_8)));
     }
 
     /**
-     * Decrypts and decodes the JSON web token and verifies it.
+     * Decodes and verifies the given JSON web token.
      * 
      * @param tokenString
      *            the encoded token

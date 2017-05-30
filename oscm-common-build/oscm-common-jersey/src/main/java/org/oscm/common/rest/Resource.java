@@ -20,7 +20,6 @@ import javax.ws.rs.core.UriBuilder;
 import org.oscm.common.interfaces.config.VersionKey;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
-import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 import org.oscm.common.interfaces.security.SecurityToken;
@@ -188,9 +187,6 @@ public abstract class Resource {
         SecurityToken token = (SecurityToken) cr
                 .getProperty(RequestParameters.PARAM_TOKEN);
 
-        if (token == null) {
-            throw new SecurityException(Messages.NOT_AUTHENTICATED);
-        }
         params.setSecurityToken(token);
     }
 

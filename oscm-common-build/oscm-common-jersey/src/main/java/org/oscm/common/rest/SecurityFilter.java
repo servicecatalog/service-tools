@@ -25,6 +25,7 @@ import org.oscm.common.interfaces.exceptions.TokenException;
  * @author miethaner
  */
 @Provider
+@Secure
 public class SecurityFilter implements ContainerRequestFilter {
 
     /**
