@@ -12,8 +12,8 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.oscm.common.interfaces.config.MessageKey;
 import org.oscm.common.interfaces.exceptions.ServiceException;
+import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
  * Wrapper class for logging with convenience methods. Delegates to
@@ -176,7 +176,7 @@ public class ServiceLogger {
      * @param thrown
      *            the exception
      */
-    public void exception(Exception thrown) {
+    public void exception(Throwable thrown) {
         logger.log(Level.SEVERE, thrown.getMessage(), thrown);
     }
 }

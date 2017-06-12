@@ -8,7 +8,8 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.MessageKey;
+import org.oscm.common.interfaces.enums.Reason;
+import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
  * Component exception for concurrency events and errors.
@@ -44,5 +45,10 @@ public class ConcurrencyException extends ServiceException {
     public ConcurrencyException(MessageKey messageKey, Throwable e,
             String... values) {
         super(messageKey, e, values);
+    }
+
+    @Override
+    public Reason getReason() {
+        return Reason.CONCURRENCY;
     }
 }

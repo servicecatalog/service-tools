@@ -8,7 +8,8 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.MessageKey;
+import org.oscm.common.interfaces.enums.Reason;
+import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
  * Component exception for security token events and errors (e.g. token missing)
@@ -44,5 +45,10 @@ public class TokenException extends ServiceException {
     public TokenException(MessageKey messageKey, Throwable e,
             String... values) {
         super(messageKey, e, values);
+    }
+
+    @Override
+    public Reason getReason() {
+        return Reason.TOKEN;
     }
 }

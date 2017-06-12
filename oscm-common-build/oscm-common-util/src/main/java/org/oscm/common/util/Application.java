@@ -11,7 +11,6 @@ package org.oscm.common.util;
 import java.util.logging.Level;
 import java.util.logging.StreamHandler;
 
-import org.flywaydb.core.Flyway;
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.config.ConfigurationLoader;
 import org.oscm.common.util.importer.EnvironmentImporter;
@@ -202,26 +201,4 @@ public abstract class Application {
      */
     protected abstract void stop() throws Exception;
 
-    /**
-     * Upgrades the database according to the version saved in the version
-     * table. If no entry is present, the database will be initialized.
-     * 
-     * @param versions
-     *            the list of existing versions
-     * @param dbDriver
-     *            the database driver class
-     * @param dbUrl
-     *            the database url
-     * @param dbUser
-     *            the database user
-     * @param dbPassword
-     *            the database password
-     */
-    protected void upgradeDatabase(String dbUrl, String dbUser,
-            String dbPassword) {
-
-        Flyway flyway = new Flyway();
-        flyway.setDataSource(dbUrl, dbUser, dbPassword);
-        flyway.migrate();
-    }
 }

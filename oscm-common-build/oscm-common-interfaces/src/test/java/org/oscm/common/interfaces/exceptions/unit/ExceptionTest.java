@@ -11,7 +11,6 @@ package org.oscm.common.interfaces.exceptions.unit;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.oscm.common.interfaces.config.MessageKey;
 import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.ConcurrencyException;
 import org.oscm.common.interfaces.exceptions.ConflictException;
@@ -22,6 +21,7 @@ import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TokenException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
+import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
  * Unit tests for the common exceptions
@@ -52,16 +52,6 @@ public class ExceptionTest {
     private static final Integer ONE = new Integer(1);
 
     private Exception exception = new Exception(CAUSE);
-
-    @Test
-    public void testServiceExcpetion() {
-
-        ServiceException e = new ServiceException(KEY);
-        validateException(e, ONE, TEST, null);
-
-        e = new ServiceException(KEY, exception);
-        validateException(e, ONE, TEST, exception);
-    }
 
     @Test
     public void testCacheExcpetion() {

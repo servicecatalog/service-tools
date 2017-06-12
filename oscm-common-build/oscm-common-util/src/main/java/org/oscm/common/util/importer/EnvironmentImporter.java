@@ -9,14 +9,15 @@
 package org.oscm.common.util.importer;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.oscm.common.interfaces.config.ConfigurationImporter;
-import org.oscm.common.interfaces.config.ConfigurationKey;
-import org.oscm.common.interfaces.config.ResourceKey;
+import org.oscm.common.interfaces.keys.ActivityKey;
+import org.oscm.common.interfaces.keys.ConfigurationKey;
 
 /**
  * Importer class for environment variables
@@ -26,17 +27,17 @@ import org.oscm.common.interfaces.config.ResourceKey;
 public class EnvironmentImporter implements ConfigurationImporter {
 
     @Override
-    public Map<ResourceKey, Set<String>> readRoles(ResourceKey[] keys) {
+    public Map<ActivityKey, Set<String>> readRoles(ActivityKey[] keys) {
 
         Map<String, String> env = System.getenv();
 
-        Map<ResourceKey, Set<String>> roles = new HashMap<>();
-        for (ResourceKey k : keys) {
+        Map<ActivityKey, Set<String>> roles = new HashMap<>();
+        for (ActivityKey k : keys) {
             if (env.containsKey(k.getKeyName())) {
                 String value = env.get(k.getKeyName());
                 roles.put(k, new HashSet<>(Arrays.asList(value.split(","))));
             } else {
-                roles.put(k, new HashSet<>(Arrays.asList(k.getDefaultRole())));
+                roles.put(k, Collections.emptySet());
             }
         }
         return roles;

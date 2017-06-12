@@ -8,7 +8,8 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.MessageKey;
+import org.oscm.common.interfaces.enums.Reason;
+import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
  * Component exception for unexpected internal errors
@@ -44,5 +45,10 @@ public class InternalException extends ServiceException {
     public InternalException(MessageKey messageKey, Throwable e,
             String... values) {
         super(messageKey, e, values);
+    }
+
+    @Override
+    public Reason getReason() {
+        return Reason.INTERNAL;
     }
 }

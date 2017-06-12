@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.ValidationException;
@@ -84,6 +85,29 @@ public class Validator {
                 throw new ValidationException(Messages.INVALID_LANGUAGE,
                         property);
             }
+        }
+    }
+
+    /**
+     * Validates the given UUID if it matches the pattern and parses it.
+     * 
+     * @param property
+     *            the name of the property
+     * @param uuid
+     *            the UUID to validate and parse
+     * @throws ValidationException
+     */
+    public static UUID validateUUID(String property, String uuid)
+            throws ValidationException {
+
+        if (uuid == null) {
+            return null;
+        }
+
+        try {
+            return UUID.fromString(uuid);
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException(Messages.INVALID_UUID, property);
         }
     }
 
@@ -166,10 +190,12 @@ public class Validator {
 
         if (first != null && second != null) {
             if (!first.equals(second)) {
-                throw new ValidationException(Messages.PROPERTY_NOT_EQUAL, property);
+                throw new ValidationException(Messages.PROPERTY_NOT_EQUAL,
+                        property);
             }
         } else if (first != second) {
-            throw new ValidationException(Messages.PROPERTY_NOT_EQUAL, property);
+            throw new ValidationException(Messages.PROPERTY_NOT_EQUAL,
+                    property);
         }
     }
 

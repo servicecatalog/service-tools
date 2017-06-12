@@ -11,6 +11,7 @@ package org.oscm.common.interfaces.config;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.oscm.common.interfaces.keys.VersionKey;
 
 /**
  * Unit test for VersionKey

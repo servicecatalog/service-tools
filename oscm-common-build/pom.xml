@@ -13,7 +13,6 @@
     <module>oscm-common-interfaces</module>
     <module>oscm-common-package</module>
     <module>oscm-common-util</module>
-    <module>oscm-common-hibernate</module>
     <module>oscm-common-kafka</module>
     <module>oscm-common-jersey</module>
   </modules>

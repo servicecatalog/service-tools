@@ -1,163 +1,160 @@
 /*******************************************************************************
  *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                           
+ *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Jun 10, 2016                                                      
+ *  Creation Date: Jun 2, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
 package org.oscm.common.rest;
 
+import java.util.Date;
+import java.util.UUID;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Request;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.oscm.common.interfaces.data.Command;
+import org.oscm.common.interfaces.data.Event;
+import org.oscm.common.interfaces.data.Result;
+import org.oscm.common.interfaces.data.Token;
+import org.oscm.common.interfaces.events.CommandPublisher;
+import org.oscm.common.interfaces.events.ResultHandler;
 import org.oscm.common.interfaces.exceptions.ServiceException;
+import org.oscm.common.interfaces.keys.ActivityKey;
+import org.oscm.common.interfaces.keys.ActivityKey.Type;
+import org.oscm.common.interfaces.services.QueryService;
+import org.oscm.common.rest.filters.ActivityFilter;
+import org.oscm.common.rest.filters.AuthenticationFilter;
+import org.oscm.common.rest.filters.VersionFilter;
+import org.oscm.common.rest.interfaces.Activity;
+import org.oscm.common.rest.interfaces.Secure;
+import org.oscm.common.rest.interfaces.Versioned;
+import org.oscm.common.util.ResourceManager;
 
 /**
- * Interfaces for REST endpoints
- * 
  * @author miethaner
+ *
  */
-public interface Frontend {
+@Path("/{" + VersionFilter.PARAM_VERSION + "}")
+public class Frontend {
 
-    /**
-     * Interface for HTTP GET methods.
-     * 
-     * @author miethaner
-     *
-     * @param <P>
-     *            request parameters
-     */
-    public interface Get<P extends RequestParameters> {
+    private static final String PATH_CMD = "/commands/{"
+            + ActivityFilter.PARAM_ACTIVITY + "}";
+    private static final String PATH_QUERY = "/queries/{"
+            + ActivityFilter.PARAM_ACTIVITY + "}";
 
-        /**
-         * Gets the corresponding representation of the entity with the id in
-         * params and wraps it in the response.
-         * 
-         * @param request
-         *            the request context
-         * @param params
-         *            the request parameters
-         * @return the response with the representation
-         * @throws WebApplicationException
-         * @throws ServiceException
-         */
-        public Response getItem(Request request, P params)
-                throws WebApplicationException, ServiceException;
+    private CommandPublisher publisher;
+    private QueryService queryService;
 
-        /**
-         * Gets all valid entity representations and wraps them in the response.
-         * 
-         * @param request
-         *            the request context
-         * @param params
-         *            the request parameters
-         * @return the response with the representations
-         * @throws WebApplicationException
-         * @throws ServiceException
-         */
-        public Response getCollection(Request request, P params)
-                throws WebApplicationException, ServiceException;
+    public Frontend() {
+        publisher = ResourceManager.getInstance()
+                .getResource(CommandPublisher.class);
+
+        queryService = ResourceManager.getInstance()
+                .getResource(QueryService.class);
     }
 
-    /**
-     * Interface for HTTP POST methods.
-     * 
-     * @author miethaner
-     *
-     * @param <R>
-     *            a representation
-     * @param <P>
-     *            request parameters
-     */
-    public interface Post<R extends Representation, P extends RequestParameters> {
+    @Activity(Type.COMMAND)
+    @Secure
+    @Versioned
+    @POST
+    @Path(PATH_CMD)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public void command(@Context ContainerRequestContext request, Event event,
+            @Suspended final AsyncResponse asyncResponse)
+            throws WebApplicationException, ServiceException {
 
-        /**
-         * Creates a new entity from the given representation and returns its id
-         * within the location header of the response.
-         * 
-         * @param request
-         *            the request context
-         * @param content
-         *            the representation to create
-         * @param params
-         *            the request parameters
-         * @return the response with the location
-         * @throws WebApplicationException
-         * @throws ServiceException
-         */
-        public Response postCollection(Request request, R content, P params)
-                throws WebApplicationException, ServiceException;
+        ActivityKey activityKey = (ActivityKey) request
+                .getProperty(ActivityFilter.PROPERTY_ACTIVITY);
+
+        Token token = (Token) request
+                .getProperty(AuthenticationFilter.PROPERTY_TOKEN);
+
+        event.validateFor(activityKey);
+
+        Command command = new Command();
+        command.setId(UUID.randomUUID());
+        command.setCommand(activityKey);
+        command.setEvent(event);
+        command.setToken(token);
+        command.setTimestamp(new Date());
+
+        publisher.publish(command, new ResultHandler() {
+
+            @Override
+            public void handle(Result result) {
+                asyncResponse.resume(createResponseFromResult(result));
+            }
+
+            @Override
+            public void handle(Throwable thrown) {
+                asyncResponse.resume(thrown);
+            }
+
+            @Override
+            public boolean isAlive() {
+                return asyncResponse.isSuspended();
+            }
+        });
+
     }
 
-    /**
-     * Interface for HTTP PUT methods.
-     * 
-     * @author miethaner
-     *
-     * @param <R>
-     *            a representation
-     * @param <P>
-     *            request parameters
-     */
-    public interface Put<R extends Representation, P extends RequestParameters> {
+    @Activity(Type.QUERY)
+    @Secure
+    @Versioned
+    @POST
+    @Path(PATH_QUERY)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response query(@Context ContainerRequestContext request, Event event)
+            throws WebApplicationException, ServiceException {
 
-        /**
-         * Updates the entity with the id in params with the given
-         * representation.
-         * 
-         * @param request
-         *            the request context
-         * @param content
-         *            the representation to update
-         * @param params
-         *            the request parameters
-         * @return the response without content
-         * @throws WebApplicationException
-         * @throws ServiceException
-         */
-        public Response putItem(Request request, R content, P params)
-                throws WebApplicationException, ServiceException;
+        ActivityKey activityKey = (ActivityKey) request
+                .getProperty(ActivityFilter.PROPERTY_ACTIVITY);
+
+        Token token = (Token) request
+                .getProperty(AuthenticationFilter.PROPERTY_TOKEN);
+
+        event.validateFor(activityKey);
+
+        Result result = queryService.query(event, token);
+
+        return createResponseFromResult(result);
     }
 
-    /**
-     * Interface for HTTP DELETE methods.
-     * 
-     * @author miethaner
-     *
-     * @param <P>
-     *            request parameters
-     */
-    public interface Delete<P extends RequestParameters> {
+    private Response createResponseFromResult(Result result) {
+        if (result == null) {
+            return Response.noContent().build();
+        }
 
-        /**
-         * Deletes the entity with the id in params.
-         * 
-         * @param request
-         *            the request context
-         * @param params
-         *            the request parameters
-         * @return the response without content
-         * @throws WebApplicationException
-         * @throws ServiceException
-         */
-        public Response deleteItem(Request request, P params)
-                throws WebApplicationException, ServiceException;
+        switch (result.getStatus()) {
+        case SUCCESS:
+            return Response.ok(result).build();
+        case FAILURE:
+        case CACHED:
+            if (result.getFailure() != null) {
+                return Response
+                        .status(ExceptionMapper.getStatusForReason(
+                                result.getFailure().getReason()))
+                        .entity(result).build();
+            } else {
+                return Response.serverError().build();
+            }
+        case PENDING:
+            return Response.accepted(result).build();
+        default:
+            return Response.noContent().build();
+        }
     }
-
-    /**
-     * Interface for all standard methods.
-     * 
-     * @author miethaner
-     *
-     * @param <R>
-     *            a representation
-     * @param <P>
-     *            request parameters
-     */
-    public interface Crud<R extends Representation, P extends RequestParameters>
-            extends Get<P>, Post<R, P>, Put<R, P>, Delete<P> {
-    }
-
 }

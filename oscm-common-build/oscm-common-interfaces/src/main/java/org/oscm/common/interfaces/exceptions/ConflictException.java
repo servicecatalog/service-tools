@@ -8,7 +8,8 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.MessageKey;
+import org.oscm.common.interfaces.enums.Reason;
+import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
  * Component exception for conflict events and errors (e.g. violation of a
@@ -45,5 +46,10 @@ public class ConflictException extends ServiceException {
     public ConflictException(MessageKey messageKey, Throwable e,
             String... values) {
         super(messageKey, e, values);
+    }
+
+    @Override
+    public Reason getReason() {
+        return Reason.CONFLICT;
     }
 }

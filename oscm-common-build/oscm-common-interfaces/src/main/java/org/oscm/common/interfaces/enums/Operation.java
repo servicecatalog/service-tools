@@ -8,11 +8,23 @@
 
 package org.oscm.common.interfaces.enums;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Enum for basic C(R)UD operations and more.
  * 
  * @author miethaner
  */
 public enum Operation {
-    CREATED, UPDATED, DELETED
+
+    @SerializedName(Constants.OPTION_UPDATE)
+    UPDATE, //
+
+    @SerializedName(Constants.OPTION_DELETE)
+    DELETE; //
+
+    public class Constants {
+        public static final String OPTION_UPDATE = "upd";
+        public static final String OPTION_DELETE = "del";
+    }
 }

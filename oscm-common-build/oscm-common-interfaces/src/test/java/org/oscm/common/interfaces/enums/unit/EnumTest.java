@@ -11,9 +11,8 @@ package org.oscm.common.interfaces.enums.unit;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.oscm.common.interfaces.config.ConfigurationKey;
 import org.oscm.common.interfaces.enums.Messages;
-import org.oscm.common.interfaces.enums.Operation;
+import org.oscm.common.interfaces.keys.ConfigurationKey;
 
 /**
  * Unit test for common enums
@@ -28,14 +27,6 @@ public class EnumTest {
         assertEquals("DEBUG: TEST", Messages.DEBUG.getMessage("TEST"));
         assertEquals(new Integer(0), Messages.DEBUG.getCode());
         assertEquals("DEBUG", Messages.DEBUG.getKeyName());
-    }
-
-    @Test
-    public void testOperation() {
-
-        assertEquals("CREATED", Operation.CREATED.toString());
-        assertEquals("UPDATED", Operation.UPDATED.toString());
-        assertEquals("DELETED", Operation.DELETED.toString());
     }
 
     @Test

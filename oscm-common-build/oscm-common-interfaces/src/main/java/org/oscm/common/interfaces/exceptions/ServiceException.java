@@ -10,14 +10,16 @@ package org.oscm.common.interfaces.exceptions;
 
 import java.util.UUID;
 
-import org.oscm.common.interfaces.config.MessageKey;
+import org.oscm.common.interfaces.data.Failure;
+import org.oscm.common.interfaces.enums.Reason;
+import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
  * Super class for all service specific exceptions
  * 
  * @author miethaner
  */
-public class ServiceException extends Exception {
+public abstract class ServiceException extends Exception {
 
     private static final long serialVersionUID = -4770733030290897811L;
 
@@ -71,5 +73,27 @@ public class ServiceException extends Exception {
      */
     public Integer getCode() {
         return code;
+    }
+
+    /**
+     * Gets the reason category for this exception.
+     * 
+     * @return the reason enum
+     */
+    public abstract Reason getReason();
+
+    /**
+     * Gets the Exception as {@link Failure} for results.
+     * 
+     * @return the failure
+     */
+    public Failure getAsFailure() {
+        Failure f = new Failure();
+        f.setReferenceId(id);
+        f.setCode(code);
+        f.setMessage(getMessage());
+        f.setReason(getReason());
+
+        return f;
     }
 }

@@ -10,6 +10,7 @@ package org.oscm.common.util.importer;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,9 +18,9 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.oscm.common.interfaces.config.ConfigurationImporter;
-import org.oscm.common.interfaces.config.ConfigurationKey;
 import org.oscm.common.interfaces.config.ConfigurationLoader;
-import org.oscm.common.interfaces.config.ResourceKey;
+import org.oscm.common.interfaces.keys.ActivityKey;
+import org.oscm.common.interfaces.keys.ConfigurationKey;
 
 /**
  * Importer class for property sources.
@@ -35,20 +36,19 @@ public class PropertiesImporter implements ConfigurationImporter {
     }
 
     @Override
-    public Map<ResourceKey, Set<String>> readRoles(ResourceKey[] keys) {
+    public Map<ActivityKey, Set<String>> readRoles(ActivityKey[] keys) {
         try {
             Properties p = new Properties();
             p.load(loader.loadConfiguration());
 
-            Map<ResourceKey, Set<String>> roles = new HashMap<>();
-            for (ResourceKey k : keys) {
+            Map<ActivityKey, Set<String>> roles = new HashMap<>();
+            for (ActivityKey k : keys) {
                 if (p.containsKey(k.getKeyName())) {
                     String value = p.getProperty(k.getKeyName());
                     roles.put(k,
                             new HashSet<>(Arrays.asList(value.split(","))));
                 } else {
-                    roles.put(k,
-                            new HashSet<>(Arrays.asList(k.getDefaultRole())));
+                    roles.put(k, Collections.emptySet());
                 }
             }
             return roles;

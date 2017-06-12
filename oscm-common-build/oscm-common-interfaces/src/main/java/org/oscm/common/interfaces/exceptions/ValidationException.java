@@ -8,7 +8,9 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.MessageKey;
+import org.oscm.common.interfaces.data.Failure;
+import org.oscm.common.interfaces.enums.Reason;
+import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
  * Component exception for validation events and errors
@@ -72,5 +74,18 @@ public class ValidationException extends ServiceException {
      */
     public void setProperty(String property) {
         this.property = property;
+    }
+
+    @Override
+    public Reason getReason() {
+        return Reason.VALIDATION;
+    }
+
+    @Override
+    public Failure getAsFailure() {
+        Failure f = super.getAsFailure();
+        f.setProperty(property);
+
+        return f;
     }
 }

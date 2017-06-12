@@ -8,7 +8,7 @@
 
 package org.oscm.common.rest;
 
-import org.oscm.common.interfaces.config.ConfigurationKey;
+import org.oscm.common.interfaces.keys.ConfigurationKey;
 
 /**
  * Enum for configuration keys specific to jersey and rest.
@@ -20,7 +20,8 @@ public enum JerseyConfig implements ConfigurationKey {
     JERSEY_CONTEXT("", false, "oscm", Type.STRING), //
     JERSEY_KEYSTORE_LOCATION("", true, "./keystore.jks", Type.STRING), //
     JERSEY_KEYSTORE_PASSWORD("", true, "changeit", Type.STRING), //
-    JERSEY_TOKEN_SECRET("", true, "secret", Type.STRING); //
+    JERSEY_TOKEN_SECRET("", true, "secret", Type.STRING), //
+    JERSEY_REQUEST_TIMEOUT("", false, "180", Type.LONG); //
 
     private String proprietary;
     private boolean mandatory;

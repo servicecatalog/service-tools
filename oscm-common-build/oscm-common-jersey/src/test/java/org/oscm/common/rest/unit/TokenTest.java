@@ -14,9 +14,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import org.junit.Test;
-import org.oscm.common.rest.Token;
+import org.oscm.common.interfaces.data.Token;
 
 /**
  * Unit test for Token
@@ -28,23 +29,25 @@ public class TokenTest {
     @Test
     public void testFields() {
 
+        String uuid = "8e557f4a-d808-44f4-a846-d228e2c9691a";
+
         Set<String> roles = new TreeSet<>();
         roles.add("test");
         Token test = new Token();
-        test.setUserId(new Long(1));
-        test.setOrganizationId(new Long(2));
-        test.setTenantId(new Long(3));
+        test.setUserId(UUID.fromString(uuid));
+        test.setOrganizationId(UUID.fromString(uuid));
+        test.setTenantId(UUID.fromString(uuid));
         test.setRoles(roles);
 
-        assertEquals(new Long(1), test.getUserId());
-        assertEquals(new Long(2), test.getOrganizationId());
-        assertEquals(new Long(3), test.getTenantId());
+        assertEquals(UUID.fromString(uuid), test.getUserId());
+        assertEquals(UUID.fromString(uuid), test.getOrganizationId());
+        assertEquals(UUID.fromString(uuid), test.getTenantId());
         assertTrue(test.getRoles().contains("test"));
 
         test = new Token();
-        test.setUserId((Long) null);
-        test.setOrganizationId((Long) null);
-        test.setTenantId((Long) null);
+        test.setUserId((UUID) null);
+        test.setOrganizationId((UUID) null);
+        test.setTenantId((UUID) null);
         test.setRoles((Set<String>) null);
 
         assertNull(test.getUserId());

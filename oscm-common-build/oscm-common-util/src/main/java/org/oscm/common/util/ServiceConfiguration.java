@@ -8,17 +8,18 @@
 
 package org.oscm.common.util;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.oscm.common.interfaces.config.ConfigurationImporter;
-import org.oscm.common.interfaces.config.ConfigurationKey;
-import org.oscm.common.interfaces.config.ResourceKey;
-import org.oscm.common.interfaces.config.VersionKey;
+import org.oscm.common.interfaces.keys.ActivityKey;
+import org.oscm.common.interfaces.keys.ConfigurationKey;
+import org.oscm.common.interfaces.keys.VersionKey;
 
 /**
  * Singleton class to manage configuration settings and resource access roles.
@@ -26,6 +27,9 @@ import org.oscm.common.interfaces.config.VersionKey;
  * @author miethaner
  */
 public class ServiceConfiguration {
+
+    public static final Charset CHARSET = StandardCharsets.UTF_8;
+    public static final String FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
     private static ServiceConfiguration sc;
 
@@ -44,44 +48,95 @@ public class ServiceConfiguration {
 
     /**
      * Initializes the service configuration from the given importer and saves
-     * the data corresponding to the given configuration and resource keys. This
+     * the data corresponding to the given configuration and activity keys. This
      * overwrites the previous service configuration instance.
      * 
      * @param importer
      *            the handler for the configuration source
-     * @param resources
-     *            the resource keys
+     * @param activities
+     *            the activity keys
      * @param configs
      *            the configuration keys
      */
     public static void init(ConfigurationImporter importer,
-            VersionKey[] versions, ResourceKey[] resources,
-            ConfigurationKey[] configs) {
-        sc = new ServiceConfiguration(importer, versions, resources, configs);
+            VersionKey[] versions, VersionKey current, VersionKey compatible,
+            ActivityKey[] activities, ConfigurationKey[] configs) {
+        sc = new ServiceConfiguration(importer, versions, current, compatible,
+                activities, configs);
     }
 
-    private Map<ResourceKey, Set<String>> roles;
+    private Map<ActivityKey, Set<String>> roles;
     private Map<ConfigurationKey, String> entries;
-    private Set<VersionKey> versions;
+    private Map<String, ActivityKey> activities;
+    private Map<Integer, VersionKey> versions;
+    private VersionKey current;
+    private VersionKey compatible;
 
     private ServiceConfiguration() {
         this.roles = Collections.emptyMap();
         this.entries = Collections.emptyMap();
-        this.versions = Collections.emptySet();
+        this.versions = Collections.emptyMap();
+        this.activities = Collections.emptyMap();
     }
 
     private ServiceConfiguration(ConfigurationImporter importer,
-            VersionKey[] versions, ResourceKey[] resources,
-            ConfigurationKey[] configs) {
-        this.versions = new HashSet<>(Arrays.asList(versions));
+            VersionKey[] versions, VersionKey current, VersionKey compatible,
+            ActivityKey[] activities, ConfigurationKey[] configs) {
+        this.versions = new HashMap<>();
+        Arrays.asList(versions).forEach((v) -> this.versions
+                .put(new Integer(v.getCompiledVersion()), v));
 
-        this.roles = importer.readRoles(resources);
+        this.activities = new HashMap<>();
+        Arrays.asList(activities)
+                .forEach((a) -> this.activities.put(a.getKeyName(), a));
 
+        if (this.versions.containsValue(current)
+                && this.versions.containsValue(compatible)) {
+            this.current = current;
+            this.compatible = compatible;
+        } else {
+            throw new RuntimeException("Current or compatible"
+                    + " version is not in version list");
+        }
+
+        this.roles = importer.readRoles(activities);
         this.entries = importer.readEntries(configs);
     }
 
-    public Set<VersionKey> getVersions() {
-        return Collections.unmodifiableSet(versions);
+    /**
+     * Gets the current version key for this service.
+     * 
+     * @return the current version key
+     */
+    public VersionKey getCurrentVersion() {
+        return current;
+    }
+
+    /**
+     * Gets the oldest compatible version key for this service.
+     * 
+     * @return the compatible version key
+     */
+    public VersionKey getCompatibleVersion() {
+        return compatible;
+    }
+
+    /**
+     * Gets the version with the given compiled version for this service.
+     * 
+     * @return the version
+     */
+    public VersionKey getVersionForCompiled(int compiledVersion) {
+        return versions.get(new Integer(compiledVersion));
+    }
+
+    /**
+     * Gets the activity with the given name for this service.
+     * 
+     * @return the activity
+     */
+    public ActivityKey getActivityForName(String keyName) {
+        return activities.get(keyName);
     }
 
     /**
@@ -128,30 +183,15 @@ public class ServiceConfiguration {
     }
 
     /**
-     * Return true if the resource of the given key is restricted.
+     * Gets all roles for the activity of the given key.
      * 
-     * @param resource
-     *            the resource key
-     * @return true if restricted
-     */
-    public boolean isResourceRestricted(ResourceKey resource) {
-        if (roles.get(resource) != null) {
-            return !roles.get(resource).contains(ResourceKey.PUBLIC_ROLE);
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Gets all roles for the resource of the given key.
-     * 
-     * @param resource
-     *            the resource key
+     * @param activity
+     *            the activity key
      * @return the set of roles
      */
-    public Set<String> getRolesForResource(ResourceKey resource) {
-        if (roles.get(resource) != null) {
-            return Collections.unmodifiableSet(roles.get(resource));
+    public Set<String> getRolesForActivity(ActivityKey activity) {
+        if (roles.get(activity) != null) {
+            return Collections.unmodifiableSet(roles.get(activity));
         } else {
             return Collections.emptySet();
         }

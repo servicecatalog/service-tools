@@ -12,7 +12,7 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.oscm.common.interfaces.config.MessageKey;
+import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
  * Enum for exceptions to provide error code and message.
@@ -28,7 +28,7 @@ public enum Messages implements MessageKey {
     JSON_FORMAT(10), //
     INVALID_ID(11), //
     INVALID_VERSION(12), //
-    INVALID_ETAG(13), //
+    INVALID_UUID(13), //
     INVALID_NUMBER(14), //
     INVALID_URL(15), //
     INVALID_TEXT(16), //
@@ -44,7 +44,7 @@ public enum Messages implements MessageKey {
     NOT_AUTHENTICATED(25), //
     NOT_AUTHORIZED(26), //
 
-    LOGIN_FAILD(27), //
+    LOGIN_FAILED(27), //
 
     UNSUPPORTED_METHOD(28), //
 

@@ -8,7 +8,8 @@
 
 package org.oscm.common.interfaces.exceptions;
 
-import org.oscm.common.interfaces.config.MessageKey;
+import org.oscm.common.interfaces.enums.Reason;
+import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
  * Component exception for cache events (e.g. data not modified)
@@ -44,5 +45,10 @@ public class CacheException extends ServiceException {
     public CacheException(MessageKey messageKey, Throwable e,
             String... values) {
         super(messageKey, e, values);
+    }
+
+    @Override
+    public Reason getReason() {
+        return Reason.CACHE;
     }
 }

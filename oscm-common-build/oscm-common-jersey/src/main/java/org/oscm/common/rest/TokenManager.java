@@ -11,9 +11,11 @@ package org.oscm.common.rest;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import org.oscm.common.interfaces.data.Token;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TokenException;
+import org.oscm.common.util.ServiceConfiguration;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -39,28 +41,19 @@ public class TokenManager {
      */
     public static TokenManager getInstance() {
         if (tm == null) {
-            throw new RuntimeException("Token manager not initialized");
+            tm = new TokenManager();
         }
 
         return tm;
     }
 
-    /**
-     * Initializes the token manager with the given secret.
-     * 
-     * @param secret
-     *            the secret used for hmac
-     */
-    public static void init(String secret) {
-        tm = new TokenManager(secret);
-    }
-
     private String secret;
     private JWTVerifier verifier;
 
-    private TokenManager(String secret) {
+    private TokenManager() {
 
-        this.secret = secret;
+        this.secret = ServiceConfiguration.getInstance()
+                .getConfig(JerseyConfig.JERSEY_TOKEN_SECRET);
 
         verifier = JWT
                 .require(Algorithm
@@ -84,13 +77,13 @@ public class TokenManager {
         return JWT.create().withIssuer(ISSUER)
                 .withExpiresAt(
                         new Date(System.currentTimeMillis() + expirationTime))
-                .withClaim(Token.FIELD_USER_ID, token.getUserIdString())
+                .withClaim(Token.FIELD_USER_ID, token.getUserIdAsString())
                 .withClaim(Token.FIELD_ORGANIZATION_ID,
-                        token.getOrganizationIdString())
-                .withClaim(Token.FIELD_TENANT_ID, token.getTenantIdString())
-                .withArrayClaim(Token.FIELD_ROLES, token.getRolesArray())
+                        token.getOrganizationIdAsString())
+                .withClaim(Token.FIELD_TENANT_ID, token.getTenantIdAsString())
+                .withArrayClaim(Token.FIELD_ROLES, token.getRolesAsArray())
                 .withArrayClaim(Token.FIELD_RESTRICTIONS,
-                        token.getRestrictionsArray())
+                        token.getRestrictionsAsArray())
                 .sign(Algorithm
                         .HMAC512(secret.getBytes(StandardCharsets.UTF_8)));
     }

@@ -17,7 +17,8 @@ import org.junit.Test;
  */
 public class VersionableTest {
 
-    public static final Versionable VERSION = new Versionable() {
+    public static final VersionedEntity VERSION = new VersionedEntity() {
+
     };
 
     /**
@@ -25,9 +26,10 @@ public class VersionableTest {
      */
     @Test
     public void testDefaultMethods() {
-
-        VERSION.convert();
-        VERSION.update();
+        VERSION.setVersion(null);
+        VERSION.getVersion();
+        VERSION.convertTo(null);
+        VERSION.updateFrom(null);
     }
 
 }

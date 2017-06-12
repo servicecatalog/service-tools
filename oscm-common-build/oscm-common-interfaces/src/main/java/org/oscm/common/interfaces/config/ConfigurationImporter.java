@@ -11,6 +11,9 @@ package org.oscm.common.interfaces.config;
 import java.util.Map;
 import java.util.Set;
 
+import org.oscm.common.interfaces.keys.ActivityKey;
+import org.oscm.common.interfaces.keys.ConfigurationKey;
+
 /**
  * Interface for configuration importer classes.
  * 
@@ -26,7 +29,7 @@ public interface ConfigurationImporter {
      * 
      * @return the map with the roles for services
      */
-    public Map<ResourceKey, Set<String>> readRoles(ResourceKey[] keys);
+    public Map<ActivityKey, Set<String>> readRoles(ActivityKey[] keys);
 
     /**
      * Reads all values for the given configuration keys form the source.
