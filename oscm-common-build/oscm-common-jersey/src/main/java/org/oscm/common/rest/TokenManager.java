@@ -15,7 +15,7 @@ import org.oscm.common.interfaces.data.Token;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TokenException;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -52,7 +52,7 @@ public class TokenManager {
 
     private TokenManager() {
 
-        this.secret = ServiceConfiguration.getInstance()
+        this.secret = ConfigurationManager.getInstance()
                 .getConfig(JerseyConfig.JERSEY_TOKEN_SECRET);
 
         verifier = JWT

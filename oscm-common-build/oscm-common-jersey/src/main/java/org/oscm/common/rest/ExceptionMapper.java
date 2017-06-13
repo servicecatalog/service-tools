@@ -26,7 +26,7 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TokenException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 import org.oscm.common.interfaces.keys.VersionKey;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.logger.ServiceLogger;
 
 /**
@@ -45,7 +45,7 @@ public class ExceptionMapper
     @Override
     public Response toResponse(Exception exception) {
 
-        VersionKey version = ServiceConfiguration.getInstance()
+        VersionKey version = ConfigurationManager.getInstance()
                 .getCurrentVersion();
 
         Result result = new Result();

@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.data.Result;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,7 +33,7 @@ public class ResultSerializer implements JsonDeserializer<Result> {
     private Gson gson;
 
     public ResultSerializer() {
-        gson = new GsonBuilder().setDateFormat(ServiceConfiguration.FORMAT_DATE)
+        gson = new GsonBuilder().setDateFormat(ConfigurationManager.FORMAT_DATE)
                 .registerTypeAdapter(Event.class, new EventSerializer(null))
                 .create();
     }

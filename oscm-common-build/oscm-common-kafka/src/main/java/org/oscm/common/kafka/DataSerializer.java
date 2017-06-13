@@ -18,7 +18,7 @@ import org.oscm.common.interfaces.data.Result;
 import org.oscm.common.interfaces.data.VersionedEntity;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.VersionKey;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.serializer.ActivitySerializer;
 import org.oscm.common.util.serializer.CommandSerializer;
 import org.oscm.common.util.serializer.ResultSerializer;
@@ -47,12 +47,12 @@ public class DataSerializer<D extends VersionedEntity>
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
 
-        ServiceConfiguration sc = ServiceConfiguration.getInstance();
+        ConfigurationManager sc = ConfigurationManager.getInstance();
         this.currentKey = sc.getCurrentVersion();
         this.compatibleKey = sc.getCompatibleVersion();
 
         GsonBuilder builder = new GsonBuilder();
-        builder.setDateFormat(ServiceConfiguration.FORMAT_DATE);
+        builder.setDateFormat(ConfigurationManager.FORMAT_DATE);
         builder.registerTypeAdapter(ActivityKey.class,
                 new ActivitySerializer());
         builder.registerTypeAdapter(VersionKey.class, new VersionSerializer());
@@ -69,13 +69,13 @@ public class DataSerializer<D extends VersionedEntity>
 
         String json = gson.toJson(data);
 
-        return json.getBytes(ServiceConfiguration.CHARSET);
+        return json.getBytes(ConfigurationManager.CHARSET);
     }
 
     @Override
     public D deserialize(String topic, byte[] raw) {
 
-        String json = new String(raw, ServiceConfiguration.CHARSET);
+        String json = new String(raw, ConfigurationManager.CHARSET);
 
         D data = gson.fromJson(json, clazz);
         data.updateFrom(data.getVersion());

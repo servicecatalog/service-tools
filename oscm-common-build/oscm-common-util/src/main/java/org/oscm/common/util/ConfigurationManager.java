@@ -26,21 +26,22 @@ import org.oscm.common.interfaces.keys.VersionKey;
  * 
  * @author miethaner
  */
-public class ServiceConfiguration {
+public class ConfigurationManager {
 
     public static final Charset CHARSET = StandardCharsets.UTF_8;
     public static final String FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
-    private static ServiceConfiguration sc;
+    private static ConfigurationManager sc;
 
     /**
-     * Returns the singleton instance of the service configuration.
+     * Returns the singleton instance of the configuration manager.
      * 
      * @return the service configuration
      */
-    public static ServiceConfiguration getInstance() {
+    public static ConfigurationManager getInstance() {
         if (sc == null) {
-            sc = new ServiceConfiguration();
+            throw new RuntimeException(
+                    "Configuration manager is not initialized");
         }
 
         return sc;
@@ -61,7 +62,7 @@ public class ServiceConfiguration {
     public static void init(ConfigurationImporter importer,
             VersionKey[] versions, VersionKey current, VersionKey compatible,
             ActivityKey[] activities, ConfigurationKey[] configs) {
-        sc = new ServiceConfiguration(importer, versions, current, compatible,
+        sc = new ConfigurationManager(importer, versions, current, compatible,
                 activities, configs);
     }
 
@@ -72,14 +73,7 @@ public class ServiceConfiguration {
     private VersionKey current;
     private VersionKey compatible;
 
-    private ServiceConfiguration() {
-        this.roles = Collections.emptyMap();
-        this.entries = Collections.emptyMap();
-        this.versions = Collections.emptyMap();
-        this.activities = Collections.emptyMap();
-    }
-
-    private ServiceConfiguration(ConfigurationImporter importer,
+    private ConfigurationManager(ConfigurationImporter importer,
             VersionKey[] versions, VersionKey current, VersionKey compatible,
             ActivityKey[] activities, ConfigurationKey[] configs) {
         this.versions = new HashMap<>();

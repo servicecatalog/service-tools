@@ -27,7 +27,7 @@ import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ActivityKey.Type;
 import org.oscm.common.rest.ExceptionMapper;
 import org.oscm.common.rest.interfaces.Activity;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 /**
  * @author miethaner
@@ -88,7 +88,7 @@ public class ActivityFilter implements ContainerRequestFilter {
             throw new ExceptionMapper().toWebException(nfe);
         }
 
-        ActivityKey activityKey = ServiceConfiguration.getInstance()
+        ActivityKey activityKey = ConfigurationManager.getInstance()
                 .getActivityForName(actvity);
 
         if (activityKey == null || activityKey.getType() != type) {

@@ -17,9 +17,8 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.oscm.common.interfaces.data.Event;
-import org.oscm.common.interfaces.services.EventService;
 import org.oscm.common.kafka.mappers.EventEventMapper;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 /**
  * @author miethaner
@@ -33,17 +32,17 @@ public class EventStream extends Stream {
     private String outputTopic;
     private Class<? extends Event> outputClass;
 
-    private EventService service;
+    private String serviceName;
 
     public EventStream(String inputTopic, Class<? extends Event> inputClass,
             String outputTopic, Class<? extends Event> outputClass,
-            EventService service) {
+            String serviceName) {
         super();
         this.inputTopic = inputTopic;
         this.inputClass = inputClass;
         this.outputTopic = outputTopic;
         this.outputClass = outputClass;
-        this.service = service;
+        this.serviceName = serviceName;
     }
 
     @Override
@@ -54,7 +53,7 @@ public class EventStream extends Stream {
         KStream<UUID, Event> stream = builder.stream(new UUIDSerializer(),
                 new DataSerializer<>(inputClass), inputTopic);
 
-        stream.flatMap(new EventEventMapper(service)) //
+        stream.flatMap(new EventEventMapper(serviceName)) //
                 .through(new UUIDSerializer(),
                         new DataSerializer<>(outputClass), outputTopic); //
 
@@ -67,7 +66,7 @@ public class EventStream extends Stream {
     private Map<String, Object> getConfig() {
 
         Map<String, Object> config = new HashMap<>();
-        ServiceConfiguration.getInstance()
+        ConfigurationManager.getInstance()
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 

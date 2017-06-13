@@ -26,7 +26,7 @@ import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.rest.ExceptionMapper;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Secure;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 /**
  * @author miethaner
@@ -53,7 +53,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             throw new ExceptionMapper().toWebException(ie);
         }
 
-        ServiceConfiguration config = ServiceConfiguration.getInstance();
+        ConfigurationManager config = ConfigurationManager.getInstance();
 
         Set<String> configRoles = config.getRolesForActivity(activityKey);
         Set<String> userRoles = token.getRoles();

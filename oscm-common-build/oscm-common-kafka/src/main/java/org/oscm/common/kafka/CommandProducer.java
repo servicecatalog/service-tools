@@ -28,7 +28,7 @@ import org.oscm.common.interfaces.data.Result;
 import org.oscm.common.interfaces.events.CommandPublisher;
 import org.oscm.common.interfaces.events.ResultHandler;
 import org.oscm.common.interfaces.exceptions.ServiceException;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 /**
  * 
@@ -109,7 +109,7 @@ public class CommandProducer extends Stream implements CommandPublisher {
     private Map<String, Object> getConfig() {
 
         Map<String, Object> config = new HashMap<>();
-        ServiceConfiguration.getInstance()
+        ConfigurationManager.getInstance()
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 

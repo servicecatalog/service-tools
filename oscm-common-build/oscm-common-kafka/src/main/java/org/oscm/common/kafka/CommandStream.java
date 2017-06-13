@@ -19,10 +19,9 @@ import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.oscm.common.interfaces.data.Command;
 import org.oscm.common.interfaces.data.Result;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.interfaces.services.CommandService;
 import org.oscm.common.kafka.mappers.CommandResultMapper;
 import org.oscm.common.kafka.mappers.ResultEventMapper;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 /**
  * @author miethaner
@@ -34,16 +33,16 @@ public class CommandStream extends Stream {
     private String resultTopic;
     private String eventTopic;
     private ActivityKey command;
-    private CommandService service;
+    private String serviceName;
 
     public CommandStream(String commandTopic, String resultTopic,
-            String eventTopic, ActivityKey command, CommandService service) {
+            String eventTopic, ActivityKey command, String serviceName) {
         super();
         this.commandTopic = commandTopic;
         this.resultTopic = resultTopic;
         this.eventTopic = eventTopic;
         this.command = command;
-        this.service = service;
+        this.serviceName = serviceName;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class CommandStream extends Stream {
                 new DataSerializer<>(Command.class), commandTopic);
 
         stream.filter((key, value) -> value.getCommand().equals(command))
-                .map(new CommandResultMapper(service)) //
+                .map(new CommandResultMapper(serviceName)) //
                 .through(new UUIDSerializer(),
                         new DataSerializer<>(Result.class), resultTopic) //
                 .flatMap(new ResultEventMapper()) //
@@ -72,7 +71,7 @@ public class CommandStream extends Stream {
     private Map<String, Object> getConfig() {
 
         Map<String, Object> config = new HashMap<>();
-        ServiceConfiguration.getInstance()
+        ConfigurationManager.getInstance()
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 

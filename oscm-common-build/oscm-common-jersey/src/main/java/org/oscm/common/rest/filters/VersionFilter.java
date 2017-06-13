@@ -21,7 +21,7 @@ import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.keys.VersionKey;
 import org.oscm.common.rest.ExceptionMapper;
 import org.oscm.common.rest.interfaces.Versioned;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 /**
  * Request filter for validating the requested version and comparing with
@@ -89,9 +89,9 @@ public class VersionFilter implements ContainerRequestFilter {
 
         int vnr = Integer.parseInt(version.substring(OFFSET_VERSION));
 
-        ServiceConfiguration sc = ServiceConfiguration.getInstance();
+        ConfigurationManager cm = ConfigurationManager.getInstance();
 
-        VersionKey versionKey = sc.getVersionForCompiled(vnr);
+        VersionKey versionKey = cm.getVersionForCompiled(vnr);
 
         if (versionKey == null) {
             NotFoundException nfe = new NotFoundException(
@@ -100,8 +100,8 @@ public class VersionFilter implements ContainerRequestFilter {
             throw new ExceptionMapper().toWebException(nfe);
         }
 
-        if (versionKey.compareVersion(sc.getCompatibleVersion()) < 0
-                || versionKey.compareVersion(sc.getCurrentVersion()) > 0) {
+        if (versionKey.compareVersion(cm.getCompatibleVersion()) < 0
+                || versionKey.compareVersion(cm.getCurrentVersion()) > 0) {
             NotFoundException nfe = new NotFoundException(
                     Messages.INVALID_VERSION);
 

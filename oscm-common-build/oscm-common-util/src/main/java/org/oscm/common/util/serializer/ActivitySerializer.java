@@ -11,7 +11,7 @@ package org.oscm.common.util.serializer;
 import java.lang.reflect.Type;
 
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -35,7 +35,7 @@ public class ActivitySerializer
             return null;
         }
 
-        return ServiceConfiguration.getInstance()
+        return ConfigurationManager.getInstance()
                 .getActivityForName(json.getAsString());
     }
 

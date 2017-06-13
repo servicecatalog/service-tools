@@ -20,6 +20,7 @@ import org.oscm.common.interfaces.data.Result;
 import org.oscm.common.interfaces.enums.Status;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.services.CommandService;
+import org.oscm.common.util.ServiceManager;
 import org.oscm.common.util.logger.ServiceLogger;
 
 /**
@@ -32,10 +33,10 @@ public class CommandResultMapper
     private static final ServiceLogger LOGGER = ServiceLogger
             .getLogger(CommandResultMapper.class);
 
-    private CommandService service;
+    private String serviceName;
 
-    public CommandResultMapper(CommandService service) {
-        this.service = service;
+    public CommandResultMapper(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     @Override
@@ -47,6 +48,8 @@ public class CommandResultMapper
         result.setCommand(value.getCommand());
 
         try {
+            CommandService service = ServiceManager.getInstance()
+                    .getService(serviceName);
             List<Event> events = service.process(value);
 
             result.setEvents(events);

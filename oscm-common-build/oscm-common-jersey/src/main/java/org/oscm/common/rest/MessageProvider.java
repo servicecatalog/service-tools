@@ -36,7 +36,7 @@ import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.VersionKey;
 import org.oscm.common.rest.filters.ActivityFilter;
 import org.oscm.common.rest.filters.VersionFilter;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.serializer.ActivitySerializer;
 import org.oscm.common.util.serializer.EventSerializer;
 import org.oscm.common.util.serializer.VersionSerializer;
@@ -76,9 +76,9 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
             InputStream entityStream) throws IOException {
 
         InputStreamReader reader = new InputStreamReader(entityStream,
-                ServiceConfiguration.CHARSET);
+                ConfigurationManager.CHARSET);
 
-        VersionKey currentKey = ServiceConfiguration.getInstance()
+        VersionKey currentKey = ConfigurationManager.getInstance()
                 .getCurrentVersion();
 
         ActivityKey activityKey = (ActivityKey) request
@@ -96,7 +96,7 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
         try {
 
             GsonBuilder builder = new GsonBuilder();
-            builder.setDateFormat(ServiceConfiguration.FORMAT_DATE);
+            builder.setDateFormat(ConfigurationManager.FORMAT_DATE);
             builder.registerTypeAdapter(ActivityKey.class,
                     new ActivitySerializer());
             builder.registerTypeAdapter(VersionKey.class,
@@ -140,7 +140,7 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
             throws IOException, WebApplicationException {
 
         OutputStreamWriter writer = new OutputStreamWriter(entityStream,
-                ServiceConfiguration.CHARSET);
+                ConfigurationManager.CHARSET);
 
         VersionKey versionKey = (VersionKey) request
                 .getProperty(VersionFilter.PROPERTY_VERSION);
@@ -153,7 +153,7 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
 
         try {
             GsonBuilder builder = new GsonBuilder();
-            builder.setDateFormat(ServiceConfiguration.FORMAT_DATE);
+            builder.setDateFormat(ConfigurationManager.FORMAT_DATE);
             builder.registerTypeAdapter(ActivityKey.class,
                     new ActivitySerializer());
             builder.registerTypeAdapter(VersionKey.class,

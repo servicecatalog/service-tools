@@ -18,5 +18,7 @@ import org.oscm.common.interfaces.data.Token;
  */
 public interface QueryService {
 
+    public static final String SERVICE_QUERY = "query_service";
+
     public Result query(Event event, Token token);
 }

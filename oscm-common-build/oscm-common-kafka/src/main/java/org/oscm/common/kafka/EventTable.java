@@ -20,7 +20,7 @@ import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.oscm.common.interfaces.data.Event;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 /**
  * @author miethaner
@@ -57,7 +57,7 @@ public class EventTable extends Stream {
     private Map<String, Object> getConfig() {
 
         Map<String, Object> config = new HashMap<>();
-        ServiceConfiguration.getInstance()
+        ConfigurationManager.getInstance()
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 

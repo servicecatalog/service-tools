@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 
 import org.oscm.common.interfaces.data.Command;
 import org.oscm.common.interfaces.data.Event;
-import org.oscm.common.util.ServiceConfiguration;
+import org.oscm.common.util.ConfigurationManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,7 +30,7 @@ public class CommandSerializer implements JsonDeserializer<Command> {
     private Gson gson;
 
     public CommandSerializer() {
-        gson = new GsonBuilder().setDateFormat(ServiceConfiguration.FORMAT_DATE)
+        gson = new GsonBuilder().setDateFormat(ConfigurationManager.FORMAT_DATE)
                 .registerTypeAdapter(Event.class, new EventSerializer(null))
                 .create();
     }

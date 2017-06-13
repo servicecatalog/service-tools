@@ -39,7 +39,7 @@ import org.oscm.common.rest.filters.VersionFilter;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Secure;
 import org.oscm.common.rest.interfaces.Versioned;
-import org.oscm.common.util.ResourceManager;
+import org.oscm.common.util.ServiceManager;
 
 /**
  * @author miethaner
@@ -57,11 +57,11 @@ public class Frontend {
     private QueryService queryService;
 
     public Frontend() {
-        publisher = ResourceManager.getInstance()
-                .getResource(CommandPublisher.class);
+        publisher = ServiceManager.getInstance()
+                .getService(CommandPublisher.SERVICE_PUBLISHER);
 
-        queryService = ResourceManager.getInstance()
-                .getResource(QueryService.class);
+        queryService = ServiceManager.getInstance()
+                .getService(QueryService.SERVICE_QUERY);
     }
 
     @Activity(Type.COMMAND)

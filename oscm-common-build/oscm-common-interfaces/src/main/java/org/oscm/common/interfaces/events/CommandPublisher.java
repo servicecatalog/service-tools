@@ -17,6 +17,8 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
  */
 public interface CommandPublisher {
 
+    public static final String SERVICE_PUBLISHER = "cmd_publisher";
+
     public void publish(Command command, ResultHandler handler)
             throws ServiceException;
 }
