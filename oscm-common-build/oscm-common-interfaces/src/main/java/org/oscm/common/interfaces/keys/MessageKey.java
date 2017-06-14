@@ -16,13 +16,6 @@ package org.oscm.common.interfaces.keys;
 public interface MessageKey {
 
     /**
-     * Gets the name of the message key.
-     * 
-     * @return the message key name
-     */
-    public String getKeyName();
-
-    /**
      * Gets the message id.
      * 
      * @return the message id.

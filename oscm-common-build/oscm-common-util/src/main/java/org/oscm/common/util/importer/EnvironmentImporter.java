@@ -33,8 +33,8 @@ public class EnvironmentImporter implements ConfigurationImporter {
 
         Map<ActivityKey, Set<String>> roles = new HashMap<>();
         for (ActivityKey k : keys) {
-            if (env.containsKey(k.getKeyName())) {
-                String value = env.get(k.getKeyName());
+            if (env.containsKey(k.getActivityName())) {
+                String value = env.get(k.getActivityName());
                 roles.put(k, new HashSet<>(Arrays.asList(value.split(","))));
             } else {
                 roles.put(k, Collections.emptySet());
@@ -50,12 +50,12 @@ public class EnvironmentImporter implements ConfigurationImporter {
 
         Map<ConfigurationKey, String> entries = new HashMap<>();
         for (ConfigurationKey k : keys) {
-            if (env.containsKey(k.getKeyName())) {
-                entries.put(k, env.get(k.getKeyName()));
+            if (env.containsKey(k.getConfigurationName())) {
+                entries.put(k, env.get(k.getConfigurationName()));
             } else {
                 if (k.isMandatory()) {
                     throw new RuntimeException("Mandatory configuration entry "
-                            + k.getKeyName() + " is missing");
+                            + k.getConfigurationName() + " is missing");
                 } else {
                     entries.put(k, k.getDefaultValue());
                 }

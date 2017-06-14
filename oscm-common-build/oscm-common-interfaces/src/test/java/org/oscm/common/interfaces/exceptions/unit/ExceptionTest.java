@@ -38,11 +38,6 @@ public class ExceptionTest {
         }
 
         @Override
-        public String getKeyName() {
-            return "KEY";
-        }
-
-        @Override
         public Integer getCode() {
             return ONE;
         }

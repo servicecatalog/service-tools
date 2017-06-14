@@ -16,20 +16,11 @@ package org.oscm.common.interfaces.keys;
 public interface ConfigurationKey {
 
     /**
-     * Enum for the value type of configuration settings.
+     * Gets the unique name identifying the configuration key.
      * 
-     * @author miethaner
+     * @return
      */
-    public enum Type {
-        BOOLEAN, LONG, STRING, PASSWORD, URL, MAIL;
-    }
-
-    /**
-     * Gets the name of the configuration key.
-     * 
-     * @return the configuration key name
-     */
-    public String getKeyName();
+    public String getConfigurationName();
 
     /**
      * Gets the name of the proprietary property this key is meant for.
@@ -51,12 +42,4 @@ public interface ConfigurationKey {
      * @return the default value
      */
     public String getDefaultValue();
-
-    /**
-     * Gets the value type of the configuration value.
-     * 
-     * @return the value type
-     */
-    public Type getValueType();
-
 }

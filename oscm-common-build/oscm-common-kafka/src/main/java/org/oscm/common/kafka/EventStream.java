@@ -32,28 +32,24 @@ public class EventStream extends Stream {
     private String outputTopic;
     private Class<? extends Event> outputClass;
 
-    private String serviceName;
-
     public EventStream(String inputTopic, Class<? extends Event> inputClass,
-            String outputTopic, Class<? extends Event> outputClass,
-            String serviceName) {
+            String outputTopic, Class<? extends Event> outputClass) {
         super();
         this.inputTopic = inputTopic;
         this.inputClass = inputClass;
         this.outputTopic = outputTopic;
         this.outputClass = outputClass;
-        this.serviceName = serviceName;
     }
 
     @Override
-    protected KafkaStreams initStream() {
+    protected KafkaStreams initStreams() {
 
         KStreamBuilder builder = new KStreamBuilder();
 
         KStream<UUID, Event> stream = builder.stream(new UUIDSerializer(),
                 new DataSerializer<>(inputClass), inputTopic);
 
-        stream.flatMap(new EventEventMapper(serviceName)) //
+        stream.flatMap(new EventEventMapper(inputClass)) //
                 .through(new UUIDSerializer(),
                         new DataSerializer<>(outputClass), outputTopic); //
 

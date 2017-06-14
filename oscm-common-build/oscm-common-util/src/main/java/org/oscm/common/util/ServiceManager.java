@@ -10,7 +10,15 @@ package org.oscm.common.util;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
+
+import org.oscm.common.interfaces.data.Event;
+import org.oscm.common.interfaces.events.CommandPublisher;
+import org.oscm.common.interfaces.events.EventSource;
+import org.oscm.common.interfaces.keys.ActivityKey;
+import org.oscm.common.interfaces.keys.ActivityKey.Type;
+import org.oscm.common.interfaces.services.CommandService;
+import org.oscm.common.interfaces.services.EventService;
+import org.oscm.common.interfaces.services.QueryService;
 
 /**
  * Singleton class to manage service lookups.
@@ -34,41 +42,164 @@ public class ServiceManager {
         return rm;
     }
 
-    private Map<String, Supplier<?>> services;
+    private CommandPublisher publisher;
+    private Map<ActivityKey, CommandService> commands;
+    private Map<ActivityKey, QueryService> queries;
+    private Map<Class<? extends Event>, EventService> events;
+    private Map<Class<? extends Event>, EventSource<?>> sources;
 
     private ServiceManager() {
-        services = new ConcurrentHashMap<>();
+        publisher = null;
+        commands = new ConcurrentHashMap<>();
+        queries = new ConcurrentHashMap<>();
+        events = new ConcurrentHashMap<>();
+        sources = new ConcurrentHashMap<>();
     }
 
     /**
-     * Gets the service instance for the given service name.
+     * Gets the shared command publisher instance.
      * 
-     * @param name
-     *            the service name
+     * @return the publisher
+     */
+    public CommandPublisher getPublisher() {
+        return publisher;
+    }
+
+    /**
+     * Sets the shared command publisher instance.
+     * 
+     * @param publisher
+     *            the command publisher to share
+     */
+    public void setPublisher(CommandPublisher publisher) {
+        this.publisher = publisher;
+    }
+
+    /**
+     * Gets the command service instance for the given command.
+     * 
+     * @param command
+     *            the command key
      * @return the service instance
      */
-    @SuppressWarnings("unchecked")
-    public <T> T getService(String name) {
-        if (name == null || !services.containsKey(name)) {
-            throw new RuntimeException(name + " serivce not found");
+    public CommandService getCommandService(ActivityKey command) {
+        if (command == null || !commands.containsKey(command)) {
+            throw new RuntimeException(command + " serivce not found");
         }
 
-        return (T) services.get(name).get();
+        return commands.get(command);
     }
 
     /**
-     * Sets the service supplier as value with the given service name as key.
+     * Sets the command service as value with the given command as key.
      * 
-     * @param name
-     *            the service name as key
-     * @param supplier
-     *            the service supplier as value
+     * @param command
+     *            the command key
+     * @param service
+     *            the service
      */
-    public void setService(String name, Supplier<?> supplier) {
-        if (name == null || supplier == null) {
-            throw new RuntimeException("Unable to set " + name + " resource");
+    public void setCommandService(ActivityKey command, CommandService service) {
+        if (command == null || service == null
+                || command.getType() != Type.COMMAND) {
+            throw new RuntimeException("Unable to set " + command + " service");
         }
 
-        services.put(name, supplier);
+        commands.put(command, service);
+    }
+
+    /**
+     * Gets the query service instance for the given query.
+     * 
+     * @param query
+     *            the query key
+     * @return the service instance
+     */
+    public QueryService getQueryService(ActivityKey query) {
+        if (query == null || !queries.containsKey(query)) {
+            throw new RuntimeException(query + " serivce not found");
+        }
+
+        return queries.get(query);
+    }
+
+    /**
+     * Sets the query service as value with the given query as key.
+     * 
+     * @param query
+     *            the query key
+     * @param service
+     *            the service
+     */
+    public void setQueryService(ActivityKey query, QueryService service) {
+        if (query == null || service == null || query.getType() != Type.QUERY) {
+            throw new RuntimeException("Unable to set " + query + " service");
+        }
+
+        queries.put(query, service);
+    }
+
+    /**
+     * Gets the event service instance for the given event class.
+     * 
+     * @param clazz
+     *            the event class
+     * @return the service instance
+     */
+    public EventService getEventService(Class<? extends Event> clazz) {
+        if (clazz == null || !events.containsKey(clazz)) {
+            throw new RuntimeException(clazz + " serivce not found");
+        }
+
+        return events.get(clazz);
+    }
+
+    /**
+     * Sets the event service as value with the given event as key.
+     * 
+     * @param event
+     *            the event class
+     * @param service
+     *            the service
+     */
+    public void setEventService(Class<? extends Event> clazz,
+            EventService service) {
+        if (clazz == null || service == null) {
+            throw new RuntimeException("Unable to set " + clazz + " service");
+        }
+
+        events.put(clazz, service);
+    }
+
+    /**
+     * Gets the event source instance for the given event class.
+     * 
+     * @param clazz
+     *            the event class
+     * @return the source instance
+     */
+    @SuppressWarnings("unchecked")
+    public <E extends Event> EventSource<E> getEventSource(Class<E> clazz) {
+        if (clazz == null || !events.containsKey(clazz)) {
+            throw new RuntimeException(clazz + " serivce not found");
+        }
+
+        return (EventSource<E>) sources.get(clazz);
+    }
+
+    /**
+     * Sets the event service as value with the given event as key.
+     * 
+     * @param event
+     *            the event class
+     * @param source
+     *            the source
+     */
+    public <E extends Event> void setEventSource(Class<E> clazz,
+            EventSource<E> source) {
+        if (clazz == null || source == null) {
+            throw new RuntimeException("Unable to set " + clazz + " service");
+        }
+
+        sources.put(clazz, source);
     }
 }

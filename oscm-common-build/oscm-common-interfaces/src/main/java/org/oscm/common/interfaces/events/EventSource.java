@@ -2,25 +2,24 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Jun 6, 2017                                                      
+ *  Creation Date: Jun 13, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.interfaces.services;
+package org.oscm.common.interfaces.events;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.oscm.common.interfaces.data.Event;
-import org.oscm.common.interfaces.data.Token;
-import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * @author miethaner
  *
  */
-public interface QueryService {
+public interface EventSource<E extends Event> {
 
-    public static final String SERVICE_QUERY = "query_service";
+    public E get(UUID id);
 
-    public List<Event> query(Event event, Token token) throws ServiceException;
+    public List<E> getAll();
 }

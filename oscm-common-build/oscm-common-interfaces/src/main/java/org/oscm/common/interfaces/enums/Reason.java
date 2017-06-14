@@ -46,16 +46,15 @@ public enum Reason {
     OTHER;
 
     public class Constants {
-        public static final String OPTION_CACHE = "cache";
-        public static final String OPTION_CONCURRENCY = "concurrency";
-        public static final String OPTION_CONFLICT = "conflict";
-        public static final String OPTION_CONNECTION = "connection";
-        public static final String OPTION_INTERNAL = "internal";
-        public static final String OPTION_NOT_FOUND = "not_found";
-        public static final String OPTION_SECURITY = "security";
-        public static final String OPTION_TOKEN = "token";
-        public static final String OPTION_VALIDATION = "validation";
-        public static final String OPTION_OTHER = "other";
-
+        public static final String OPTION_CACHE = "CACHE";
+        public static final String OPTION_CONCURRENCY = "CONCURRENCY";
+        public static final String OPTION_CONFLICT = "INTERNAL";
+        public static final String OPTION_CONNECTION = "CONNECTION";
+        public static final String OPTION_INTERNAL = "INTERNAL";
+        public static final String OPTION_NOT_FOUND = "NOT_FOUND";
+        public static final String OPTION_SECURITY = "SECURITY";
+        public static final String OPTION_TOKEN = "TOKEN";
+        public static final String OPTION_VALIDATION = "VALIDATION";
+        public static final String OPTION_OTHER = "OTHER";
     }
 }

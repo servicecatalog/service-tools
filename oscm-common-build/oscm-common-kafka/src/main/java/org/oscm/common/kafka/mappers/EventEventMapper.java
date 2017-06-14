@@ -30,10 +30,10 @@ public class EventEventMapper
     private static final ServiceLogger LOGGER = ServiceLogger
             .getLogger(EventEventMapper.class);
 
-    private String serviceName;
+    private Class<? extends Event> clazz;
 
-    public EventEventMapper(String serviceName) {
-        this.serviceName = serviceName;
+    public EventEventMapper(Class<? extends Event> clazz) {
+        this.clazz = clazz;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class EventEventMapper
 
         try {
             EventService service = ServiceManager.getInstance()
-                    .getService(serviceName);
+                    .getEventService(clazz);
             List<Event> events = service.process(value);
 
             events.forEach((e) -> eventList.add(KeyValue.pair(e.getId(), e)));

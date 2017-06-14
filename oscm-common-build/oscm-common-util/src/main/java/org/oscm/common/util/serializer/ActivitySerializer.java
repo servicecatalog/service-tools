@@ -44,7 +44,7 @@ public class ActivitySerializer
             JsonSerializationContext context) {
 
         if (src != null) {
-            return context.serialize(src.getKeyName());
+            return context.serialize(src.getActivityName());
         } else {
             return null;
         }

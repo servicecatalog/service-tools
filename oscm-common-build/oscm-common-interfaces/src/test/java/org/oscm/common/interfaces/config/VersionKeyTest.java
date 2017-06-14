@@ -33,11 +33,6 @@ public class VersionKeyTest {
         }
 
         @Override
-        public String getKeyName() {
-            return "Key";
-        }
-
-        @Override
         public int getFix() {
             return FIX;
         }

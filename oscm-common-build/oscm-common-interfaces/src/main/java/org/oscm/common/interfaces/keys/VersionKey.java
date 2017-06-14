@@ -16,13 +16,6 @@ package org.oscm.common.interfaces.keys;
 public interface VersionKey {
 
     /**
-     * Gets the name of the version key.
-     * 
-     * @return the version key name
-     */
-    public String getKeyName();
-
-    /**
      * Gets the major version number.
      * 
      * @return major version number

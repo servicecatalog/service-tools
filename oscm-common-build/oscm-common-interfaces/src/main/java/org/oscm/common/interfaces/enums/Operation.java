@@ -24,7 +24,7 @@ public enum Operation {
     DELETE; //
 
     public class Constants {
-        public static final String OPTION_UPDATE = "upd";
-        public static final String OPTION_DELETE = "del";
+        public static final String OPTION_UPDATE = "UPD";
+        public static final String OPTION_DELETE = "DEL";
     }
 }

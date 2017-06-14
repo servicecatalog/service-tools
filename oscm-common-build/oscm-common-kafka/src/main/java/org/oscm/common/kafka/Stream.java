@@ -22,14 +22,12 @@ public abstract class Stream {
 
     private KafkaStreams streams;
 
-    public Stream() {
-        streams = initStream();
-        streams.setUncaughtExceptionHandler((t, e) -> LOGGER.exception(e));
-    }
-
-    protected abstract KafkaStreams initStream();
+    protected abstract KafkaStreams initStreams();
 
     public void start() {
+        streams = initStreams();
+        streams.setUncaughtExceptionHandler((t, e) -> LOGGER.exception(e));
+
         streams.start();
     }
 

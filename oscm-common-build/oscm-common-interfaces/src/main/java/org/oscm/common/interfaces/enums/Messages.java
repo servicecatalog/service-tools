@@ -67,11 +67,6 @@ public enum Messages implements MessageKey {
     }
 
     @Override
-    public String getKeyName() {
-        return name();
-    }
-
-    @Override
     public Integer getCode() {
         return new Integer(code);
     }

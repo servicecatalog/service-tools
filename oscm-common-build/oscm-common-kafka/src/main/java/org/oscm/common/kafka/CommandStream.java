@@ -33,20 +33,18 @@ public class CommandStream extends Stream {
     private String resultTopic;
     private String eventTopic;
     private ActivityKey command;
-    private String serviceName;
 
     public CommandStream(String commandTopic, String resultTopic,
-            String eventTopic, ActivityKey command, String serviceName) {
+            String eventTopic, ActivityKey command) {
         super();
         this.commandTopic = commandTopic;
         this.resultTopic = resultTopic;
         this.eventTopic = eventTopic;
         this.command = command;
-        this.serviceName = serviceName;
     }
 
     @Override
-    protected KafkaStreams initStream() {
+    protected KafkaStreams initStreams() {
 
         KStreamBuilder builder = new KStreamBuilder();
 
@@ -54,7 +52,7 @@ public class CommandStream extends Stream {
                 new DataSerializer<>(Command.class), commandTopic);
 
         stream.filter((key, value) -> value.getCommand().equals(command))
-                .map(new CommandResultMapper(serviceName)) //
+                .map(new CommandResultMapper()) //
                 .through(new UUIDSerializer(),
                         new DataSerializer<>(Result.class), resultTopic) //
                 .flatMap(new ResultEventMapper()) //

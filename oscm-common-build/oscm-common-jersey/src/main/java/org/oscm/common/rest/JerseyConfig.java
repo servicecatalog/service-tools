@@ -16,28 +16,26 @@ import org.oscm.common.interfaces.keys.ConfigurationKey;
  * @author miethaner
  */
 public enum JerseyConfig implements ConfigurationKey {
-    JERSEY_PORT("", false, "8080", Type.LONG), //
-    JERSEY_CONTEXT("", false, "oscm", Type.STRING), //
-    JERSEY_KEYSTORE_LOCATION("", true, "./keystore.jks", Type.STRING), //
-    JERSEY_KEYSTORE_PASSWORD("", true, "changeit", Type.STRING), //
-    JERSEY_TOKEN_SECRET("", true, "secret", Type.STRING), //
-    JERSEY_REQUEST_TIMEOUT("", false, "180", Type.LONG); //
+    JERSEY_PORT("", false, "8080"), //
+    JERSEY_CONTEXT("", false, "oscm"), //
+    JERSEY_KEYSTORE_LOCATION("", true, "./keystore.jks"), //
+    JERSEY_KEYSTORE_PASSWORD("", true, "changeit"), //
+    JERSEY_TOKEN_SECRET("", true, "secret"), //
+    JERSEY_REQUEST_TIMEOUT("", false, "180"); //
 
     private String proprietary;
     private boolean mandatory;
     private String defaultValue;
-    private Type valueType;
 
     private JerseyConfig(String proprietary, boolean mandatory,
-            String defaultValue, Type valueType) {
+            String defaultValue) {
         this.proprietary = proprietary;
         this.mandatory = mandatory;
         this.defaultValue = defaultValue;
-        this.valueType = valueType;
     }
 
     @Override
-    public String getKeyName() {
+    public String getConfigurationName() {
         return name();
     }
 
@@ -54,10 +52,5 @@ public enum JerseyConfig implements ConfigurationKey {
     @Override
     public String getDefaultValue() {
         return defaultValue;
-    }
-
-    @Override
-    public Type getValueType() {
-        return valueType;
     }
 }

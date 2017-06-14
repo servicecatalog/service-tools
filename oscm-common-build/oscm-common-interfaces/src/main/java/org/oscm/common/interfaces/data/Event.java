@@ -25,6 +25,7 @@ public abstract class Event extends VersionedEntity {
     public static final String FIELD_ID = "id";
     public static final String FIELD_ETAG = "etag";
     public static final String FIELD_OPERATION = "operation";
+    public static final String FIELD_LINKS = "links";
 
     @SerializedName(FIELD_ID)
     private UUID id;

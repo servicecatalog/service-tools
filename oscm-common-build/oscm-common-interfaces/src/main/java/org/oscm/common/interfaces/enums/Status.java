@@ -28,9 +28,9 @@ public enum Status {
     CACHED;
 
     public class Constants {
-        public static final String OPTION_SUCCESS = "success";
-        public static final String OPTION_FAILURE = "failure";
-        public static final String OPTION_PENDING = "pending";
-        public static final String OPTION_CACHED = "cached";
+        public static final String OPTION_SUCCESS = "SUCCESS";
+        public static final String OPTION_FAILURE = "FAILURE";
+        public static final String OPTION_PENDING = "PENDING";
+        public static final String OPTION_CACHED = "CACHED";
     }
 }

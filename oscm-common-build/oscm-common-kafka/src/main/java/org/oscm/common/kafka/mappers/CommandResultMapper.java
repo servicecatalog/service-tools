@@ -33,12 +33,6 @@ public class CommandResultMapper
     private static final ServiceLogger LOGGER = ServiceLogger
             .getLogger(CommandResultMapper.class);
 
-    private String serviceName;
-
-    public CommandResultMapper(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
     @Override
     public KeyValue<UUID, Result> apply(UUID key, Command value) {
 
@@ -49,7 +43,7 @@ public class CommandResultMapper
 
         try {
             CommandService service = ServiceManager.getInstance()
-                    .getService(serviceName);
+                    .getCommandService(value.getCommand());
             List<Event> events = service.process(value);
 
             result.setEvents(events);

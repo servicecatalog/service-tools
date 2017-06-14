@@ -9,6 +9,7 @@
 package org.oscm.common.rest;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.ws.rs.Consumes;
@@ -27,6 +28,7 @@ import org.oscm.common.interfaces.data.Command;
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.data.Result;
 import org.oscm.common.interfaces.data.Token;
+import org.oscm.common.interfaces.enums.Status;
 import org.oscm.common.interfaces.events.CommandPublisher;
 import org.oscm.common.interfaces.events.ResultHandler;
 import org.oscm.common.interfaces.exceptions.ServiceException;
@@ -53,17 +55,6 @@ public class Frontend {
     private static final String PATH_QUERY = "/queries/{"
             + ActivityFilter.PARAM_ACTIVITY + "}";
 
-    private CommandPublisher publisher;
-    private QueryService queryService;
-
-    public Frontend() {
-        publisher = ServiceManager.getInstance()
-                .getService(CommandPublisher.SERVICE_PUBLISHER);
-
-        queryService = ServiceManager.getInstance()
-                .getService(QueryService.SERVICE_QUERY);
-    }
-
     @Activity(Type.COMMAND)
     @Secure
     @Versioned
@@ -89,6 +80,9 @@ public class Frontend {
         command.setEvent(event);
         command.setToken(token);
         command.setTimestamp(new Date());
+
+        CommandPublisher publisher = ServiceManager.getInstance()
+                .getPublisher();
 
         publisher.publish(command, new ResultHandler() {
 
@@ -128,9 +122,18 @@ public class Frontend {
 
         event.validateFor(activityKey);
 
-        Result result = queryService.query(event, token);
+        QueryService queryService = ServiceManager.getInstance()
+                .getQueryService(activityKey);
 
-        return createResponseFromResult(result);
+        List<Event> events = queryService.query(event, token);
+
+        Result result = new Result();
+        result.setCommand(activityKey);
+        result.setEvents(events);
+        result.setStatus(Status.SUCCESS);
+        result.setTimestamp(new Date());
+
+        return Response.ok(result).build();
     }
 
     private Response createResponseFromResult(Result result) {

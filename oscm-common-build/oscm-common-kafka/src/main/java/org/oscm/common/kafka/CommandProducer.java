@@ -90,7 +90,7 @@ public class CommandProducer extends Stream implements CommandPublisher {
     }
 
     @Override
-    protected KafkaStreams initStream() {
+    protected KafkaStreams initStreams() {
         KStreamBuilder builder = new KStreamBuilder();
 
         StateStore store = Stores.create(RESULT_STORE).withKeys(UUID.class)

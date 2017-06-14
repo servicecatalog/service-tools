@@ -16,24 +16,22 @@ import org.oscm.common.interfaces.keys.ConfigurationKey;
  * @author miethaner
  */
 public enum KafkaConfig implements ConfigurationKey {
-    KAFKA_APPLICATION_ID("application.id", true, "id", Type.STRING), //
-    KAFKA_SERVERS("bootstrap.servers", true, "servers", Type.STRING); //
+    KAFKA_APPLICATION_ID("application.id", true, "id"), //
+    KAFKA_SERVERS("bootstrap.servers", true, "servers"); //
 
     private String proprietary;
     private boolean mandatory;
     private String defaultValue;
-    private Type valueType;
 
     private KafkaConfig(String proprietary, boolean mandatory,
-            String defaultValue, Type valueType) {
+            String defaultValue) {
         this.proprietary = proprietary;
         this.mandatory = mandatory;
         this.defaultValue = defaultValue;
-        this.valueType = valueType;
     }
 
     @Override
-    public String getKeyName() {
+    public String getConfigurationName() {
         return name();
     }
 
@@ -50,10 +48,5 @@ public enum KafkaConfig implements ConfigurationKey {
     @Override
     public String getDefaultValue() {
         return defaultValue;
-    }
-
-    @Override
-    public Type getValueType() {
-        return valueType;
     }
 }

@@ -45,11 +45,6 @@ public class ExceptionMapperTest {
         }
 
         @Override
-        public String getKeyName() {
-            return "ERROR";
-        }
-
-        @Override
         public Integer getCode() {
             return CODE;
         }

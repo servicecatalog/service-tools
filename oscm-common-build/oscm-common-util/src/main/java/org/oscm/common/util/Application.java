@@ -33,7 +33,6 @@ public abstract class Application {
     private static final String PARAM_CONFIG_PROPERTIES = "properties";
     private static final String PARAM_LOGGER = "-l";
     private static final String PARAM_LOGGER_STDOUT = "stdout";
-    private static final String PARAM_RESET = "-r";
 
     /**
      * Starts the application with the following parameter options:
@@ -81,7 +80,6 @@ public abstract class Application {
 
     }
 
-    protected boolean reset = false;
     protected ConfigurationImporter importer = null;
 
     /**
@@ -170,10 +168,6 @@ public abstract class Application {
                 default:
                     throw new RuntimeException("Incomplete logger parameters");
                 }
-
-            case PARAM_RESET:
-                reset = true;
-                break;
 
             default:
                 throw new RuntimeException("Unknown parameter");

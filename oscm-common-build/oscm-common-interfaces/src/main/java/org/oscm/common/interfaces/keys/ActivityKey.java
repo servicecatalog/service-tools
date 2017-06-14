@@ -20,7 +20,7 @@ public interface ActivityKey {
         COMMAND, QUERY, UPDATE, NONE
     }
 
-    public String getKeyName();
+    public String getActivityName();
 
     public Class<? extends Event> getInputClass();
 

@@ -31,7 +31,7 @@ public class ConfigurationManager {
     public static final Charset CHARSET = StandardCharsets.UTF_8;
     public static final String FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
-    private static ConfigurationManager sc;
+    private static ConfigurationManager cm;
 
     /**
      * Returns the singleton instance of the configuration manager.
@@ -39,12 +39,11 @@ public class ConfigurationManager {
      * @return the service configuration
      */
     public static ConfigurationManager getInstance() {
-        if (sc == null) {
-            throw new RuntimeException(
-                    "Configuration manager is not initialized");
+        if (cm == null) {
+            cm = new ConfigurationManager();
         }
 
-        return sc;
+        return cm;
     }
 
     /**
@@ -62,7 +61,7 @@ public class ConfigurationManager {
     public static void init(ConfigurationImporter importer,
             VersionKey[] versions, VersionKey current, VersionKey compatible,
             ActivityKey[] activities, ConfigurationKey[] configs) {
-        sc = new ConfigurationManager(importer, versions, current, compatible,
+        cm = new ConfigurationManager(importer, versions, current, compatible,
                 activities, configs);
     }
 
@@ -73,6 +72,15 @@ public class ConfigurationManager {
     private VersionKey current;
     private VersionKey compatible;
 
+    private ConfigurationManager() {
+        roles = Collections.emptyMap();
+        entries = Collections.emptyMap();
+        activities = Collections.emptyMap();
+        versions = Collections.emptyMap();
+        current = null;
+        compatible = null;
+    }
+
     private ConfigurationManager(ConfigurationImporter importer,
             VersionKey[] versions, VersionKey current, VersionKey compatible,
             ActivityKey[] activities, ConfigurationKey[] configs) {
@@ -82,7 +90,7 @@ public class ConfigurationManager {
 
         this.activities = new HashMap<>();
         Arrays.asList(activities)
-                .forEach((a) -> this.activities.put(a.getKeyName(), a));
+                .forEach((a) -> this.activities.put(a.getActivityName(), a));
 
         if (this.versions.containsValue(current)
                 && this.versions.containsValue(compatible)) {
