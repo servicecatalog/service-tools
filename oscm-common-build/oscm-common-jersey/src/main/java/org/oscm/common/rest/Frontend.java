@@ -11,6 +11,7 @@ package org.oscm.common.rest;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -41,6 +42,7 @@ import org.oscm.common.rest.filters.VersionFilter;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Secure;
 import org.oscm.common.rest.interfaces.Versioned;
+import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.ServiceManager;
 
 /**
@@ -71,6 +73,13 @@ public class Frontend {
 
         Token token = (Token) request
                 .getProperty(AuthenticationFilter.PROPERTY_TOKEN);
+
+        Long timeout = ConfigurationManager.getInstance()
+                .getConfigAsLong(JerseyConfig.JERSEY_REQUEST_TIMEOUT);
+
+        if (timeout != null) {
+            asyncResponse.setTimeout(timeout.longValue(), TimeUnit.SECONDS);
+        }
 
         event.validateFor(activityKey);
 

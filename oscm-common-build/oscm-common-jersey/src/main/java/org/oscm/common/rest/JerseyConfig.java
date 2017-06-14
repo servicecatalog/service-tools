@@ -21,7 +21,7 @@ public enum JerseyConfig implements ConfigurationKey {
     JERSEY_KEYSTORE_LOCATION("", true, "./keystore.jks"), //
     JERSEY_KEYSTORE_PASSWORD("", true, "changeit"), //
     JERSEY_TOKEN_SECRET("", true, "secret"), //
-    JERSEY_REQUEST_TIMEOUT("", false, "180"); //
+    JERSEY_REQUEST_TIMEOUT("", false, "60"); //
 
     private String proprietary;
     private boolean mandatory;

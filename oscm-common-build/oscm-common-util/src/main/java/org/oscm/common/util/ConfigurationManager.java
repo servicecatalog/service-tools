@@ -154,6 +154,42 @@ public class ConfigurationManager {
     }
 
     /**
+     * Gets the value for the given configuration key as Boolean. Returns null
+     * if the key does not exist.
+     * 
+     * @param config
+     *            the configuration key
+     * @return the configuration value
+     */
+    public Boolean getConfigAsBoolean(ConfigurationKey config) {
+        if (entries.containsKey(config)) {
+            return Boolean.valueOf(entries.get(config));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the value for the given configuration key as Long. Returns null if
+     * the key does not exist or is not a number.
+     * 
+     * @param config
+     *            the configuration key
+     * @return the configuration value
+     */
+    public Long getConfigAsLong(ConfigurationKey config) {
+        if (entries.containsKey(config)) {
+            try {
+                return Long.valueOf(entries.get(config));
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Gets an immutable map of values for the configuration keys with the
      * proprietary names as key.
      * 
