@@ -16,9 +16,10 @@ import org.oscm.common.interfaces.events.CommandPublisher;
 import org.oscm.common.interfaces.events.EventSource;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ActivityKey.Type;
+import org.oscm.common.interfaces.keys.TransitionKey;
 import org.oscm.common.interfaces.services.CommandService;
-import org.oscm.common.interfaces.services.EventService;
 import org.oscm.common.interfaces.services.QueryService;
+import org.oscm.common.interfaces.services.TransitionService;
 
 /**
  * Singleton class to manage service lookups.
@@ -45,14 +46,14 @@ public class ServiceManager {
     private CommandPublisher publisher;
     private Map<ActivityKey, CommandService> commands;
     private Map<ActivityKey, QueryService> queries;
-    private Map<Class<? extends Event>, EventService> events;
+    private Map<TransitionKey, TransitionService> transitions;
     private Map<Class<? extends Event>, EventSource<?>> sources;
 
     private ServiceManager() {
         publisher = null;
         commands = new ConcurrentHashMap<>();
         queries = new ConcurrentHashMap<>();
-        events = new ConcurrentHashMap<>();
+        transitions = new ConcurrentHashMap<>();
         sources = new ConcurrentHashMap<>();
     }
 
@@ -139,35 +140,36 @@ public class ServiceManager {
     }
 
     /**
-     * Gets the event service instance for the given event class.
+     * Gets the transition service instance for the given transition key.
      * 
-     * @param clazz
-     *            the event class
+     * @param transition
+     *            the transition key
      * @return the service instance
      */
-    public EventService getEventService(Class<? extends Event> clazz) {
-        if (clazz == null || !events.containsKey(clazz)) {
-            throw new RuntimeException(clazz + " serivce not found");
+    public TransitionService getTransitionService(TransitionKey transition) {
+        if (transition == null || !transitions.containsKey(transition)) {
+            throw new RuntimeException(transition + " serivce not found");
         }
 
-        return events.get(clazz);
+        return transitions.get(transition);
     }
 
     /**
-     * Sets the event service as value with the given event as key.
+     * Sets the transition service as value with the given event as key.
      * 
-     * @param event
-     *            the event class
+     * @param transition
+     *            the transition key
      * @param service
      *            the service
      */
-    public void setEventService(Class<? extends Event> clazz,
-            EventService service) {
-        if (clazz == null || service == null) {
-            throw new RuntimeException("Unable to set " + clazz + " service");
+    public void setTransitionService(TransitionKey transition,
+            TransitionService service) {
+        if (transition == null || service == null) {
+            throw new RuntimeException(
+                    "Unable to set " + transition + " service");
         }
 
-        events.put(clazz, service);
+        transitions.put(transition, service);
     }
 
     /**
@@ -179,7 +181,7 @@ public class ServiceManager {
      */
     @SuppressWarnings("unchecked")
     public <E extends Event> EventSource<E> getEventSource(Class<E> clazz) {
-        if (clazz == null || !events.containsKey(clazz)) {
+        if (clazz == null || !sources.containsKey(clazz)) {
             throw new RuntimeException(clazz + " serivce not found");
         }
 

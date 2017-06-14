@@ -12,7 +12,7 @@ import org.oscm.common.interfaces.enums.Reason;
 import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
- * Component exception for cache events (e.g. data not modified)
+ * Service exception for cache events (e.g. data not modified)
  * 
  * @author miethaner
  */

@@ -29,10 +29,12 @@ import org.oscm.common.interfaces.data.Command;
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.data.Result;
 import org.oscm.common.interfaces.data.Token;
+import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.enums.Status;
 import org.oscm.common.interfaces.events.CommandPublisher;
 import org.oscm.common.interfaces.events.ResultHandler;
 import org.oscm.common.interfaces.exceptions.ServiceException;
+import org.oscm.common.interfaces.exceptions.TimeoutException;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ActivityKey.Type;
 import org.oscm.common.interfaces.services.QueryService;
@@ -106,8 +108,11 @@ public class Frontend {
             }
 
             @Override
-            public boolean isAlive() {
-                return asyncResponse.isSuspended();
+            public void onTimeout(Runnable run) {
+                asyncResponse.setTimeoutHandler((ar) -> {
+                    run.run();
+                    ar.resume(new TimeoutException(Messages.TIMEOUT));
+                });
             }
         });
 

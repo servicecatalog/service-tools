@@ -12,7 +12,7 @@ import org.oscm.common.interfaces.enums.Reason;
 import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
- * Component exception for unexpected internal errors
+ * Service exception for unexpected internal errors
  * 
  * @author miethaner
  */

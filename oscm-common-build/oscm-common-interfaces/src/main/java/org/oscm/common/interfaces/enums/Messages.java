@@ -25,6 +25,8 @@ public enum Messages implements MessageKey {
     INFO(0), //
     ERROR(1), //
 
+    TIMEOUT(5), //
+
     JSON_FORMAT(10), //
     INVALID_ID(11), //
     INVALID_VERSION(12), //

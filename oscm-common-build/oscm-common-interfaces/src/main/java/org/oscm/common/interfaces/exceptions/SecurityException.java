@@ -12,7 +12,7 @@ import org.oscm.common.interfaces.enums.Reason;
 import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
- * Component exception for security events and errors (e.g. permissions)
+ * Service exception for security events and errors (e.g. permissions)
  * 
  * @author miethaner
  */

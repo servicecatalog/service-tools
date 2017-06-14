@@ -1,8 +1,8 @@
 /*******************************************************************************
  *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                           
+ *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Jun 24, 2016                                                      
+ *  Creation Date: Jun 14, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
@@ -12,29 +12,28 @@ import org.oscm.common.interfaces.enums.Reason;
 import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
- * Service exception for conflict events and errors (e.g. violation of a
- * constraint)
+ * Service exception for timeout events.
  * 
  * @author miethaner
  */
-public class ConflictException extends ServiceException {
+public class TimeoutException extends ServiceException {
 
-    private static final long serialVersionUID = 5446563151469012266L;
+    private static final long serialVersionUID = 3469213807765151538L;
 
     /**
-     * Creates new conflict exception
+     * Creates new timeout exception
      * 
      * @param messageKey
      *            the enum key for the message
      * @param values
      *            the values for message placeholders
      */
-    public ConflictException(MessageKey messageKey, String... values) {
+    public TimeoutException(MessageKey messageKey, String... values) {
         super(messageKey, values);
     }
 
     /**
-     * Creates new conflict exception
+     * Creates new timeout exception
      * 
      * @param messageKey
      *            the enum key for the message
@@ -43,13 +42,13 @@ public class ConflictException extends ServiceException {
      * @param values
      *            the values for message placeholders
      */
-    public ConflictException(MessageKey messageKey, Throwable e,
+    public TimeoutException(MessageKey messageKey, Throwable e,
             String... values) {
         super(messageKey, e, values);
     }
 
     @Override
     public Reason getReason() {
-        return Reason.CONFLICT;
+        return Reason.TIMEOUT;
     }
 }

@@ -45,11 +45,8 @@ public abstract class Application {
      * {&lt;location&gt;}<br>
      * determines the destination and the log level for the application logger.
      * <p>
-     * reset data connection: -r <br>
-     * republishes all data and reconsumes all proxies
-     * <p>
-     * The main thread waits until any input on the command line is entered and
-     * stops the application after that.
+     * The main thread waits until a shutdown signal arrives and stops the
+     * application after that.
      * 
      * @param app
      *            the application instance
@@ -139,7 +136,7 @@ public abstract class Application {
 
             case PARAM_LOGGER:
                 if (i + 1 >= params.length) {
-                    throw new RuntimeException();
+                    throw new RuntimeException("Incomplete logger parameters");
                 }
                 i++;
                 log = true;
@@ -147,7 +144,8 @@ public abstract class Application {
                 switch (params[i]) {
                 case PARAM_LOGGER_STDOUT:
                     if (i + 1 >= params.length) {
-                        throw new RuntimeException("Incomplete parameters");
+                        throw new RuntimeException(
+                                "Incomplete logger parameters");
                     }
                     i++;
 
@@ -169,8 +167,10 @@ public abstract class Application {
                     throw new RuntimeException("Incomplete logger parameters");
                 }
 
+                break;
+
             default:
-                throw new RuntimeException("Unknown parameter");
+                throw new RuntimeException("Unknown parameter " + params[i]);
             }
         }
 

@@ -36,6 +36,9 @@ public enum Reason {
     @SerializedName(Constants.OPTION_SECURITY)
     SECURITY, //
 
+    @SerializedName(Constants.OPTION_TIMEOUT)
+    TIMEOUT, //
+
     @SerializedName(Constants.OPTION_TOKEN)
     TOKEN, //
 
@@ -53,6 +56,7 @@ public enum Reason {
         public static final String OPTION_INTERNAL = "INTERNAL";
         public static final String OPTION_NOT_FOUND = "NOT_FOUND";
         public static final String OPTION_SECURITY = "SECURITY";
+        public static final String OPTION_TIMEOUT = "TIMEOUT";
         public static final String OPTION_TOKEN = "TOKEN";
         public static final String OPTION_VALIDATION = "VALIDATION";
         public static final String OPTION_OTHER = "OTHER";

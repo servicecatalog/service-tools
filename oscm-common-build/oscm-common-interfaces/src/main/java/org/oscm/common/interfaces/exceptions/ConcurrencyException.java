@@ -12,7 +12,7 @@ import org.oscm.common.interfaces.enums.Reason;
 import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
- * Component exception for concurrency events and errors.
+ * Service exception for concurrency events and errors.
  * 
  * @author miethaner
  */

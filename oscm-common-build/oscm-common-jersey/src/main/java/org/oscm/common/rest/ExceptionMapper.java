@@ -23,6 +23,7 @@ import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
+import org.oscm.common.interfaces.exceptions.TimeoutException;
 import org.oscm.common.interfaces.exceptions.TokenException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 import org.oscm.common.interfaces.keys.VersionKey;
@@ -54,7 +55,7 @@ public class ExceptionMapper
         try {
             throw exception;
 
-        } catch (ValidationException | NotFoundException e) {
+        } catch (ValidationException | NotFoundException | TimeoutException e) {
             LOGGER.debug(e);
             fail = e.getAsFailure();
 
@@ -115,6 +116,8 @@ public class ExceptionMapper
             return Status.NOT_FOUND.getStatusCode();
         case SECURITY:
             return Status.FORBIDDEN.getStatusCode();
+        case TIMEOUT:
+            return Status.SERVICE_UNAVAILABLE.getStatusCode();
         case TOKEN:
             return Status.UNAUTHORIZED.getStatusCode();
         case VALIDATION:

@@ -2,23 +2,22 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Jun 9, 2017                                                      
+ *  Creation Date: Jun 12, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.interfaces.events;
+package org.oscm.common.interfaces.services;
 
-import org.oscm.common.interfaces.data.Result;
+import java.util.List;
+
+import org.oscm.common.interfaces.data.Event;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * @author miethaner
  *
  */
-public interface ResultHandler {
+public interface TransitionService {
 
-    public void handle(Result result);
-
-    public void handle(Throwable thrown);
-
-    public void onTimeout(Runnable run);
+    public List<Event> process(Event event) throws ServiceException;
 }

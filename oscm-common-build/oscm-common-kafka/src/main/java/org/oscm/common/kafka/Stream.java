@@ -9,6 +9,8 @@
 package org.oscm.common.kafka;
 
 import org.apache.kafka.streams.KafkaStreams;
+import org.oscm.common.interfaces.keys.VersionKey;
+import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.logger.ServiceLogger;
 
 /**
@@ -17,12 +19,24 @@ import org.oscm.common.util.logger.ServiceLogger;
  */
 public abstract class Stream {
 
+    public static final String APPLICATION_ID = "application.id";
+
     private static final ServiceLogger LOGGER = ServiceLogger
             .getLogger(Stream.class);
 
     private KafkaStreams streams;
 
     protected abstract KafkaStreams initStreams();
+
+    public String buildApplicationId(String method) {
+        ConfigurationManager cm = ConfigurationManager.getInstance();
+
+        String prefix = cm.getConfig(KafkaConfig.KAFKA_APPLICATION_PREFIX);
+        VersionKey version = cm.getCurrentVersion();
+
+        return String.format("%s-%s-v%d", prefix, method,
+                new Integer(version.getCompiledVersion()));
+    }
 
     public void start() {
         streams = initStreams();

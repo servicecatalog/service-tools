@@ -12,7 +12,7 @@ import org.oscm.common.interfaces.enums.Reason;
 import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
- * Component exception for security token events and errors (e.g. token missing)
+ * Service exception for security token events and errors (e.g. token missing)
  * 
  * @author miethaner
  */

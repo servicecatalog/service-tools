@@ -73,6 +73,9 @@ public class CommandStream extends Stream {
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 
+        config.put(APPLICATION_ID,
+                buildApplicationId(command.getActivityName()));
+
         return config;
     }
 }

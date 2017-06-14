@@ -2,22 +2,24 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Jun 12, 2017                                                      
+ *  Creation Date: Jun 14, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.interfaces.services;
-
-import java.util.List;
+package org.oscm.common.interfaces.keys;
 
 import org.oscm.common.interfaces.data.Event;
-import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
  * @author miethaner
  *
  */
-public interface EventService {
+public interface TransitionKey {
 
-    public List<Event> process(Event event) throws ServiceException;
+    public String getTransitionName();
+
+    public Class<? extends Event> getInputClass();
+
+    public Class<? extends Event> getOutputClass();
+
 }

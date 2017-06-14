@@ -16,7 +16,8 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KeyValueMapper;
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.exceptions.ServiceException;
-import org.oscm.common.interfaces.services.EventService;
+import org.oscm.common.interfaces.keys.TransitionKey;
+import org.oscm.common.interfaces.services.TransitionService;
 import org.oscm.common.util.ServiceManager;
 import org.oscm.common.util.logger.ServiceLogger;
 
@@ -30,10 +31,10 @@ public class EventEventMapper
     private static final ServiceLogger LOGGER = ServiceLogger
             .getLogger(EventEventMapper.class);
 
-    private Class<? extends Event> clazz;
+    private TransitionKey transition;
 
-    public EventEventMapper(Class<? extends Event> clazz) {
-        this.clazz = clazz;
+    public EventEventMapper(TransitionKey transition) {
+        this.transition = transition;
     }
 
     @Override
@@ -42,8 +43,8 @@ public class EventEventMapper
         List<KeyValue<UUID, Event>> eventList = new ArrayList<>();
 
         try {
-            EventService service = ServiceManager.getInstance()
-                    .getEventService(clazz);
+            TransitionService service = ServiceManager.getInstance()
+                    .getTransitionService(transition);
             List<Event> events = service.process(value);
 
             events.forEach((e) -> eventList.add(KeyValue.pair(e.getId(), e)));

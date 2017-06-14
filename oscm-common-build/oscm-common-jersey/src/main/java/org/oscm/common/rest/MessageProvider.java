@@ -8,7 +8,6 @@
 
 package org.oscm.common.rest;
 
-import java.awt.Event;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,10 +23,12 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.data.VersionedEntity;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.InternalException;
@@ -57,9 +58,9 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
         MessageBodyWriter<VersionedEntity> {
 
     @Context
-    private ContainerRequestContext request;
+    private Request request;
 
-    public void setRequest(ContainerRequestContext request) {
+    public void setRequest(Request request) {
         this.request = request;
     }
 
@@ -78,13 +79,15 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
         InputStreamReader reader = new InputStreamReader(entityStream,
                 ConfigurationManager.CHARSET);
 
+        ContainerRequestContext context = (ContainerRequestContext) request;
+
         VersionKey currentKey = ConfigurationManager.getInstance()
                 .getCurrentVersion();
 
-        ActivityKey activityKey = (ActivityKey) request
+        ActivityKey activityKey = (ActivityKey) context
                 .getProperty(ActivityFilter.PROPERTY_ACTIVITY);
 
-        VersionKey versionKey = (VersionKey) request
+        VersionKey versionKey = (VersionKey) context
                 .getProperty(VersionFilter.PROPERTY_VERSION);
 
         if (activityKey == null || versionKey == null) {
@@ -142,7 +145,9 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
         OutputStreamWriter writer = new OutputStreamWriter(entityStream,
                 ConfigurationManager.CHARSET);
 
-        VersionKey versionKey = (VersionKey) request
+        ContainerRequestContext context = (ContainerRequestContext) request;
+
+        VersionKey versionKey = (VersionKey) context
                 .getProperty(VersionFilter.PROPERTY_VERSION);
 
         if (versionKey == null) {

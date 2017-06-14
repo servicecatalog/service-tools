@@ -13,7 +13,7 @@ import org.oscm.common.interfaces.enums.Reason;
 import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
- * Component exception for validation events and errors
+ * Service exception for validation events and errors
  * 
  * @author miethaner
  */

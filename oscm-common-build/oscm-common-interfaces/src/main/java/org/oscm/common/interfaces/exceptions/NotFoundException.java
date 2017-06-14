@@ -12,7 +12,7 @@ import org.oscm.common.interfaces.enums.Reason;
 import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
- * Component exception for not found events and errors (e.g. not found object)
+ * Service exception for not found events and errors (e.g. not found object)
  * 
  * @author miethaner
  */

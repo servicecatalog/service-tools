@@ -12,7 +12,7 @@ import org.oscm.common.interfaces.enums.Reason;
 import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
- * Connection exception for connectivity errors and events
+ * Service exception for connectivity errors and events
  * 
  * @author miethaner
  */

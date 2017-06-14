@@ -16,7 +16,7 @@ import org.oscm.common.interfaces.keys.ConfigurationKey;
  * @author miethaner
  */
 public enum KafkaConfig implements ConfigurationKey {
-    KAFKA_APPLICATION_ID("application.id", true, "id"), //
+    KAFKA_APPLICATION_PREFIX("", false, ""), //
     KAFKA_SERVERS("bootstrap.servers", true, "servers"); //
 
     private String proprietary;

@@ -35,6 +35,7 @@ public class EventTable<E extends Event> extends Stream
     private String topic;
     private Class<E> clazz;
 
+    private KafkaStreams localStreams;
     private ReadOnlyKeyValueStore<UUID, E> store;
 
     public EventTable(String topic, Class<E> clazz) {
@@ -49,11 +50,9 @@ public class EventTable<E extends Event> extends Stream
         builder.globalTable(new UUIDSerializer(), new DataSerializer<>(clazz),
                 topic, EVENT_STORE);
 
-        KafkaStreams streams = new KafkaStreams(builder,
+        localStreams = new KafkaStreams(builder,
                 new StreamsConfig(getConfig()));
-        store = streams.store(EVENT_STORE, QueryableStoreTypes.keyValueStore());
-
-        return streams;
+        return localStreams;
     }
 
     private Map<String, Object> getConfig() {
@@ -63,16 +62,28 @@ public class EventTable<E extends Event> extends Stream
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 
+        config.put(APPLICATION_ID, buildApplicationId(clazz.getSimpleName()));
+
         return config;
     }
 
     @Override
     public E get(UUID id) {
+        if (store == null) {
+            store = localStreams.store(EVENT_STORE,
+                    QueryableStoreTypes.keyValueStore());
+        }
+
         return store.get(id);
     }
 
     @Override
     public List<E> getAll() {
+        if (store == null) {
+            store = localStreams.store(EVENT_STORE,
+                    QueryableStoreTypes.keyValueStore());
+        }
+
         List<E> list = new ArrayList<>();
         store.all().forEachRemaining((record) -> list.add(record.value));
 
