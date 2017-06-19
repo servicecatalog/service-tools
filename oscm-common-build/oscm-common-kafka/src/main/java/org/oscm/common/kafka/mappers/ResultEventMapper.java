@@ -30,7 +30,8 @@ public class ResultEventMapper
 
         List<KeyValue<UUID, Event>> events = new ArrayList<>();
 
-        if (value != null && value.getStatus() == Status.SUCCESS) {
+        if (value != null && value.getEvents() != null
+                && value.getStatus() == Status.SUCCESS) {
             value.getEvents()
                     .forEach((e) -> events.add(KeyValue.pair(e.getId(), e)));
         }

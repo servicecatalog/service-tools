@@ -44,9 +44,9 @@ public class ServiceLogger {
      */
     public static void init(Handler handler, Level level) {
         Logger logger = Logger.getLogger("");
-        // for (Handler h : logger.getHandlers()) {
-        // logger.removeHandler(h);
-        // }
+        for (Handler h : logger.getHandlers()) {
+            logger.removeHandler(h);
+        }
 
         logger.addHandler(handler);
         logger.setLevel(level);

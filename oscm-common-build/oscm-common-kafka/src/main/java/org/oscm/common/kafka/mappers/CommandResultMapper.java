@@ -8,6 +8,7 @@
 
 package org.oscm.common.kafka.mappers;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -51,6 +52,7 @@ public class CommandResultMapper
         } catch (ServiceException e) {
             LOGGER.error(e);
             result.setStatus(Status.FAILURE);
+            result.setEvents(Collections.emptyList());
             result.setFailure(e.getAsFailure());
         }
 

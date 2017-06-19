@@ -70,6 +70,8 @@ public class LogFormatter extends Formatter {
             sb.append(sw.toString());
         }
 
+        sb.append("\n");
+
         return sb.toString();
     }
 

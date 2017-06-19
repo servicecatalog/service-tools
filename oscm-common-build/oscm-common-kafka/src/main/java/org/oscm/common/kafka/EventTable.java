@@ -30,7 +30,7 @@ import org.oscm.common.util.ConfigurationManager;
 public class EventTable<E extends Event> extends Stream
         implements EventSource<E> {
 
-    public static final String EVENT_STORE = "event_store";
+    public static final String STATE_STORE = "event_store";
 
     private String topic;
     private Class<E> clazz;
@@ -48,7 +48,7 @@ public class EventTable<E extends Event> extends Stream
 
         KStreamBuilder builder = new KStreamBuilder();
         builder.globalTable(new UUIDSerializer(), new DataSerializer<>(clazz),
-                topic, EVENT_STORE);
+                topic, STATE_STORE);
 
         localStreams = new KafkaStreams(builder,
                 new StreamsConfig(getConfig()));
@@ -70,7 +70,7 @@ public class EventTable<E extends Event> extends Stream
     @Override
     public E get(UUID id) {
         if (store == null) {
-            store = localStreams.store(EVENT_STORE,
+            store = localStreams.store(STATE_STORE,
                     QueryableStoreTypes.keyValueStore());
         }
 
@@ -80,7 +80,7 @@ public class EventTable<E extends Event> extends Stream
     @Override
     public List<E> getAll() {
         if (store == null) {
-            store = localStreams.store(EVENT_STORE,
+            store = localStreams.store(STATE_STORE,
                     QueryableStoreTypes.keyValueStore());
         }
 
