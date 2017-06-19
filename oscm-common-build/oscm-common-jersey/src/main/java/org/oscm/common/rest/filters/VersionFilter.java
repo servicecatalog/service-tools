@@ -9,6 +9,7 @@
 package org.oscm.common.rest.filters;
 
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -19,8 +20,9 @@ import javax.ws.rs.ext.Provider;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.keys.VersionKey;
-import org.oscm.common.rest.ExceptionMapper;
+import org.oscm.common.rest.RestContext;
 import org.oscm.common.rest.interfaces.Versioned;
+import org.oscm.common.rest.provider.ExceptionMapper;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
@@ -35,9 +37,15 @@ import org.oscm.common.util.ConfigurationManager;
 public class VersionFilter implements ContainerRequestFilter {
 
     public static final String PARAM_VERSION = "version";
-    public static final String PROPERTY_VERSION = "version";
     public static final String PATTERN_VERSION = "v[0-9]+";
     public static final int OFFSET_VERSION = 1;
+
+    @Inject
+    private RestContext context;
+
+    public void setContext(RestContext context) {
+        this.context = context;
+    }
 
     @Override
     public void filter(ContainerRequestContext request)
@@ -58,7 +66,7 @@ public class VersionFilter implements ContainerRequestFilter {
 
         VersionKey versionKey = validateVersion(version);
 
-        request.setProperty(PROPERTY_VERSION, versionKey);
+        context.setVersion(versionKey);
     }
 
     /**

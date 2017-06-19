@@ -18,6 +18,7 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
  * @author miethaner
  *
  */
+@FunctionalInterface
 public interface QueryService {
 
     public static final String SERVICE_QUERY = "query_service";

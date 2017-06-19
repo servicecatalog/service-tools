@@ -31,6 +31,11 @@ public class UUIDSerializer
 
     @Override
     public UUID deserialize(String topic, byte[] data) {
+
+        if (data == null) {
+            return null;
+        }
+
         return UUID.nameUUIDFromBytes(data);
     }
 

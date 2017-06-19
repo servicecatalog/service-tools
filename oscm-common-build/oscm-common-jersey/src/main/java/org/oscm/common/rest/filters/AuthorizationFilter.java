@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -23,9 +24,10 @@ import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.rest.ExceptionMapper;
+import org.oscm.common.rest.RestContext;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Secure;
+import org.oscm.common.rest.provider.ExceptionMapper;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
@@ -38,14 +40,19 @@ import org.oscm.common.util.ConfigurationManager;
 @Priority(Priorities.AUTHORIZATION)
 public class AuthorizationFilter implements ContainerRequestFilter {
 
+    @Inject
+    private RestContext context;
+
+    public void setContext(RestContext context) {
+        this.context = context;
+    }
+
     @Override
     public void filter(ContainerRequestContext request) throws IOException {
 
-        ActivityKey activityKey = (ActivityKey) request
-                .getProperty(ActivityFilter.PROPERTY_ACTIVITY);
+        ActivityKey activityKey = context.getActivity();
 
-        Token token = (Token) request
-                .getProperty(AuthenticationFilter.PROPERTY_TOKEN);
+        Token token = context.getToken();
 
         if (activityKey == null || token == null) {
             InternalException ie = new InternalException(Messages.ERROR, "");

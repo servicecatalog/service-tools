@@ -51,7 +51,7 @@ public enum Reason {
     public class Constants {
         public static final String OPTION_CACHE = "CACHE";
         public static final String OPTION_CONCURRENCY = "CONCURRENCY";
-        public static final String OPTION_CONFLICT = "INTERNAL";
+        public static final String OPTION_CONFLICT = "CONFLICT";
         public static final String OPTION_CONNECTION = "CONNECTION";
         public static final String OPTION_INTERNAL = "INTERNAL";
         public static final String OPTION_NOT_FOUND = "NOT_FOUND";

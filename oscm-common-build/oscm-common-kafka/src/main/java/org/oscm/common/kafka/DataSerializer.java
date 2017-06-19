@@ -42,10 +42,6 @@ public class DataSerializer<D extends VersionedEntity>
 
     public DataSerializer(Class<? extends D> clazz) {
         this.clazz = clazz;
-    }
-
-    @Override
-    public void configure(Map<String, ?> configs, boolean isKey) {
 
         ConfigurationManager sc = ConfigurationManager.getInstance();
         this.currentKey = sc.getCurrentVersion();
@@ -53,12 +49,18 @@ public class DataSerializer<D extends VersionedEntity>
 
         GsonBuilder builder = new GsonBuilder();
         builder.setDateFormat(ConfigurationManager.FORMAT_DATE);
-        builder.registerTypeAdapter(ActivityKey.class,
+        builder.registerTypeHierarchyAdapter(ActivityKey.class,
                 new ActivitySerializer());
-        builder.registerTypeAdapter(VersionKey.class, new VersionSerializer());
+        builder.registerTypeHierarchyAdapter(VersionKey.class,
+                new VersionSerializer());
         builder.registerTypeAdapter(Command.class, new CommandSerializer());
         builder.registerTypeAdapter(Result.class, new ResultSerializer());
         this.gson = builder.create();
+    }
+
+    @Override
+    public void configure(Map<String, ?> configs, boolean isKey) {
+        // ignore
     }
 
     @Override
@@ -75,11 +77,18 @@ public class DataSerializer<D extends VersionedEntity>
     @Override
     public D deserialize(String topic, byte[] raw) {
 
+        if (raw == null) {
+            return null;
+        }
+
         String json = new String(raw, ConfigurationManager.CHARSET);
 
         D data = gson.fromJson(json, clazz);
-        data.updateFrom(data.getVersion());
-        data.setVersion(currentKey);
+
+        if (data != null) {
+            data.updateFrom(data.getVersion());
+            data.setVersion(currentKey);
+        }
 
         return data;
     }

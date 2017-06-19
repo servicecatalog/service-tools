@@ -13,15 +13,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -39,13 +38,13 @@ import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ActivityKey.Type;
 import org.oscm.common.interfaces.services.QueryService;
 import org.oscm.common.rest.filters.ActivityFilter;
-import org.oscm.common.rest.filters.AuthenticationFilter;
 import org.oscm.common.rest.filters.VersionFilter;
 import org.oscm.common.rest.interfaces.Activity;
-import org.oscm.common.rest.interfaces.Secure;
 import org.oscm.common.rest.interfaces.Versioned;
+import org.oscm.common.rest.provider.ExceptionMapper;
 import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.ServiceManager;
+import org.oscm.common.util.logger.ServiceLogger;
 
 /**
  * @author miethaner
@@ -59,22 +58,32 @@ public class Frontend {
     private static final String PATH_QUERY = "/queries/{"
             + ActivityFilter.PARAM_ACTIVITY + "}";
 
+    private static final ServiceLogger LOGGER = ServiceLogger
+            .getLogger(Frontend.class);
+
+    @Inject
+    private RestContext context;
+
+    public void setContext(RestContext context) {
+        this.context = context;
+    }
+
     @Activity(Type.COMMAND)
-    @Secure
+    // @Secure
     @Versioned
     @POST
     @Path(PATH_CMD)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void command(@Context ContainerRequestContext request, Event event,
+    public void command(Event event,
             @Suspended final AsyncResponse asyncResponse)
             throws WebApplicationException, ServiceException {
 
-        ActivityKey activityKey = (ActivityKey) request
-                .getProperty(ActivityFilter.PROPERTY_ACTIVITY);
+        LOGGER.debug(Messages.DEBUG, "test1");
 
-        Token token = (Token) request
-                .getProperty(AuthenticationFilter.PROPERTY_TOKEN);
+        ActivityKey activityKey = context.getActivity();
+
+        Token token = context.getToken();
 
         Long timeout = ConfigurationManager.getInstance()
                 .getConfigAsLong(JerseyConfig.JERSEY_REQUEST_TIMEOUT);
@@ -83,7 +92,11 @@ public class Frontend {
             asyncResponse.setTimeout(timeout.longValue(), TimeUnit.SECONDS);
         }
 
+        LOGGER.debug(Messages.DEBUG, "test2");
+
         event.validateFor(activityKey);
+
+        LOGGER.debug(Messages.DEBUG, "test3");
 
         Command command = new Command();
         command.setId(UUID.randomUUID());
@@ -94,6 +107,8 @@ public class Frontend {
 
         CommandPublisher publisher = ServiceManager.getInstance()
                 .getPublisher();
+
+        LOGGER.debug(Messages.DEBUG, "test4");
 
         publisher.publish(command, new ResultHandler() {
 
@@ -119,20 +134,18 @@ public class Frontend {
     }
 
     @Activity(Type.QUERY)
-    @Secure
+    // @Secure
     @Versioned
     @POST
     @Path(PATH_QUERY)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response query(@Context ContainerRequestContext request, Event event)
+    public Response query(Event event)
             throws WebApplicationException, ServiceException {
 
-        ActivityKey activityKey = (ActivityKey) request
-                .getProperty(ActivityFilter.PROPERTY_ACTIVITY);
+        ActivityKey activityKey = context.getActivity();
 
-        Token token = (Token) request
-                .getProperty(AuthenticationFilter.PROPERTY_TOKEN);
+        Token token = context.getToken();
 
         event.validateFor(activityKey);
 

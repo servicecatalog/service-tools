@@ -6,7 +6,7 @@
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.rest;
+package org.oscm.common.rest.provider;
 
 import java.util.Date;
 

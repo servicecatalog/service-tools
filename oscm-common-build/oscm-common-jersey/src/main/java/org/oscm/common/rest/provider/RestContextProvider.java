@@ -2,23 +2,28 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Jun 12, 2017                                                      
+ *  Creation Date: Jun 19, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.interfaces.services;
+package org.oscm.common.rest.provider;
 
-import java.util.List;
-
-import org.oscm.common.interfaces.data.Event;
-import org.oscm.common.interfaces.exceptions.ServiceException;
+import org.glassfish.hk2.api.Factory;
+import org.oscm.common.rest.RestContext;
 
 /**
  * @author miethaner
  *
  */
-@FunctionalInterface
-public interface TransitionService {
+public class RestContextProvider implements Factory<RestContext> {
 
-    public List<Event> process(Event event) throws ServiceException;
+    @Override
+    public RestContext provide() {
+        return new RestContext();
+    }
+
+    @Override
+    public void dispose(RestContext instance) {
+        // ignore
+    }
 }

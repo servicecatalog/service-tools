@@ -18,6 +18,7 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
  * @author miethaner
  *
  */
+@FunctionalInterface
 public interface CommandService {
 
     public List<Event> process(Command command) throws ServiceException;

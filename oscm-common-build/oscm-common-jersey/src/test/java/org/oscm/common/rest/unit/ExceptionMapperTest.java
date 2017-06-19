@@ -25,7 +25,7 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TokenException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 import org.oscm.common.interfaces.keys.MessageKey;
-import org.oscm.common.rest.ExceptionMapper;
+import org.oscm.common.rest.provider.ExceptionMapper;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

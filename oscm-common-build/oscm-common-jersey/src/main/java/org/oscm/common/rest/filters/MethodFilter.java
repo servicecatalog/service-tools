@@ -11,6 +11,7 @@ package org.oscm.common.rest.filters;
 import java.io.IOException;
 
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -21,9 +22,10 @@ import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.VersionKey;
-import org.oscm.common.rest.ExceptionMapper;
+import org.oscm.common.rest.RestContext;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Versioned;
+import org.oscm.common.rest.provider.ExceptionMapper;
 
 /**
  * @author miethaner
@@ -35,14 +37,19 @@ import org.oscm.common.rest.interfaces.Versioned;
 @Priority(Priorities.AUTHORIZATION)
 public class MethodFilter implements ContainerRequestFilter {
 
+    @Inject
+    private RestContext context;
+
+    public void setContext(RestContext context) {
+        this.context = context;
+    }
+
     @Override
     public void filter(ContainerRequestContext request) throws IOException {
 
-        ActivityKey activityKey = (ActivityKey) request
-                .getProperty(ActivityFilter.PARAM_ACTIVITY);
+        ActivityKey activityKey = context.getActivity();
 
-        VersionKey versionKey = (VersionKey) request
-                .getProperty(VersionFilter.PROPERTY_VERSION);
+        VersionKey versionKey = context.getVersion();
 
         if (activityKey == null || versionKey == null) {
             InternalException ie = new InternalException(Messages.ERROR, "");

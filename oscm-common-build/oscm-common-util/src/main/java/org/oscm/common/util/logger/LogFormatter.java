@@ -50,14 +50,6 @@ public class LogFormatter extends Formatter {
         sb.append(FORMAT.format(new Date(record.getMillis())));
         sb.append("] - [");
         sb.append(record.getLevel());
-
-        if (record.getSourceClassName() != null) {
-            sb.append("] - [");
-            sb.append(record.getSourceClassName());
-            sb.append(".");
-            sb.append(record.getSourceMethodName());
-        }
-
         sb.append("] ");
         sb.append(record.getMessage());
 

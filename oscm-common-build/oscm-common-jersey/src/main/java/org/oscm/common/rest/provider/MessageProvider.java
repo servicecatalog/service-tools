@@ -6,7 +6,7 @@
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.rest;
+package org.oscm.common.rest.provider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,14 +16,12 @@ import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
@@ -35,8 +33,7 @@ import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.VersionKey;
-import org.oscm.common.rest.filters.ActivityFilter;
-import org.oscm.common.rest.filters.VersionFilter;
+import org.oscm.common.rest.RestContext;
 import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.serializer.ActivitySerializer;
 import org.oscm.common.util.serializer.EventSerializer;
@@ -57,11 +54,11 @@ import com.google.gson.JsonSyntaxException;
 public class MessageProvider implements MessageBodyReader<VersionedEntity>,
         MessageBodyWriter<VersionedEntity> {
 
-    @Context
-    private Request request;
+    @Inject
+    private RestContext context;
 
-    public void setRequest(Request request) {
-        this.request = request;
+    public void setContext(RestContext context) {
+        this.context = context;
     }
 
     @Override
@@ -79,16 +76,12 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
         InputStreamReader reader = new InputStreamReader(entityStream,
                 ConfigurationManager.CHARSET);
 
-        ContainerRequestContext context = (ContainerRequestContext) request;
-
         VersionKey currentKey = ConfigurationManager.getInstance()
                 .getCurrentVersion();
 
-        ActivityKey activityKey = (ActivityKey) context
-                .getProperty(ActivityFilter.PROPERTY_ACTIVITY);
+        ActivityKey activityKey = context.getActivity();
 
-        VersionKey versionKey = (VersionKey) context
-                .getProperty(VersionFilter.PROPERTY_VERSION);
+        VersionKey versionKey = context.getVersion();
 
         if (activityKey == null || versionKey == null) {
             InternalException ie = new InternalException(Messages.ERROR, "");
@@ -100,9 +93,9 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
 
             GsonBuilder builder = new GsonBuilder();
             builder.setDateFormat(ConfigurationManager.FORMAT_DATE);
-            builder.registerTypeAdapter(ActivityKey.class,
+            builder.registerTypeHierarchyAdapter(ActivityKey.class,
                     new ActivitySerializer());
-            builder.registerTypeAdapter(VersionKey.class,
+            builder.registerTypeHierarchyAdapter(VersionKey.class,
                     new VersionSerializer());
             builder.registerTypeAdapter(Event.class,
                     new EventSerializer(activityKey.getInputClass()));
@@ -145,28 +138,22 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
         OutputStreamWriter writer = new OutputStreamWriter(entityStream,
                 ConfigurationManager.CHARSET);
 
-        ContainerRequestContext context = (ContainerRequestContext) request;
+        ConfigurationManager cm = ConfigurationManager.getInstance();
 
-        VersionKey versionKey = (VersionKey) context
-                .getProperty(VersionFilter.PROPERTY_VERSION);
-
-        if (versionKey == null) {
-            InternalException ie = new InternalException(Messages.ERROR, "");
-
-            throw new ExceptionMapper().toWebException(ie);
-        }
+        VersionKey current = cm.getCurrentVersion();
+        VersionKey compatible = cm.getCompatibleVersion();
 
         try {
             GsonBuilder builder = new GsonBuilder();
             builder.setDateFormat(ConfigurationManager.FORMAT_DATE);
-            builder.registerTypeAdapter(ActivityKey.class,
+            builder.registerTypeHierarchyAdapter(ActivityKey.class,
                     new ActivitySerializer());
-            builder.registerTypeAdapter(VersionKey.class,
+            builder.registerTypeHierarchyAdapter(VersionKey.class,
                     new VersionSerializer());
             Gson gson = builder.create();
 
-            entity.convertTo(versionKey);
-            entity.setVersion(versionKey);
+            entity.convertTo(compatible);
+            entity.setVersion(current);
             gson.toJson(entity, genericType, writer);
 
         } catch (JsonSyntaxException e) {

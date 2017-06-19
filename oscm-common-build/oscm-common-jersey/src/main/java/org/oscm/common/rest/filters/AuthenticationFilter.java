@@ -9,6 +9,7 @@
 package org.oscm.common.rest.filters;
 
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -21,9 +22,10 @@ import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TokenException;
-import org.oscm.common.rest.ExceptionMapper;
+import org.oscm.common.rest.RestContext;
 import org.oscm.common.rest.TokenManager;
 import org.oscm.common.rest.interfaces.Secure;
+import org.oscm.common.rest.provider.ExceptionMapper;
 
 /**
  * Request filter for checking the security and comparing with endpoint
@@ -36,8 +38,14 @@ import org.oscm.common.rest.interfaces.Secure;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
-    public static final String PROPERTY_TOKEN = "token";
     public static final String AUTHORIZATION_PREFIX = "Bearer ";
+
+    @Inject
+    private RestContext context;
+
+    public void setContext(RestContext context) {
+        this.context = context;
+    }
 
     /**
      * Check if the connection is secure and process the token.
@@ -70,6 +78,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             throw new ExceptionMapper().toWebException(e);
         }
 
-        request.setProperty(PROPERTY_TOKEN, token);
+        context.setToken(token);
     }
 }

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -25,8 +26,9 @@ import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ActivityKey.Type;
-import org.oscm.common.rest.ExceptionMapper;
+import org.oscm.common.rest.RestContext;
 import org.oscm.common.rest.interfaces.Activity;
+import org.oscm.common.rest.provider.ExceptionMapper;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
@@ -39,13 +41,19 @@ import org.oscm.common.util.ConfigurationManager;
 public class ActivityFilter implements ContainerRequestFilter {
 
     public static final String PARAM_ACTIVITY = "activity";
-    public static final String PROPERTY_ACTIVITY = "activity";
 
     @Context
     private ResourceInfo resourceInfo;
 
     public void setResourceInfo(ResourceInfo resourceInfo) {
         this.resourceInfo = resourceInfo;
+    }
+
+    @Inject
+    private RestContext context;
+
+    public void setContext(RestContext context) {
+        this.context = context;
     }
 
     @Override
@@ -77,7 +85,7 @@ public class ActivityFilter implements ContainerRequestFilter {
         ActivityKey activityKey = validateActivity(activity,
                 annotation.value());
 
-        request.setProperty(PROPERTY_ACTIVITY, activityKey);
+        context.setActivity(activityKey);
     }
 
     private ActivityKey validateActivity(String actvity, Type type) {
