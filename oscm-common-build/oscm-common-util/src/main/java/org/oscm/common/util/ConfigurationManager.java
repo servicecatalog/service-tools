@@ -19,6 +19,7 @@ import java.util.Set;
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ConfigurationKey;
+import org.oscm.common.interfaces.keys.ServiceKey;
 import org.oscm.common.interfaces.keys.VersionKey;
 
 /**
@@ -59,56 +60,82 @@ public class ConfigurationManager {
      *            the configuration keys
      */
     public static void init(ConfigurationImporter importer,
+            ServiceKey[] services, ServiceKey self, ActivityKey[] activities,
             VersionKey[] versions, VersionKey current, VersionKey compatible,
-            ActivityKey[] activities, ConfigurationKey[] configs) {
-        cm = new ConfigurationManager(importer, versions, current, compatible,
-                activities, configs);
+            ConfigurationKey[] configs) {
+        cm = new ConfigurationManager(importer, services, self, activities,
+                versions, current, compatible, configs);
     }
 
     private Map<ActivityKey, Set<String>> roles;
     private Map<ConfigurationKey, String> entries;
+    private Map<String, ServiceKey> services;
     private Map<String, ActivityKey> activities;
     private Map<Integer, VersionKey> versions;
+    private ServiceKey self;
     private VersionKey current;
     private VersionKey compatible;
 
     private ConfigurationManager() {
         roles = Collections.emptyMap();
         entries = Collections.emptyMap();
+        services = Collections.emptyMap();
         activities = Collections.emptyMap();
         versions = Collections.emptyMap();
+        self = null;
         current = null;
         compatible = null;
     }
 
     private ConfigurationManager(ConfigurationImporter importer,
+            ServiceKey[] services, ServiceKey self, ActivityKey[] activities,
             VersionKey[] versions, VersionKey current, VersionKey compatible,
-            ActivityKey[] activities, ConfigurationKey[] configs) {
-        this.versions = new HashMap<>();
-        Arrays.asList(versions).forEach((v) -> this.versions
-                .put(new Integer(v.getCompiledVersion()), v));
+            ConfigurationKey[] configs) {
+
+        this.services = new HashMap<>();
+        Arrays.asList(services)
+                .forEach((a) -> this.services.put(a.getServiceName(), a));
+
+        if (!this.services.containsValue(self)) {
+            throw new RuntimeException("Own service key not in service list");
+        }
+
+        this.self = self;
 
         this.activities = new HashMap<>();
         Arrays.asList(activities)
                 .forEach((a) -> this.activities.put(a.getActivityName(), a));
 
-        if (this.versions.containsValue(current)
-                && this.versions.containsValue(compatible)) {
-            this.current = current;
-            this.compatible = compatible;
-        } else {
+        this.versions = new HashMap<>();
+        Arrays.asList(versions).forEach((v) -> this.versions
+                .put(new Integer(v.getCompiledVersion()), v));
+
+        if (!this.versions.containsValue(current)
+                || !this.versions.containsValue(compatible)) {
             throw new RuntimeException("Current or compatible"
                     + " version is not in version list");
         }
+
+        this.current = current;
+        this.compatible = compatible;
 
         this.roles = importer.readRoles(activities);
         this.entries = importer.readEntries(configs);
     }
 
     /**
+     * Gets the service key for this service.
+     * 
+     * @return the service
+     */
+    public ServiceKey getSelf() {
+        return self;
+    }
+
+    /**
      * Gets the current version key for this service.
      * 
-     * @return the current version key
+     * @return the version
      */
     public VersionKey getCurrentVersion() {
         return current;
@@ -117,28 +144,43 @@ public class ConfigurationManager {
     /**
      * Gets the oldest compatible version key for this service.
      * 
-     * @return the compatible version key
+     * @return the version
      */
     public VersionKey getCompatibleVersion() {
         return compatible;
     }
 
     /**
-     * Gets the version with the given compiled version for this service.
+     * Gets the service with the given name.
      * 
-     * @return the version
+     * @param keyName
+     *            the service name
+     * @return the service
      */
-    public VersionKey getVersionForCompiled(int compiledVersion) {
-        return versions.get(new Integer(compiledVersion));
+    public ServiceKey getServiceForName(String keyName) {
+        return services.get(keyName);
     }
 
     /**
      * Gets the activity with the given name for this service.
      * 
+     * @param keyName
+     *            the activity name
      * @return the activity
      */
     public ActivityKey getActivityForName(String keyName) {
         return activities.get(keyName);
+    }
+
+    /**
+     * Gets the version with the given compiled version for this service.
+     * 
+     * @param compiledVersion
+     *            the version as single number
+     * @return the version
+     */
+    public VersionKey getVersionForCompiled(int compiledVersion) {
+        return versions.get(new Integer(compiledVersion));
     }
 
     /**

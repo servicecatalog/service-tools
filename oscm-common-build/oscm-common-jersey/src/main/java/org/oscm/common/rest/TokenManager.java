@@ -63,7 +63,7 @@ public class TokenManager {
 
     /**
      * Create a new JSON web token with the given expiration time from the given
-     * service token. Also encodes the jwt and sign it with the configured
+     * service token. Also encodes the jwt and signs it with the configured
      * secret.
      * 
      * @param token
@@ -72,7 +72,7 @@ public class TokenManager {
      *            the expiration time for the created token
      * @return the encoded and signed token
      */
-    public String createAndEncryptToken(Token token, long expirationTime) {
+    public String createAndSignToken(Token token, long expirationTime) {
 
         return JWT.create().withIssuer(ISSUER)
                 .withExpiresAt(
@@ -96,7 +96,7 @@ public class TokenManager {
      * @return the service token
      * @throws ServiceException
      */
-    public Token decryptAndVerifyToken(String tokenString)
+    public Token decodeAndVerifyToken(String tokenString)
             throws ServiceException {
 
         try {
@@ -114,7 +114,7 @@ public class TokenManager {
 
             return token;
         } catch (JWTVerificationException e) {
-            throw new TokenException(Messages.NOT_AUTHENTICATED, e);
+            throw new TokenException(Messages.ERROR_NOT_AUTHENTICATED, e);
         }
     }
 }

@@ -14,8 +14,9 @@ import java.lang.annotation.RetentionPolicy;
 import javax.ws.rs.NameBinding;
 
 /**
- * Custom annotation for REST method security. Annotated methods will be check
- * for secure connection and authentication.
+ * Custom annotation for REST method security. Annotated methods will be checked
+ * for secure connection and authentication. Together with {@link Activity} they
+ * will be also checked for authorization.
  * 
  * @author miethaner
  */

@@ -9,21 +9,22 @@
 package org.oscm.common.rest.provider;
 
 import org.glassfish.hk2.api.Factory;
-import org.oscm.common.rest.RestContext;
+import org.oscm.common.rest.ServiceRequestContext;
 
 /**
+ * Context factory for service request contexts provides within request scope.
+ * 
  * @author miethaner
- *
  */
-public class RestContextProvider implements Factory<RestContext> {
+public class ContextFactory implements Factory<ServiceRequestContext> {
 
     @Override
-    public RestContext provide() {
-        return new RestContext();
+    public ServiceRequestContext provide() {
+        return new ServiceRequestContext();
     }
 
     @Override
-    public void dispose(RestContext instance) {
+    public void dispose(ServiceRequestContext instance) {
         // ignore
     }
 }

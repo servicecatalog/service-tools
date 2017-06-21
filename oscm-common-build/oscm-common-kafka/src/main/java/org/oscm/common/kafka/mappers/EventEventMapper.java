@@ -22,8 +22,10 @@ import org.oscm.common.util.ServiceManager;
 import org.oscm.common.util.logger.ServiceLogger;
 
 /**
+ * Mapper class for kafka stream pipelines. Processes events according to their
+ * transition keys via services and returns the resulting event.
+ * 
  * @author miethaner
- *
  */
 public class EventEventMapper
         implements KeyValueMapper<UUID, Event, List<KeyValue<UUID, Event>>> {
@@ -33,6 +35,12 @@ public class EventEventMapper
 
     private TransitionKey transition;
 
+    /**
+     * Creates a new mapper for the given transition.
+     * 
+     * @param transition
+     *            the transition key
+     */
     public EventEventMapper(TransitionKey transition) {
         this.transition = transition;
     }

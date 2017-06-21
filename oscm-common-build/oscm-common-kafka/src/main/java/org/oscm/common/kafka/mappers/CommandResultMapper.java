@@ -25,8 +25,10 @@ import org.oscm.common.util.ServiceManager;
 import org.oscm.common.util.logger.ServiceLogger;
 
 /**
+ * Mapper class for kafka stream pipelines. Processes commands according to
+ * their keys via services and returns the result.
+ * 
  * @author miethaner
- *
  */
 public class CommandResultMapper
         implements KeyValueMapper<UUID, Command, KeyValue<UUID, Result>> {
@@ -45,7 +47,7 @@ public class CommandResultMapper
         try {
             CommandService service = ServiceManager.getInstance()
                     .getCommandService(value.getCommand());
-            List<Event> events = service.process(value);
+            List<Event> events = service.execute(value);
 
             result.setEvents(events);
             result.setStatus(Status.SUCCESS);

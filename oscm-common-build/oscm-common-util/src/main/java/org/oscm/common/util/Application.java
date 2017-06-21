@@ -8,11 +8,13 @@
 
 package org.oscm.common.util;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.StreamHandler;
 
 import org.oscm.common.interfaces.config.ConfigurationImporter;
-import org.oscm.common.interfaces.config.ConfigurationLoader;
+import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.util.importer.EnvironmentImporter;
 import org.oscm.common.util.importer.LocalLoader;
 import org.oscm.common.util.importer.PropertiesImporter;
@@ -57,11 +59,13 @@ public abstract class Application {
 
         processParameters(params);
 
+        ServiceLogger logger = ServiceLogger.getLogger(Application.class);
+
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    System.out.println("Stopping service");
+                    logger.info(Messages.INFO_SERVICE_STOP);
                     stop();
                 } catch (Exception e) {
                     // ignore
@@ -69,10 +73,10 @@ public abstract class Application {
             }
         }));
 
-        System.out.println("Starting service");
+        logger.info(Messages.INFO_SERVICE_START);
         start();
 
-        System.out.println("Press Ctrl + C to stop service");
+        logger.info(Messages.INFO_SERVICE_READY);
         Thread.currentThread().join();
 
     }
@@ -91,37 +95,38 @@ public abstract class Application {
 
         boolean config = false;
         boolean log = false;
-        ConfigurationLoader loader = null;
 
-        for (int i = 0; i < params.length; i++) {
-            switch (params[i]) {
+        Iterator<String> itr = Arrays.asList(params).iterator();
+        while (itr.hasNext()) {
+            switch (itr.next()) {
             case PARAM_CONFIG:
-                i++;
                 config = true;
 
-                switch (params[i]) {
+                switch (itr.next()) {
                 case PARAM_CONFIG_ENV:
                     importer = new EnvironmentImporter();
                     break;
 
                 case PARAM_CONFIG_LOCAL:
-                    if (i + 1 >= params.length) {
+                    if (!itr.hasNext()) {
                         throw new RuntimeException(
                                 "Incomplete configuration parameters");
                     }
-                    i++;
 
-                    loader = new LocalLoader(params[i + 1]);
-                    switch (params[i]) {
+                    switch (itr.next()) {
                     case PARAM_CONFIG_PROPERTIES:
-                        importer = new PropertiesImporter(loader);
+                        if (!itr.hasNext()) {
+                            throw new RuntimeException(
+                                    "Incomplete configuration parameters");
+                        }
+
+                        importer = new PropertiesImporter(
+                                new LocalLoader(itr.next()));
                         break;
                     default:
                         throw new RuntimeException(
                                 "Unknown configuration type");
                     }
-
-                    i++;
                     break;
 
                 case PARAM_CONFIG_REMOTE:
@@ -135,19 +140,18 @@ public abstract class Application {
                 break;
 
             case PARAM_LOGGER:
-                if (i + 1 >= params.length) {
+                if (!itr.hasNext()) {
                     throw new RuntimeException("Incomplete logger parameters");
                 }
-                i++;
+
                 log = true;
 
-                switch (params[i]) {
+                switch (itr.next()) {
                 case PARAM_LOGGER_STDOUT:
-                    if (i + 1 >= params.length) {
+                    if (!itr.hasNext()) {
                         throw new RuntimeException(
                                 "Incomplete logger parameters");
                     }
-                    i++;
 
                     LogFormatter lf = new LogFormatter();
                     StreamHandler sh = new StreamHandler(System.out, lf);
@@ -155,7 +159,7 @@ public abstract class Application {
                     Level logLevel;
 
                     try {
-                        logLevel = Level.parse(params[i]);
+                        logLevel = Level.parse(itr.next());
                     } catch (IllegalArgumentException e) {
                         throw new RuntimeException("Unknown log level");
                     }
@@ -170,7 +174,7 @@ public abstract class Application {
                 break;
 
             default:
-                throw new RuntimeException("Unknown parameter " + params[i]);
+                throw new RuntimeException("Unknown parameter");
             }
         }
 

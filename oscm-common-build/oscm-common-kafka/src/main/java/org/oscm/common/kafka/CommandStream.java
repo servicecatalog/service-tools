@@ -24,8 +24,11 @@ import org.oscm.common.kafka.mappers.ResultEventMapper;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
+ * Stream class for command pipelines with kafka. Takes a command from a topic
+ * and processes it within a mapper. The result written back to a topic and also
+ * mapped to an event that is written back separately.
+ * 
  * @author miethaner
- *
  */
 public class CommandStream extends Stream {
 
@@ -34,6 +37,21 @@ public class CommandStream extends Stream {
     private String eventTopic;
     private ActivityKey command;
 
+    /**
+     * Creates new kafka stream from the given command topic that is filtered
+     * for the given command. After processing with the service identified by
+     * the given command, the result is written back to the given result topic.
+     * It is also mapped to an event written to the given event topic.
+     * 
+     * @param commandTopic
+     *            the command topic
+     * @param resultTopic
+     *            the result topic
+     * @param eventTopic
+     *            the event topic
+     * @param command
+     *            the command key
+     */
     public CommandStream(String commandTopic, String resultTopic,
             String eventTopic, ActivityKey command) {
         super();

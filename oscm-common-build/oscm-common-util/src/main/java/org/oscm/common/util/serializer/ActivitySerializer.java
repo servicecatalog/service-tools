@@ -21,8 +21,9 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 /**
+ * De-/Serializer for {@link ActivityKey} types for gson.
+ * 
  * @author miethaner
- *
  */
 public class ActivitySerializer
         implements JsonSerializer<ActivityKey>, JsonDeserializer<ActivityKey> {

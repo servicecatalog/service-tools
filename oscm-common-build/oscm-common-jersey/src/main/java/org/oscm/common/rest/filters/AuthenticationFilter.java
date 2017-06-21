@@ -22,7 +22,7 @@ import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TokenException;
-import org.oscm.common.rest.RestContext;
+import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.TokenManager;
 import org.oscm.common.rest.interfaces.Secure;
 import org.oscm.common.rest.provider.ExceptionMapper;
@@ -41,9 +41,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     public static final String AUTHORIZATION_PREFIX = "Bearer ";
 
     @Inject
-    private RestContext context;
+    private ServiceRequestContext context;
 
-    public void setContext(RestContext context) {
+    public void setContext(ServiceRequestContext context) {
         this.context = context;
     }
 
@@ -55,7 +55,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             throws WebApplicationException {
 
         if (!request.getSecurityContext().isSecure()) {
-            SecurityException se = new SecurityException(Messages.NOT_SECURE);
+            SecurityException se = new SecurityException(Messages.ERROR_NOT_SECURE);
 
             throw new ExceptionMapper().toWebException(se);
         }
@@ -63,7 +63,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         String header = request.getHeaderString(HttpHeaders.AUTHORIZATION);
 
         if (!header.startsWith(AUTHORIZATION_PREFIX)) {
-            TokenException te = new TokenException(Messages.NOT_AUTHENTICATED);
+            TokenException te = new TokenException(Messages.ERROR_NOT_AUTHENTICATED);
 
             throw new ExceptionMapper().toWebException(te);
         }
@@ -73,7 +73,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         Token token;
         try {
             token = TokenManager.getInstance()
-                    .decryptAndVerifyToken(tokenString);
+                    .decodeAndVerifyToken(tokenString);
         } catch (ServiceException e) {
             throw new ExceptionMapper().toWebException(e);
         }

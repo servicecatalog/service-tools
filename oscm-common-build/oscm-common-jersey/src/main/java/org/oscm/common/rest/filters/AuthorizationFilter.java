@@ -24,7 +24,7 @@ import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.SecurityException;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.rest.RestContext;
+import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Secure;
 import org.oscm.common.rest.provider.ExceptionMapper;
@@ -41,9 +41,9 @@ import org.oscm.common.util.ConfigurationManager;
 public class AuthorizationFilter implements ContainerRequestFilter {
 
     @Inject
-    private RestContext context;
+    private ServiceRequestContext context;
 
-    public void setContext(RestContext context) {
+    public void setContext(ServiceRequestContext context) {
         this.context = context;
     }
 
@@ -71,13 +71,13 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
             if (intersection.isEmpty()) {
                 SecurityException se = new SecurityException(
-                        Messages.NOT_AUTHORIZED);
+                        Messages.ERROR_NOT_AUTHORIZED);
 
                 throw new ExceptionMapper().toWebException(se);
             }
         } else {
             SecurityException se = new SecurityException(
-                    Messages.NOT_AUTHORIZED);
+                    Messages.ERROR_NOT_AUTHORIZED);
 
             throw new ExceptionMapper().toWebException(se);
         }

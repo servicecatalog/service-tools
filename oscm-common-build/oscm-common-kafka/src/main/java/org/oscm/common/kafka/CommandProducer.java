@@ -27,9 +27,13 @@ import org.oscm.common.interfaces.data.Result;
 import org.oscm.common.interfaces.events.CommandPublisher;
 import org.oscm.common.interfaces.events.ResultHandler;
 import org.oscm.common.interfaces.exceptions.ServiceException;
+import org.oscm.common.interfaces.keys.ServiceKey;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
+ * Producer class for commands with kafka. Writes commands to a topic and waits
+ * for corresponding results from another topic. The results will be given to
+ * specified handlers.
  * 
  * @author miethaner
  */
@@ -67,11 +71,26 @@ public class CommandProducer extends Stream implements CommandPublisher {
     private Map<UUID, ResultHandler> waitingHandlers;
 
     private KafkaProducer<UUID, Command> producer;
+    private ServiceKey service;
     private String commandTopic;
     private String resultTopic;
 
-    public CommandProducer(String commandTopic, String resultTopic) {
+    /**
+     * Creates a new kafka producer for commands of the given service that will
+     * write to the given command topic. It also creates a global stream from
+     * the given result topic to monitor for corresponding results.
+     * 
+     * @param commandTopic
+     *            the command topic
+     * @param resultTopic
+     *            the result topic
+     * @param service
+     *            the service key
+     */
+    public CommandProducer(String commandTopic, String resultTopic,
+            ServiceKey service) {
         super();
+        this.service = service;
         this.commandTopic = commandTopic;
         this.resultTopic = resultTopic;
         this.waitingHandlers = new ConcurrentHashMap<>();
@@ -106,7 +125,8 @@ public class CommandProducer extends Stream implements CommandPublisher {
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 
-        config.put(APPLICATION_ID, buildApplicationId("cmd_prd"));
+        config.put(APPLICATION_ID,
+                buildApplicationId("CMD_" + service.getServiceName()));
 
         return config;
     }

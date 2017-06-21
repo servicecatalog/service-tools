@@ -10,6 +10,7 @@ package org.oscm.common.util.logger;
 
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.oscm.common.interfaces.exceptions.ServiceException;
@@ -43,43 +44,39 @@ public class ServiceLogger {
      *            the logging level
      */
     public static void init(Handler handler, Level level) {
-        Logger logger = Logger.getLogger("");
-        for (Handler h : logger.getHandlers()) {
-            logger.removeHandler(h);
-        }
+        LogManager.getLogManager().reset();
 
+        Logger logger = Logger.getLogger("");
         logger.addHandler(handler);
         logger.setLevel(level);
     }
 
     private Logger logger;
+    private Class<?> clazz;
 
     private ServiceLogger(Class<?> clazz) {
+        this.clazz = clazz;
         logger = Logger.getLogger(clazz.getName());
     }
 
     /**
-     * Logging the entering of the given method in the given class.
+     * Logging the entering of the given method in the loggers class.
      * 
-     * @param className
-     *            the methods class
      * @param methodName
      *            the entered method
      */
-    public void in(String className, String methodName) {
-        logger.logp(Level.FINER, className, methodName, ">>> IN >>>");
+    public void in(String methodName) {
+        logger.logp(Level.FINER, clazz.getName(), methodName, ">>> IN >>>");
     }
 
     /**
-     * Logging the exiting of the given method in the given class.
+     * Logging the exiting of the given method in the loggers class.
      * 
-     * @param className
-     *            the methods class
      * @param methodName
      *            the exited method
      */
-    public void out(String className, String methodName) {
-        logger.logp(Level.FINER, className, methodName, "<<< OUT <<<");
+    public void out(String methodName) {
+        logger.logp(Level.FINER, clazz.getName(), methodName, "<<< OUT <<<");
     }
 
     /**
@@ -91,7 +88,8 @@ public class ServiceLogger {
      *            the values for the message placeholders
      */
     public void debug(MessageKey messageKey, String... values) {
-        logger.log(Level.FINE, messageKey.getMessage(values));
+        logger.logp(Level.FINE, clazz.getName(), null,
+                messageKey.getMessage(values));
     }
 
     /**
@@ -101,7 +99,8 @@ public class ServiceLogger {
      *            the exception
      */
     public void debug(ServiceException thrown) {
-        logger.log(Level.FINE, thrown.getMessage(), thrown);
+        logger.logp(Level.FINE, clazz.getName(), null, thrown.getMessage(),
+                thrown);
     }
 
     /**
@@ -113,7 +112,8 @@ public class ServiceLogger {
      *            the values for the message placeholders
      */
     public void info(MessageKey messageKey, String... values) {
-        logger.log(Level.INFO, messageKey.getMessage(values));
+        logger.logp(Level.INFO, clazz.getName(), null,
+                messageKey.getMessage(values));
     }
 
     /**
@@ -123,7 +123,8 @@ public class ServiceLogger {
      *            the exception
      */
     public void info(ServiceException thrown) {
-        logger.log(Level.INFO, thrown.getMessage(), thrown);
+        logger.logp(Level.INFO, clazz.getName(), null, thrown.getMessage(),
+                thrown);
     }
 
     /**
@@ -135,7 +136,8 @@ public class ServiceLogger {
      *            the values for the message placeholders
      */
     public void warning(MessageKey messageKey, String... values) {
-        logger.log(Level.WARNING, messageKey.getMessage(values));
+        logger.logp(Level.WARNING, clazz.getName(), null,
+                messageKey.getMessage(values));
     }
 
     /**
@@ -145,7 +147,8 @@ public class ServiceLogger {
      *            the exception
      */
     public void warning(ServiceException thrown) {
-        logger.log(Level.WARNING, thrown.getMessage(), thrown);
+        logger.logp(Level.WARNING, clazz.getName(), null, thrown.getMessage(),
+                thrown);
     }
 
     /**
@@ -157,7 +160,8 @@ public class ServiceLogger {
      *            the values for the message placeholders
      */
     public void error(MessageKey messageKey, String... values) {
-        logger.log(Level.SEVERE, messageKey.getMessage(values));
+        logger.logp(Level.SEVERE, clazz.getName(), null,
+                messageKey.getMessage(values));
     }
 
     /**
@@ -167,7 +171,8 @@ public class ServiceLogger {
      *            the exception
      */
     public void error(ServiceException thrown) {
-        logger.log(Level.SEVERE, thrown.getMessage(), thrown);
+        logger.logp(Level.SEVERE, clazz.getName(), null, thrown.getMessage(),
+                thrown);
     }
 
     /**
@@ -177,6 +182,7 @@ public class ServiceLogger {
      *            the exception
      */
     public void exception(Throwable thrown) {
-        logger.log(Level.SEVERE, thrown.getMessage(), thrown);
+        logger.logp(Level.SEVERE, clazz.getName(), null, thrown.getMessage(),
+                thrown);
     }
 }

@@ -15,11 +15,20 @@ import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
+ * Functional interface for command methods.
+ * 
  * @author miethaner
- *
  */
 @FunctionalInterface
 public interface CommandService {
 
-    public List<Event> process(Command command) throws ServiceException;
+    /**
+     * Executes the given command and returns the resulting list of events.
+     * 
+     * @param command
+     *            the command to execute
+     * @return the list of events
+     * @throws ServiceException
+     */
+    public List<Event> execute(Command command) throws ServiceException;
 }

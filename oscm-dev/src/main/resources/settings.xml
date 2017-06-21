@@ -25,17 +25,4 @@
       <nonProxyHosts>localhost|127.0.0.1|estscm1.intern.est.fujitsu.com</nonProxyHosts>
     </proxy>
   </proxies>
-  <profiles>
-    <profile>
-      <id>local-config</id>
-      <properties>
-        <jdk.directory>C:/Program Files/Java/jdk1.7.0_79</jdk.directory>
-        <user.directory>C:/Users/miethaner</user.directory>
-        <glassfish.directory>C:/Applications/glassfish4</glassfish.directory>
-      </properties>
-    </profile>
-  </profiles>
-  <activeProfiles>
-    <activeProfile>local-config</activeProfile>
-  </activeProfiles>
 </settings>

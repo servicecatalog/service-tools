@@ -11,8 +11,9 @@ package org.oscm.common.interfaces.enums;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ * Enum for failure reasons.
+ * 
  * @author miethaner
- *
  */
 public enum Reason {
     @SerializedName(Constants.OPTION_CACHE)

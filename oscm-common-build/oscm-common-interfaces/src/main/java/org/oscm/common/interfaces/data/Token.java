@@ -17,7 +17,7 @@ import java.util.UUID;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Implementation for the security token.
+ * Entity class for the security token.
  * 
  * @author miethaner
  */
@@ -44,10 +44,20 @@ public class Token extends VersionedEntity {
     @SerializedName(FIELD_ROLES)
     private Set<String> roles;
 
+    /**
+     * Gets the user id. Returns null if not set.
+     * 
+     * @return the user id
+     */
     public UUID getUserId() {
         return userId;
     }
 
+    /**
+     * Gets the user id as string. Returns null if not set.
+     * 
+     * @return the id string
+     */
     public String getUserIdAsString() {
         if (userId != null) {
             return userId.toString();
@@ -56,10 +66,22 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Sets the user id.
+     * 
+     * @param userId
+     *            the user id
+     */
     public void setUserId(UUID userId) {
         this.userId = userId;
     }
 
+    /**
+     * Sets the user id as string.
+     * 
+     * @param userIdString
+     *            the id string
+     */
     public void setUserId(String userIdString) {
         if (userIdString != null) {
             try {
@@ -72,10 +94,20 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Gets the organization id. Returns null if not set.
+     * 
+     * @return the organization id.
+     */
     public UUID getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * Gets the organization id as string. Returns null if not set.
+     * 
+     * @return the id string
+     */
     public String getOrganizationIdAsString() {
         if (organizationId != null) {
             return organizationId.toString();
@@ -84,10 +116,21 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Sets the organization id.
+     * 
+     * @param organizationId
+     *            the organization id
+     */
     public void setOrganizationId(UUID organizationId) {
         this.organizationId = organizationId;
     }
 
+    /**
+     * Sets the organization id as string.
+     * 
+     * @param organizationIdString
+     */
     public void setOrganizationId(String organizationIdString) {
         if (organizationIdString != null) {
             try {
@@ -100,10 +143,20 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Gets the tenant id. Returns null if not set.
+     * 
+     * @return the tenant id
+     */
     public UUID getTenantId() {
         return tenantId;
     }
 
+    /**
+     * Gets the tenant id as string. Returns null if not set.
+     * 
+     * @return the id string
+     */
     public String getTenantIdAsString() {
         if (tenantId != null) {
             return tenantId.toString();
@@ -112,10 +165,22 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Sets the tenant id.
+     * 
+     * @param tenantId
+     *            the tenant id
+     */
     public void setTenantId(UUID tenantId) {
         this.tenantId = tenantId;
     }
 
+    /**
+     * Sets the tenant id as string.
+     * 
+     * @param tenantIdString
+     *            the id string
+     */
     public void setTenantId(String tenantIdString) {
         if (tenantIdString != null) {
             try {
@@ -128,6 +193,11 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Gets the set of restrictions. Returns null if not set.
+     * 
+     * @return the set of restrictions
+     */
     public Set<String> getRestrictions() {
         if (restrictions != null) {
             return Collections.unmodifiableSet(restrictions);
@@ -136,6 +206,11 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Gets the array of restrictions. Returns null if not set.
+     * 
+     * @return the array of restrictions
+     */
     public String[] getRestrictionsAsArray() {
         if (restrictions != null) {
             return restrictions.toArray(new String[] {});
@@ -144,10 +219,22 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Sets the set of restrictions.
+     * 
+     * @param restrictions
+     *            the set of restrictions
+     */
     public void setRestrictions(Set<String> restrictions) {
         this.restrictions = restrictions;
     }
 
+    /**
+     * Set the array of restrictions.
+     * 
+     * @param restrictionsArray
+     *            the array of restrictions
+     */
     public void setRestrictions(String[] restrictionsArray) {
         if (restrictionsArray != null) {
             restrictions = new HashSet<>(Arrays.asList(restrictionsArray));
@@ -156,6 +243,11 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Gets the set of roles. Returns null if not set.
+     * 
+     * @return the set of roles
+     */
     public Set<String> getRoles() {
         if (roles != null) {
             return Collections.unmodifiableSet(roles);
@@ -164,6 +256,11 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Gets the array of roles. Returns null if not set.
+     * 
+     * @return the array of roles
+     */
     public String[] getRolesAsArray() {
         if (roles != null) {
             return roles.toArray(new String[] {});
@@ -172,10 +269,22 @@ public class Token extends VersionedEntity {
         }
     }
 
+    /**
+     * Sets the set of roles.
+     * 
+     * @param roles
+     *            the set of roles
+     */
     public void setRoles(Set<String> roles) {
         this.roles = roles;
     }
 
+    /**
+     * Sets the array of roles.
+     * 
+     * @param rolesArray
+     *            the array of roles
+     */
     public void setRoles(String[] rolesArray) {
         if (rolesArray != null) {
             roles = new HashSet<>(Arrays.asList(rolesArray));

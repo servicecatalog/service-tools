@@ -19,8 +19,10 @@ import org.oscm.common.interfaces.data.Result;
 import org.oscm.common.interfaces.enums.Status;
 
 /**
+ * Mapper class for kafka stream pipelines. Extracts the events from a result
+ * and returns them.
+ * 
  * @author miethaner
- *
  */
 public class ResultEventMapper
         implements KeyValueMapper<UUID, Result, List<KeyValue<UUID, Event>>> {

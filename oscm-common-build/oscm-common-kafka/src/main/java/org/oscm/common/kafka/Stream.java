@@ -31,7 +31,7 @@ public abstract class Stream {
     public String buildApplicationId(String method) {
         ConfigurationManager cm = ConfigurationManager.getInstance();
 
-        String prefix = cm.getConfig(KafkaConfig.KAFKA_APPLICATION_PREFIX);
+        String prefix = cm.getSelf().getServiceName();
         VersionKey version = cm.getCurrentVersion();
 
         return String.format("%s-%s-v%d", prefix, method,

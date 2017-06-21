@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.oscm.common</groupId>
     <artifactId>oscm-common-build</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${tools.version}</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -18,17 +18,11 @@
     <dependency>
       <groupId>org.oscm.common</groupId>
       <artifactId>oscm-common-interfaces</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${tools.version}</version>
     </dependency>
   
     <!-- Third party libraries -->
-    
-    <dependency> 
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.25</version>
-    </dependency>
-    
+
   </dependencies>
   
 </project>

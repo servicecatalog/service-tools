@@ -17,7 +17,7 @@ import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;
 
 /**
- * Serializer class with UUIDs for kafka producers and consumers.
+ * De-/Serializer class with UUIDs for kafka.
  * 
  * @author miethaner
  */

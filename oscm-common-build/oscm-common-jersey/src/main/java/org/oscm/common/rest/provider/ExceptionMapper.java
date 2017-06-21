@@ -31,8 +31,8 @@ import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.logger.ServiceLogger;
 
 /**
- * Exception mapper for service exceptions to format them in the correct json
- * format
+ * Exception mapper for all exceptions. Builds result entities with failure that
+ * are returned within the response.
  * 
  * @author miethaner
  */
@@ -90,13 +90,13 @@ public class ExceptionMapper
     }
 
     /**
-     * Converts a service exception to a web application exception
+     * Converts a exception to a web application exception
      * 
      * @param exception
      *            the service exception
      * @return the web application exception
      */
-    public WebApplicationException toWebException(ServiceException exception) {
+    public WebApplicationException toWebException(Exception exception) {
         return new WebApplicationException(toResponse(exception));
     }
 

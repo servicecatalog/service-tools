@@ -28,7 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * Serializer class with gson for kafka producers and consumers.
+ * De-/Serializer class with gson for kafka.
  * 
  * @author miethaner
  */

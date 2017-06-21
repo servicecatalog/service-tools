@@ -12,13 +12,22 @@ import org.oscm.common.interfaces.data.Command;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
+ * Interface for command publishers.
  * 
  * @author miethaner
  */
 public interface CommandPublisher {
 
-    public static final String SERVICE_PUBLISHER = "cmd_publisher";
-
+    /**
+     * Publishes the given command to the backend. The backend will use the
+     * given handler to return responses.
+     * 
+     * @param command
+     *            the command entity
+     * @param handler
+     *            the result handler
+     * @throws ServiceException
+     */
     public void publish(Command command, ResultHandler handler)
             throws ServiceException;
 }

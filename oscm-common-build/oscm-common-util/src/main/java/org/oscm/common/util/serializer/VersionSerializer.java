@@ -21,8 +21,9 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 /**
+ * De-/Serializer for {@link VersionKey} types for gson.
+ * 
  * @author miethaner
- *
  */
 public class VersionSerializer
         implements JsonSerializer<VersionKey>, JsonDeserializer<VersionKey> {

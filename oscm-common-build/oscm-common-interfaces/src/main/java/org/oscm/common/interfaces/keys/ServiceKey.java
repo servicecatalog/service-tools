@@ -2,32 +2,23 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: May 30, 2017                                                      
+ *  Creation Date: Jun 21, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.rest;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
+package org.oscm.common.interfaces.keys;
 
 /**
- * Basic REST endpoint for service health checks.
+ * Interface for enums that represent service keys.
  * 
  * @author miethaner
  */
-@Path("/health")
-public class Health {
+public interface ServiceKey {
 
     /**
-     * Health check for the running service.
+     * Gets the service name.
      * 
-     * @return response with status code 200
+     * @return the name
      */
-    @GET
-    public Response checkHealth() {
-        return Response.ok().build();
-    }
-
+    public String getServiceName();
 }

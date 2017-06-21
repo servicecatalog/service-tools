@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.oscm.common</groupId>
     <artifactId>oscm-common-build</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${tools.version}</version>
   </parent>
  
   <modelVersion>4.0.0</modelVersion>

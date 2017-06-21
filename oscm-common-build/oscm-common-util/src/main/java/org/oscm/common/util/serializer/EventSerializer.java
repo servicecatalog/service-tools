@@ -18,13 +18,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 /**
+ * De-/Serializer for {@link Event} types for gson.
+ * 
  * @author miethaner
- *
  */
 public class EventSerializer implements JsonDeserializer<Event> {
 
     private Class<? extends Event> clazz;
 
+    /**
+     * Creates a new event deserializer for the given subclass.
+     * 
+     * @param clazz
+     *            the event subclass
+     */
     public EventSerializer(Class<? extends Event> clazz) {
         this.clazz = clazz;
     }

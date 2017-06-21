@@ -15,7 +15,8 @@ import javax.ws.rs.NameBinding;
 
 /**
  * Custom annotation for REST method versioning. Annotated methods will be
- * checked for version and validated.
+ * checked for version and validated. Together with {@link Activity} they will
+ * be checked for activity versions.
  * 
  * @author miethaner
  */

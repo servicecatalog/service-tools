@@ -11,12 +11,11 @@ package org.oscm.common.kafka;
 import org.oscm.common.interfaces.keys.ConfigurationKey;
 
 /**
- * Enum for configuration keys specific to kafka consumers.
+ * Enum for configuration keys specific to kafka.
  * 
  * @author miethaner
  */
 public enum KafkaConfig implements ConfigurationKey {
-    KAFKA_APPLICATION_PREFIX("", false, ""), //
     KAFKA_SERVERS("bootstrap.servers", true, "servers"); //
 
     private String proprietary;

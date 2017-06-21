@@ -11,8 +11,9 @@ package org.oscm.common.interfaces.enums;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ * Enum for result states.
+ * 
  * @author miethaner
- *
  */
 public enum Status {
     @SerializedName(Constants.OPTION_SUCCESS)

@@ -26,7 +26,7 @@ import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ActivityKey.Type;
-import org.oscm.common.rest.RestContext;
+import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.provider.ExceptionMapper;
 import org.oscm.common.util.ConfigurationManager;
@@ -50,9 +50,9 @@ public class ActivityFilter implements ContainerRequestFilter {
     }
 
     @Inject
-    private RestContext context;
+    private ServiceRequestContext context;
 
-    public void setContext(RestContext context) {
+    public void setContext(ServiceRequestContext context) {
         this.context = context;
     }
 
@@ -67,7 +67,8 @@ public class ActivityFilter implements ContainerRequestFilter {
         if (method == null || params == null
                 || !params.containsKey(PARAM_ACTIVITY)
                 || params.get(PARAM_ACTIVITY).isEmpty()) {
-            NotFoundException nfe = new NotFoundException(Messages.INVALID_ID);
+            NotFoundException nfe = new NotFoundException(
+                    Messages.ERROR_INVALID_ACTIVITY);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
@@ -91,7 +92,8 @@ public class ActivityFilter implements ContainerRequestFilter {
     private ActivityKey validateActivity(String actvity, Type type) {
 
         if (actvity == null) {
-            NotFoundException nfe = new NotFoundException(Messages.INVALID_ID);
+            NotFoundException nfe = new NotFoundException(
+                    Messages.ERROR_INVALID_ACTIVITY);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
@@ -100,7 +102,8 @@ public class ActivityFilter implements ContainerRequestFilter {
                 .getActivityForName(actvity);
 
         if (activityKey == null || activityKey.getType() != type) {
-            NotFoundException nfe = new NotFoundException(Messages.INVALID_ID);
+            NotFoundException nfe = new NotFoundException(
+                    Messages.ERROR_INVALID_ACTIVITY);
 
             throw new ExceptionMapper().toWebException(nfe);
         }

@@ -20,11 +20,12 @@ import org.oscm.common.rest.filters.MethodFilter;
 import org.oscm.common.rest.filters.VersionFilter;
 import org.oscm.common.rest.provider.ExceptionMapper;
 import org.oscm.common.rest.provider.MessageProvider;
-import org.oscm.common.rest.provider.RestContextProvider;
+import org.oscm.common.rest.provider.ContextFactory;
 
 /**
+ * Configuration class for the REST service layer with jersey.
+ * 
  * @author miethaner
- *
  */
 @ApplicationPath("")
 public class JerseyResourceConfig extends ResourceConfig {
@@ -34,9 +35,9 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bindFactory(RestContextProvider.class).to(RestContext.class)
-                        .proxy(true).proxyForSameScope(false)
-                        .in(RequestScoped.class);
+                bindFactory(ContextFactory.class)
+                        .to(ServiceRequestContext.class).proxy(true)
+                        .proxyForSameScope(false).in(RequestScoped.class);
             }
         });
 

@@ -47,8 +47,9 @@ import org.oscm.common.util.ServiceManager;
 import org.oscm.common.util.logger.ServiceLogger;
 
 /**
+ * Main REST endpoint for services.
+ * 
  * @author miethaner
- *
  */
 @Path("/{" + VersionFilter.PARAM_VERSION + "}")
 public class Frontend {
@@ -62,14 +63,25 @@ public class Frontend {
             .getLogger(Frontend.class);
 
     @Inject
-    private RestContext context;
+    private ServiceRequestContext context;
 
-    public void setContext(RestContext context) {
+    public void setContext(ServiceRequestContext context) {
         this.context = context;
     }
 
+    /**
+     * Endpoint for executing commands. Commands will be validated and published
+     * to the backend.
+     * 
+     * @param event
+     *            the payload as event
+     * @param asyncResponse
+     *            the response handler
+     * @throws WebApplicationException
+     * @throws ServiceException
+     */
     @Activity(Type.COMMAND)
-    // @Secure
+    // @Secure //TODO uncomment after testing phase
     @Versioned
     @POST
     @Path(PATH_CMD)
@@ -79,24 +91,29 @@ public class Frontend {
             @Suspended final AsyncResponse asyncResponse)
             throws WebApplicationException, ServiceException {
 
-        LOGGER.debug(Messages.DEBUG, "test1");
-
         ActivityKey activityKey = context.getActivity();
 
         Token token = context.getToken();
 
-        Long timeout = ConfigurationManager.getInstance()
-                .getConfigAsLong(JerseyConfig.JERSEY_REQUEST_TIMEOUT);
+        LOGGER.debug(Messages.DEBUG_COMMAND, activityKey.getActivityName());
+
+        ConfigurationManager cm = ConfigurationManager.getInstance();
+
+        Long timeout = cm.getConfigAsLong(JerseyConfig.JERSEY_REQUEST_TIMEOUT);
 
         if (timeout != null) {
             asyncResponse.setTimeout(timeout.longValue(), TimeUnit.SECONDS);
         }
 
-        LOGGER.debug(Messages.DEBUG, "test2");
-
         event.validateFor(activityKey);
 
-        LOGGER.debug(Messages.DEBUG, "test3");
+        if (event.getId() == null) {
+            event.setId(UUID.randomUUID());
+        }
+
+        if (event.getETag() == null) {
+            event.setETag(UUID.randomUUID());
+        }
 
         Command command = new Command();
         command.setId(UUID.randomUUID());
@@ -106,9 +123,7 @@ public class Frontend {
         command.setTimestamp(new Date());
 
         CommandPublisher publisher = ServiceManager.getInstance()
-                .getPublisher();
-
-        LOGGER.debug(Messages.DEBUG, "test4");
+                .getPublisher(cm.getSelf());
 
         publisher.publish(command, new ResultHandler() {
 
@@ -126,15 +141,25 @@ public class Frontend {
             public void onTimeout(Runnable run) {
                 asyncResponse.setTimeoutHandler((ar) -> {
                     run.run();
-                    ar.resume(new TimeoutException(Messages.TIMEOUT));
+                    ar.resume(new TimeoutException(Messages.ERROR_TIMEOUT));
                 });
             }
         });
 
     }
 
+    /**
+     * Endpoint for executing queries. Queries will be validated and executed in
+     * the backend.
+     * 
+     * @param event
+     *            the payload as parameters
+     * @return the response with the result
+     * @throws WebApplicationException
+     * @throws ServiceException
+     */
     @Activity(Type.QUERY)
-    // @Secure
+    // @Secure //TODO uncomment after testing phase
     @Versioned
     @POST
     @Path(PATH_QUERY)
@@ -146,6 +171,8 @@ public class Frontend {
         ActivityKey activityKey = context.getActivity();
 
         Token token = context.getToken();
+
+        LOGGER.debug(Messages.DEBUG_QUERY, activityKey.getActivityName());
 
         event.validateFor(activityKey);
 

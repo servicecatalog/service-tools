@@ -18,14 +18,14 @@ public interface ConfigurationKey {
     /**
      * Gets the unique name identifying the configuration key.
      * 
-     * @return
+     * @return the name
      */
     public String getConfigurationName();
 
     /**
      * Gets the name of the proprietary property this key is meant for.
      * 
-     * @return
+     * @return the name
      */
     public String getProprietaryName();
 

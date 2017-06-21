@@ -24,8 +24,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 /**
+ * De-/Serializer for {@link Command} types for gson.
+ * 
  * @author miethaner
- *
  */
 public class CommandSerializer implements JsonDeserializer<Command> {
 

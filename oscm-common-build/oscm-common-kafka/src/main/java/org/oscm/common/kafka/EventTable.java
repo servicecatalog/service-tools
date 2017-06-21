@@ -24,8 +24,10 @@ import org.oscm.common.interfaces.events.EventSource;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
+ * Stream class for event tables with kafka. Takes events from a topic and saves
+ * them in an internal state store.
+ * 
  * @author miethaner
- *
  */
 public class EventTable<E extends Event> extends Stream
         implements EventSource<E> {
@@ -38,6 +40,14 @@ public class EventTable<E extends Event> extends Stream
     private KafkaStreams localStreams;
     private ReadOnlyKeyValueStore<UUID, E> store;
 
+    /**
+     * Creates a kafka table from the given topic for the given event class.
+     * 
+     * @param topic
+     *            the event topic
+     * @param clazz
+     *            the event class
+     */
     public EventTable(String topic, Class<E> clazz) {
         this.topic = topic;
         this.clazz = clazz;

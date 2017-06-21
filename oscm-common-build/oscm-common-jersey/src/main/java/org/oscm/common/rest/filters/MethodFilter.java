@@ -22,7 +22,7 @@ import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.VersionKey;
-import org.oscm.common.rest.RestContext;
+import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Versioned;
 import org.oscm.common.rest.provider.ExceptionMapper;
@@ -38,9 +38,9 @@ import org.oscm.common.rest.provider.ExceptionMapper;
 public class MethodFilter implements ContainerRequestFilter {
 
     @Inject
-    private RestContext context;
+    private ServiceRequestContext context;
 
-    public void setContext(RestContext context) {
+    public void setContext(ServiceRequestContext context) {
         this.context = context;
     }
 
@@ -60,7 +60,7 @@ public class MethodFilter implements ContainerRequestFilter {
         if (versionKey.compareVersion(activityKey.getSince()) < 0
                 || versionKey.compareVersion(activityKey.getUntil()) > 0) {
             NotFoundException nfe = new NotFoundException(
-                    Messages.METHOD_VERSION);
+                    Messages.ERROR_METHOD_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }

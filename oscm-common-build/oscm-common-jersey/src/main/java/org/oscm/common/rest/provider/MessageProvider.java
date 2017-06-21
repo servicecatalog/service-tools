@@ -33,7 +33,7 @@ import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.VersionKey;
-import org.oscm.common.rest.RestContext;
+import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.serializer.ActivitySerializer;
 import org.oscm.common.util.serializer.EventSerializer;
@@ -55,9 +55,9 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
         MessageBodyWriter<VersionedEntity> {
 
     @Inject
-    private RestContext context;
+    private ServiceRequestContext context;
 
-    public void setContext(RestContext context) {
+    public void setContext(ServiceRequestContext context) {
         this.context = context;
     }
 
@@ -108,7 +108,7 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
             return entity;
         } catch (JsonSyntaxException e) {
             ValidationException ve = new ValidationException(
-                    Messages.JSON_FORMAT, null, e);
+                    Messages.ERROR_JSON_FORMAT, null, e);
 
             throw new ExceptionMapper().toWebException(ve);
         } finally {
@@ -157,7 +157,7 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
             gson.toJson(entity, genericType, writer);
 
         } catch (JsonSyntaxException e) {
-            InternalException ie = new InternalException(Messages.JSON_FORMAT,
+            InternalException ie = new InternalException(Messages.ERROR_JSON_FORMAT,
                     e);
 
             throw new ExceptionMapper().toWebException(ie);

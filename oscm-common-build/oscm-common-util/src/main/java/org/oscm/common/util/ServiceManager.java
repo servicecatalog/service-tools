@@ -16,6 +16,7 @@ import org.oscm.common.interfaces.events.CommandPublisher;
 import org.oscm.common.interfaces.events.EventSource;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ActivityKey.Type;
+import org.oscm.common.interfaces.keys.ServiceKey;
 import org.oscm.common.interfaces.keys.TransitionKey;
 import org.oscm.common.interfaces.services.CommandService;
 import org.oscm.common.interfaces.services.QueryService;
@@ -43,14 +44,14 @@ public class ServiceManager {
         return rm;
     }
 
-    private CommandPublisher publisher;
+    private Map<ServiceKey, CommandPublisher> publishers;
     private Map<ActivityKey, CommandService> commands;
     private Map<ActivityKey, QueryService> queries;
     private Map<TransitionKey, TransitionService> transitions;
     private Map<Class<? extends Event>, EventSource<?>> sources;
 
     private ServiceManager() {
-        publisher = null;
+        publishers = new ConcurrentHashMap<>();
         commands = new ConcurrentHashMap<>();
         queries = new ConcurrentHashMap<>();
         transitions = new ConcurrentHashMap<>();
@@ -58,22 +59,36 @@ public class ServiceManager {
     }
 
     /**
-     * Gets the shared command publisher instance.
+     * Gets the command publisher instance for the given application.
      * 
+     * @param application
+     *            the application key
      * @return the publisher
      */
-    public CommandPublisher getPublisher() {
-        return publisher;
+    public CommandPublisher getPublisher(ServiceKey application) {
+        if (application == null || !publishers.containsKey(application)) {
+            throw new RuntimeException(application + " publisher not found");
+        }
+
+        return publishers.get(application);
     }
 
     /**
-     * Sets the shared command publisher instance.
+     * Sets the command publisher as value with the given application as key.
      * 
+     * @param application
+     *            the application key
      * @param publisher
-     *            the command publisher to share
+     *            the publisher
      */
-    public void setPublisher(CommandPublisher publisher) {
-        this.publisher = publisher;
+    public void setPublisher(ServiceKey application,
+            CommandPublisher publisher) {
+        if (application == null || publisher == null) {
+            throw new RuntimeException(
+                    "Unable to set " + application + " publisher");
+        }
+
+        publishers.put(application, publisher);
     }
 
     /**
@@ -182,7 +197,7 @@ public class ServiceManager {
     @SuppressWarnings("unchecked")
     public <E extends Event> EventSource<E> getEventSource(Class<E> clazz) {
         if (clazz == null || !sources.containsKey(clazz)) {
-            throw new RuntimeException(clazz + " serivce not found");
+            throw new RuntimeException(clazz + " source not found");
         }
 
         return (EventSource<E>) sources.get(clazz);
@@ -199,7 +214,7 @@ public class ServiceManager {
     public <E extends Event> void setEventSource(Class<E> clazz,
             EventSource<E> source) {
         if (clazz == null || source == null) {
-            throw new RuntimeException("Unable to set " + clazz + " service");
+            throw new RuntimeException("Unable to set " + clazz + " source");
         }
 
         sources.put(clazz, source);

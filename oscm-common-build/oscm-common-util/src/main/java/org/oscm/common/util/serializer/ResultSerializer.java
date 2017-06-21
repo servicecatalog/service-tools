@@ -27,8 +27,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 /**
+ * De-/Serializer for {@link Result} types for gson.
+ * 
  * @author miethaner
- *
  */
 public class ResultSerializer implements JsonDeserializer<Result> {
 

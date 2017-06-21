@@ -20,7 +20,7 @@ import javax.ws.rs.ext.Provider;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.keys.VersionKey;
-import org.oscm.common.rest.RestContext;
+import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.interfaces.Versioned;
 import org.oscm.common.rest.provider.ExceptionMapper;
 import org.oscm.common.util.ConfigurationManager;
@@ -41,9 +41,9 @@ public class VersionFilter implements ContainerRequestFilter {
     public static final int OFFSET_VERSION = 1;
 
     @Inject
-    private RestContext context;
+    private ServiceRequestContext context;
 
-    public void setContext(RestContext context) {
+    public void setContext(ServiceRequestContext context) {
         this.context = context;
     }
 
@@ -57,7 +57,7 @@ public class VersionFilter implements ContainerRequestFilter {
         if (params == null || !params.containsKey(PARAM_VERSION)
                 || params.get(PARAM_VERSION).isEmpty()) {
             NotFoundException nfe = new NotFoundException(
-                    Messages.INVALID_VERSION);
+                    Messages.ERROR_INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
@@ -83,14 +83,14 @@ public class VersionFilter implements ContainerRequestFilter {
 
         if (version == null) {
             NotFoundException nfe = new NotFoundException(
-                    Messages.INVALID_VERSION);
+                    Messages.ERROR_INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
 
         if (!version.matches(PATTERN_VERSION)) {
             NotFoundException nfe = new NotFoundException(
-                    Messages.INVALID_VERSION);
+                    Messages.ERROR_INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
@@ -103,7 +103,7 @@ public class VersionFilter implements ContainerRequestFilter {
 
         if (versionKey == null) {
             NotFoundException nfe = new NotFoundException(
-                    Messages.INVALID_VERSION);
+                    Messages.ERROR_INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
@@ -111,7 +111,7 @@ public class VersionFilter implements ContainerRequestFilter {
         if (versionKey.compareVersion(cm.getCompatibleVersion()) < 0
                 || versionKey.compareVersion(cm.getCurrentVersion()) > 0) {
             NotFoundException nfe = new NotFoundException(
-                    Messages.INVALID_VERSION);
+                    Messages.ERROR_INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }

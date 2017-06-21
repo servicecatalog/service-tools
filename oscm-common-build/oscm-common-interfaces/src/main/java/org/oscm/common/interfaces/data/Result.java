@@ -19,8 +19,9 @@ import org.oscm.common.interfaces.keys.VersionKey;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ * Entity class for results.
+ * 
  * @author miethaner
- *
  */
 public class Result extends VersionedEntity {
 
@@ -53,62 +54,145 @@ public class Result extends VersionedEntity {
     @SerializedName(FIELD_TIMESTAMP)
     private Date timestamp;
 
+    /**
+     * Gets the result id. Returns null if not set.
+     * 
+     * @return the id or null
+     */
     public UUID getId() {
         return id;
     }
 
+    /**
+     * Sets the result id.
+     * 
+     * @param id
+     *            the result id
+     */
     public void setId(UUID id) {
         this.id = id;
     }
 
+    /**
+     * Gets the parent id. Returns null if not set.
+     * 
+     * @return the id or null
+     */
     public UUID getParent() {
         return parent;
     }
 
+    /**
+     * Sets the parent id.
+     * 
+     * @param parent
+     *            the parent id
+     */
     public void setParent(UUID parent) {
         this.parent = parent;
     }
 
+    /**
+     * Gets the parent command key. Returns null if not set.
+     * 
+     * @return the key or null
+     */
     public ActivityKey getCommand() {
         return command;
     }
 
+    /**
+     * Sets the parent command key.
+     * 
+     * @param command
+     *            the parent key
+     */
     public void setCommand(ActivityKey command) {
         this.command = command;
     }
 
+    /**
+     * Gets the results status. Returns null if not set.
+     * 
+     * @return the status or null
+     */
     public Status getStatus() {
         return status;
     }
 
+    /**
+     * Sets the results status.
+     * 
+     * @param status
+     *            the status
+     */
     public void setStatus(Status status) {
         this.status = status;
     }
 
+    /**
+     * Gets the list of resulting events. Returns null if not set.
+     * 
+     * @return list of events or null
+     */
     public List<Event> getEvents() {
         return events;
     }
 
+    /**
+     * Sets the list of resulting events.
+     * 
+     * @param events
+     *            the list of events
+     */
     public void setEvents(List<Event> events) {
         this.events = events;
     }
 
+    /**
+     * Gets the results failure. Returns null if not set.
+     * 
+     * @return the failure or null
+     */
     public Failure getFailure() {
         return failure;
     }
 
+    /**
+     * Sets the results failure.
+     * 
+     * @param failure
+     *            the failure
+     */
     public void setFailure(Failure failure) {
         this.failure = failure;
     }
 
+    /**
+     * Gets the creation timestamp for this result. Returns null if not set.
+     * 
+     * @return the timestamp or null
+     */
     public Date getTimestamp() {
         return timestamp;
     }
 
+    /**
+     * Sets the creation timestamp for this result.
+     * 
+     * @param timestamp
+     */
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
+    /**
+     * Sets the version with the given version key for this entity and all its
+     * sub entities.
+     * 
+     * @param version
+     *            the version key
+     */
     @Override
     public void setVersion(VersionKey version) {
         super.setVersion(version);

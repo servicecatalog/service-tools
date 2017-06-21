@@ -22,8 +22,11 @@ import org.oscm.common.kafka.mappers.EventEventMapper;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
+ * Stream class for event pipelines with kafka. Takes a event from a topic and
+ * processes it within a mapper. The resulting event is written back to another
+ * topic.
+ * 
  * @author miethaner
- *
  */
 public class EventStream extends Stream {
 
@@ -31,6 +34,18 @@ public class EventStream extends Stream {
     private String outputTopic;
     private TransitionKey transition;
 
+    /**
+     * Creates a new kafka stream from the given input topic. After processing
+     * with the service identified with the given transition, the resulting
+     * event is written to the given output topic.
+     * 
+     * @param inputTopic
+     *            the input topic
+     * @param outputTopic
+     *            the output topic
+     * @param transition
+     *            the transition key
+     */
     public EventStream(String inputTopic, String outputTopic,
             TransitionKey transition) {
         super();
