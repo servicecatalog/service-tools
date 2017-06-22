@@ -1,6 +1,5 @@
-dist: trusty
 language: java
-jdk: openjdk8
+jdk: oraclejdk8
 
 script: mvn cobertura:cobertura -f ./oscm-common-build/pom.xml
 
