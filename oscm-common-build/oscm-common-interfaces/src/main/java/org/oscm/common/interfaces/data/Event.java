@@ -107,17 +107,51 @@ public abstract class Event extends VersionedEntity {
     public abstract void validateFor(ActivityKey activity)
             throws ServiceException;
 
-    protected void validateId() throws ServiceException {
-        if (id == null) {
-            throw new ValidationException(
-                    Messages.ERROR_MANDATORY_PROPERTY_NOT_PRESENT, FIELD_ID);
+    /**
+     * Validates the id if it is present or not. If the given flag is true, a
+     * exception will be thrown in case the id is null and vice versa.
+     * 
+     * @param present
+     *            true if id should be present
+     * @throws ValidationException
+     *             if conditions are not met
+     */
+    protected void validateId(boolean present) throws ServiceException {
+        if (present) {
+            if (id == null) {
+                throw new ValidationException(
+                        Messages.ERROR_MANDATORY_PROPERTY_NOT_PRESENT,
+                        FIELD_ID);
+            }
+        } else {
+            if (id != null) {
+                throw new ValidationException(Messages.ERROR_BAD_PROPERTY,
+                        FIELD_ID);
+            }
         }
     }
 
-    protected void validateETag() throws ServiceException {
-        if (etag == null) {
-            throw new ValidationException(
-                    Messages.ERROR_MANDATORY_PROPERTY_NOT_PRESENT, FIELD_ETAG);
+    /**
+     * Validates the etag if it is present or not. If the given flag is true, a
+     * exception will be thrown in case the etag is null and vice versa.
+     * 
+     * @param present
+     *            true if id should be present
+     * @throws ValidationException
+     *             if conditions are not met
+     */
+    protected void validateETag(boolean present) throws ServiceException {
+        if (present) {
+            if (etag == null) {
+                throw new ValidationException(
+                        Messages.ERROR_MANDATORY_PROPERTY_NOT_PRESENT,
+                        FIELD_ETAG);
+            }
+        } else {
+            if (etag != null) {
+                throw new ValidationException(Messages.ERROR_BAD_PROPERTY,
+                        FIELD_ETAG);
+            }
         }
     }
 }

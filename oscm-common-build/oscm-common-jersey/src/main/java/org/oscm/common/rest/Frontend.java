@@ -111,10 +111,6 @@ public class Frontend {
             event.setId(UUID.randomUUID());
         }
 
-        if (event.getETag() == null) {
-            event.setETag(UUID.randomUUID());
-        }
-
         Command command = new Command();
         command.setId(UUID.randomUUID());
         command.setCommand(activityKey);
