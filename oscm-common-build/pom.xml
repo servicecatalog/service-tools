@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.oscm.common</groupId>
   <artifactId>oscm-common-build</artifactId>
-  <version>${tools.version}</version>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <name>${project.artifactId}-${project.version}</name>
@@ -19,7 +19,6 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <tools.version>0.0.1-SNAPSHOT</tools.version>
   </properties>
 
   <build>

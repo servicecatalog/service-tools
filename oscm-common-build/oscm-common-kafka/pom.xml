@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.oscm.common</groupId>
     <artifactId>oscm-common-build</artifactId>
-    <version>${tools.version}</version>
+    <version>0.0.1-SNAPSHOT</version>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
@@ -19,13 +19,13 @@
    <dependency>
     <groupId>org.oscm.common</groupId>
     <artifactId>oscm-common-interfaces</artifactId>
-    <version>${tools.version}</version>
+    <version>${project.parent.version}</version>
    </dependency>
    
    <dependency>
     <groupId>org.oscm.common</groupId>
     <artifactId>oscm-common-util</artifactId>
-    <version>${tools.version}</version>
+    <version>${project.parent.version}</version>
    </dependency>
    
     <!-- Third party libraries -->

@@ -45,26 +45,26 @@
     <dependency>
       <groupId>org.oscm.common</groupId>
       <artifactId>oscm-common-interfaces</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${project.parent.version}</version>
       <scope></scope>
     </dependency>
   
     <dependency>
       <groupId>org.oscm.common</groupId>
       <artifactId>oscm-common-jersey</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${project.parent.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.oscm.common</groupId>
       <artifactId>oscm-common-kafka</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${project.parent.version}</version>
     </dependency>
     
     <dependency>
       <groupId>org.oscm.common</groupId>
       <artifactId>oscm-common-util</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${project.parent.version}</version>
     </dependency>
     
     <!-- Third party libraries -->
