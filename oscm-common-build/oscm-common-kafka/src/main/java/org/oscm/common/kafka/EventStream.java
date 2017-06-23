@@ -63,7 +63,7 @@ public class EventStream extends Stream {
                 new DataSerializer<>(transition.getInputClass()), inputTopic);
 
         stream.flatMap(new EventEventMapper(transition)) //
-                .through(new UUIDSerializer(),
+                .to(new UUIDSerializer(),
                         new DataSerializer<>(transition.getOutputClass()),
                         outputTopic); //
 
@@ -80,7 +80,7 @@ public class EventStream extends Stream {
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 
-        config.put(APPLICATION_ID,
+        config.put(StreamsConfig.APPLICATION_ID_CONFIG,
                 buildApplicationId(transition.getTransitionName()));
 
         return config;

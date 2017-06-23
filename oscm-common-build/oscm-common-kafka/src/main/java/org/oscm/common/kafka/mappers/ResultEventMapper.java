@@ -16,7 +16,6 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KeyValueMapper;
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.data.Result;
-import org.oscm.common.interfaces.enums.Status;
 
 /**
  * Mapper class for kafka stream pipelines. Extracts the events from a result
@@ -32,11 +31,8 @@ public class ResultEventMapper
 
         List<KeyValue<UUID, Event>> events = new ArrayList<>();
 
-        if (value != null && value.getEvents() != null
-                && value.getStatus() == Status.SUCCESS) {
-            value.getEvents()
-                    .forEach((e) -> events.add(KeyValue.pair(e.getId(), e)));
-        }
+        value.getEvents()
+                .forEach((e) -> events.add(KeyValue.pair(e.getId(), e)));
 
         return events;
     }

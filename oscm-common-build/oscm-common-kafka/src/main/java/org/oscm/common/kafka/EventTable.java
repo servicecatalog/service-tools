@@ -57,8 +57,8 @@ public class EventTable<E extends Event> extends Stream
     protected KafkaStreams initStreams() {
 
         KStreamBuilder builder = new KStreamBuilder();
-        builder.globalTable(new UUIDSerializer(), new DataSerializer<>(clazz),
-                topic, STATE_STORE);
+        builder.table(new UUIDSerializer(), new DataSerializer<>(clazz), topic,
+                STATE_STORE);
 
         localStreams = new KafkaStreams(builder,
                 new StreamsConfig(getConfig()));
@@ -72,7 +72,8 @@ public class EventTable<E extends Event> extends Stream
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 
-        config.put(APPLICATION_ID, buildApplicationId(clazz.getSimpleName()));
+        config.put(StreamsConfig.APPLICATION_ID_CONFIG,
+                buildApplicationId(clazz.getSimpleName()));
 
         return config;
     }

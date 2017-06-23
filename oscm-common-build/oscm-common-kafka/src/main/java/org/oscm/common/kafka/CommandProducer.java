@@ -52,10 +52,9 @@ public class CommandProducer extends Stream implements CommandPublisher {
         @Override
         public void process(UUID key, Result value) {
 
-            if (value != null && value.getParent() != null
-                    && waitingHandlers.containsKey(value.getParent())) {
-                waitingHandlers.get(value.getParent()).handle(value);
-                waitingHandlers.remove(value.getParent());
+            if (waitingHandlers.containsKey(key)) {
+                waitingHandlers.get(key).handle(value);
+                waitingHandlers.remove(key);
             }
         }
 
@@ -125,7 +124,7 @@ public class CommandProducer extends Stream implements CommandPublisher {
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 
-        config.put(APPLICATION_ID,
+        config.put(StreamsConfig.APPLICATION_ID_CONFIG,
                 buildApplicationId("CMD_" + service.getServiceName()));
 
         return config;
@@ -136,7 +135,7 @@ public class CommandProducer extends Stream implements CommandPublisher {
             throws ServiceException {
 
         waitingHandlers.put(command.getId(), handler);
-        handler.onTimeout(() -> waitingHandlers.remove(handler));
+        handler.onTimeout(() -> waitingHandlers.remove(command.getId()));
 
         producer.send(
                 new ProducerRecord<>(commandTopic, command.getId(), command),

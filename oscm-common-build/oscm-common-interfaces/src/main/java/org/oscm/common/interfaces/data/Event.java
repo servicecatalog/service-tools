@@ -120,13 +120,13 @@ public abstract class Event extends VersionedEntity {
         if (present) {
             if (id == null) {
                 throw new ValidationException(
-                        Messages.ERROR_MANDATORY_PROPERTY_NOT_PRESENT,
+                        Messages.ERROR_MANDATORY_PROPERTY_NOT_PRESENT, FIELD_ID,
                         FIELD_ID);
             }
         } else {
             if (id != null) {
                 throw new ValidationException(Messages.ERROR_BAD_PROPERTY,
-                        FIELD_ID);
+                        FIELD_ID, FIELD_ID);
             }
         }
     }
@@ -145,12 +145,12 @@ public abstract class Event extends VersionedEntity {
             if (etag == null) {
                 throw new ValidationException(
                         Messages.ERROR_MANDATORY_PROPERTY_NOT_PRESENT,
-                        FIELD_ETAG);
+                        FIELD_ETAG, FIELD_ETAG);
             }
         } else {
             if (etag != null) {
                 throw new ValidationException(Messages.ERROR_BAD_PROPERTY,
-                        FIELD_ETAG);
+                        FIELD_ETAG, FIELD_ETAG);
             }
         }
     }

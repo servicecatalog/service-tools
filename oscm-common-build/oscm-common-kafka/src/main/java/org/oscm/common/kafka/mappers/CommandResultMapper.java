@@ -40,8 +40,7 @@ public class CommandResultMapper
     public KeyValue<UUID, Result> apply(UUID key, Command value) {
 
         Result result = new Result();
-        result.setId(UUID.randomUUID());
-        result.setParent(value.getId());
+        result.setId(key);
         result.setCommand(value.getCommand());
 
         try {

@@ -19,8 +19,6 @@ import org.oscm.common.util.logger.ServiceLogger;
  */
 public abstract class Stream {
 
-    public static final String APPLICATION_ID = "application.id";
-
     private static final ServiceLogger LOGGER = ServiceLogger
             .getLogger(Stream.class);
 

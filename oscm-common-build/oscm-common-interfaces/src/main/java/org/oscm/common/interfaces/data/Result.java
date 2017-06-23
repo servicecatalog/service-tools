@@ -26,7 +26,6 @@ import com.google.gson.annotations.SerializedName;
 public class Result extends VersionedEntity {
 
     public static final String FIELD_ID = "id";
-    public static final String FIELD_PARENT = "parent";
     public static final String FIELD_CMD = "command";
     public static final String FIELD_STATE = "state";
     public static final String FIELD_EVENTS = "events";
@@ -35,9 +34,6 @@ public class Result extends VersionedEntity {
 
     @SerializedName(FIELD_ID)
     private UUID id;
-
-    @SerializedName(FIELD_PARENT)
-    private UUID parent;
 
     @SerializedName(FIELD_CMD)
     private ActivityKey command;
@@ -55,7 +51,7 @@ public class Result extends VersionedEntity {
     private Date timestamp;
 
     /**
-     * Gets the result id. Returns null if not set.
+     * Gets the command id of the parent. Returns null if not set.
      * 
      * @return the id or null
      */
@@ -64,32 +60,13 @@ public class Result extends VersionedEntity {
     }
 
     /**
-     * Sets the result id.
+     * Sets the command id of the parent.
      * 
      * @param id
      *            the result id
      */
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    /**
-     * Gets the parent id. Returns null if not set.
-     * 
-     * @return the id or null
-     */
-    public UUID getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent id.
-     * 
-     * @param parent
-     *            the parent id
-     */
-    public void setParent(UUID parent) {
-        this.parent = parent;
     }
 
     /**
@@ -198,9 +175,7 @@ public class Result extends VersionedEntity {
         super.setVersion(version);
 
         if (events != null) {
-            for (Event e : events) {
-                e.setVersion(version);
-            }
+            events.forEach((e) -> e.setVersion(version));
         }
 
         if (failure != null) {

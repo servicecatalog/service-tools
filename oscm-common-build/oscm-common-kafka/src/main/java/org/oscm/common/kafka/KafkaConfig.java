@@ -8,6 +8,7 @@
 
 package org.oscm.common.kafka;
 
+import org.apache.kafka.streams.StreamsConfig;
 import org.oscm.common.interfaces.keys.ConfigurationKey;
 
 /**
@@ -16,7 +17,7 @@ import org.oscm.common.interfaces.keys.ConfigurationKey;
  * @author miethaner
  */
 public enum KafkaConfig implements ConfigurationKey {
-    KAFKA_SERVERS("bootstrap.servers", true, "servers"); //
+    KAFKA_SERVERS(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, true, "servers"); //
 
     private String proprietary;
     private boolean mandatory;

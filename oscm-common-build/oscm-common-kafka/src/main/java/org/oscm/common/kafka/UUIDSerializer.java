@@ -24,6 +24,8 @@ import org.apache.kafka.common.serialization.Serializer;
 public class UUIDSerializer
         implements Serializer<UUID>, Deserializer<UUID>, Serde<UUID> {
 
+    private static final int UUID_BYTES = 16;
+
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
         // ignore
@@ -36,13 +38,20 @@ public class UUIDSerializer
             return null;
         }
 
-        return UUID.nameUUIDFromBytes(data);
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+        long high = buffer.getLong();
+        long low = buffer.getLong();
+
+        return new UUID(high, low);
     }
 
     @Override
     public byte[] serialize(String topic, UUID data) {
-        return ByteBuffer.allocate(16).putLong(data.getMostSignificantBits())
-                .putLong(data.getLeastSignificantBits()).array();
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[UUID_BYTES]);
+        buffer.putLong(data.getMostSignificantBits());
+        buffer.putLong(data.getLeastSignificantBits());
+
+        return buffer.array();
     }
 
     @Override

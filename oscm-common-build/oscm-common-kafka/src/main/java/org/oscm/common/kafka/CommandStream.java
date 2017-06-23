@@ -18,6 +18,7 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.oscm.common.interfaces.data.Command;
 import org.oscm.common.interfaces.data.Result;
+import org.oscm.common.interfaces.enums.Status;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.kafka.mappers.CommandResultMapper;
 import org.oscm.common.kafka.mappers.ResultEventMapper;
@@ -73,8 +74,10 @@ public class CommandStream extends Stream {
                 .map(new CommandResultMapper()) //
                 .through(new UUIDSerializer(),
                         new DataSerializer<>(Result.class), resultTopic) //
+                .filter((key, value) -> value.getStatus() == Status.SUCCESS
+                        && value.getEvents() != null)
                 .flatMap(new ResultEventMapper()) //
-                .through(new UUIDSerializer(),
+                .to(new UUIDSerializer(),
                         new DataSerializer<>(command.getOutputClass()),
                         eventTopic);
 
@@ -91,7 +94,7 @@ public class CommandStream extends Stream {
                 .getProprietaryConfig(KafkaConfig.values())
                 .forEach((key, value) -> config.put(key, value));
 
-        config.put(APPLICATION_ID,
+        config.put(StreamsConfig.APPLICATION_ID_CONFIG,
                 buildApplicationId(command.getActivityName()));
 
         return config;
