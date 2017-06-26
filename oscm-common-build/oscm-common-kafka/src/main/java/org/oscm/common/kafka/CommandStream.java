@@ -74,7 +74,8 @@ public class CommandStream extends Stream {
                 .map(new CommandResultMapper()) //
                 .through(new UUIDSerializer(),
                         new DataSerializer<>(Result.class), resultTopic) //
-                .filter((key, value) -> value.getStatus() == Status.SUCCESS
+                .filter((key, value) -> value.getCommand().equals(command)
+                        && value.getStatus() == Status.SUCCESS
                         && value.getEvents() != null)
                 .flatMap(new ResultEventMapper()) //
                 .to(new UUIDSerializer(),
