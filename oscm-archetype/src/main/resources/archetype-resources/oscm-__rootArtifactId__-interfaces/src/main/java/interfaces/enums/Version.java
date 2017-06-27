@@ -3,9 +3,9 @@
 #set( $symbol_escape = '\' )
 /*******************************************************************************
  *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                           
+ *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Dec 21, 2016                                                      
+ *  Creation Date: Jun 27, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
@@ -14,9 +14,7 @@ package ${package}.interfaces.enums;
 import org.oscm.common.interfaces.keys.VersionKey;
 
 /**
- * Enum for the versions of this service.
- * 
- * @author miethaner
+ * Enum for the versions keys. Describes the history of versions of this service.
  */
 public enum Version implements VersionKey {
 

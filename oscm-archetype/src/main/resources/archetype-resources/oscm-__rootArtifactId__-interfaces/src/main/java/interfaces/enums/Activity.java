@@ -3,9 +3,9 @@
 #set( $symbol_escape = '\' )
 /*******************************************************************************
  *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                           
+ *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Aug 18, 2016                                                      
+ *  Creation Date: Jun 27, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
@@ -13,24 +13,24 @@ package ${package}.interfaces.enums;
 
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.interfaces.keys.VersionKey;
-import ${package}.interfaces.data.Sample;
+import org.oscm.common.interfaces.keys.VersionKey;import ${package}.interfaces.data.Sample;
 
 /**
- * Enum for activity permission keys
- * 
- * @author miethaner
+ * Enum for activity keys. These keys represent all commands and queries that
+ * can be called over the frontend. Each key defines an input event and an
+ * output event, e.g. the {@link Sample} class. The frontend and backend will
+ * use these references for de-/serialization and validation. Also a version
+ * window can be defined for filtering at the frontend.
  */
 public enum Activity implements ActivityKey {
 
-    ACTION_READ(Sample.class, Sample.class, Type.QUERY), //
+    SAMPLE_READ(Sample.class, Sample.class, Type.QUERY), //
+    SAMPLE_READ_BY_NAME(Sample.class, Sample.class, Type.QUERY), //
+    SAMPLE_READ_ALL(Sample.class, Sample.class, Type.QUERY), //
 
-    ACTION_CREATE(Sample.class, Sample.class, Type.COMMAND); //
-
-    public static class Constants {
-        public static final String ACTION_READ = "ACTION_READ";
-        public static final String ACTION_CREATE = "ACTION_WRITE";
-    }
+    SAMPLE_CREATE(Sample.class, Sample.class, Type.COMMAND), //
+    SAMPLE_UPDATE(Sample.class, Sample.class, Type.COMMAND), //
+    SAMPLE_DELETE(Sample.class, Sample.class, Type.COMMAND); //
 
     private Class<? extends Event> inputClass;
     private Class<? extends Event> outputClass;

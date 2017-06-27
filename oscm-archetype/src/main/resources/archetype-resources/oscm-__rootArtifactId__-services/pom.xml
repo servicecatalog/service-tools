@@ -23,8 +23,8 @@
     </dependency>
    
     <dependency>
-        <groupId>org.oscm.sample</groupId>
-        <artifactId>oscm-sample-interfaces</artifactId>
+        <groupId>${groupId}</groupId>
+        <artifactId>oscm-${rootArtifactId}-interfaces</artifactId>
         <version>${project.parent.version}</version>
     </dependency>
     

@@ -5,16 +5,26 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Jun 22, 2017                                                      
+ *  Creation Date: Jun 27, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
-package ${package}.main;
+package ${package}.interfaces.enums;
+
+import org.oscm.common.interfaces.keys.ServiceKey;
 
 /**
- * @author miethaner
- *
+ * Enum for service keys. These keys are used to describe microservices that
+ * this service interacts with directly via commands and queries.
  */
-public class SampleApplication {
+public enum Service implements ServiceKey {
+    SAMPLE;
+
+    public static final Service SELF = SAMPLE;
+
+    @Override
+    public String getServiceName() {
+        return name();
+    }
 
 }

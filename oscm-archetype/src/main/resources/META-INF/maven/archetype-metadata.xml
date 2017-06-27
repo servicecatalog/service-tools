@@ -14,6 +14,12 @@
         <include>**/*.xml</include>
       </includes>
     </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory></directory>
+      <includes>
+        <include>Dockerfile</include>
+      </includes>
+    </fileSet>
     <fileSet encoding="UTF-8">
       <directory></directory>
       <includes>
@@ -22,7 +28,7 @@
     </fileSet>
   </fileSets>
   <modules>
-    <module id="oscm-${rootArtifactId}-interfaces" dir="oscm-archetype-interfaces" name="oscm-${rootArtifactId}-interfaces">
+    <module id="oscm-${rootArtifactId}-interfaces" dir="oscm-__rootArtifactId__-interfaces" name="oscm-${rootArtifactId}-interfaces">
       <fileSets>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>
@@ -38,7 +44,7 @@
         </fileSet>
       </fileSets>
     </module>
-    <module id="oscm-${rootArtifactId}-services" dir="oscm-archetype-services" name="oscm-${rootArtifactId}-services">
+    <module id="oscm-${rootArtifactId}-services" dir="oscm-__rootArtifactId__-services" name="oscm-${rootArtifactId}-services">
       <fileSets>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>
@@ -54,7 +60,7 @@
         </fileSet>
       </fileSets>
     </module>
-    <module id="oscm-${rootArtifactId}-main" dir="oscm-archetype-main" name="oscm-${rootArtifactId}-main">
+    <module id="oscm-${rootArtifactId}-main" dir="oscm-__rootArtifactId__-main" name="oscm-${rootArtifactId}-main">
       <fileSets>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
           <directory>src/main/java</directory>

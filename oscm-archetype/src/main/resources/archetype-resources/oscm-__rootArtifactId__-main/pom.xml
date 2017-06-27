@@ -31,7 +31,7 @@
               <descriptorRefs>
                 <descriptorRef>jar-with-dependencies</descriptorRef>
               </descriptorRefs>
-              <finalName>oscm-trigger</finalName>
+              <finalName>oscm-${rootArtifactId}</finalName>
               <appendAssemblyId>false</appendAssemblyId>
             </configuration>
           </execution>
@@ -55,9 +55,9 @@
     </dependency>
   
     <dependency>
-      <groupId>org.oscm.sample</groupId>
-      <artifactId>oscm-sample-services</artifactId>
-      <version>${project.parent.version}</version>
+        <groupId>${groupId}</groupId>
+        <artifactId>oscm-${rootArtifactId}-services</artifactId>
+        <version>${project.parent.version}</version>
     </dependency>
     
     <!-- Third party libraries -->
