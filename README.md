@@ -1,6 +1,6 @@
 # service-tools
 
-The service tools are a small framework for microservices based on the commander pattern and event sourcing. It uses the Jersey REST framework for its frontend and the Kafka streams client for its backend. The intention is to provide the basic non-business functionality for each java-based microservice within OSCM.
+The service tools are a small framework for microservices based on the commander and event sourcing patterns. It uses the Jersey REST framework for its frontend and the Kafka Streams client for its backend. The intention is to provide the basic non-business functionality for each java-based microservice within OSCM.
 
 ## Overview
 
@@ -12,11 +12,11 @@ The tools are composed of several projects:
 
 ## Documentation
 
-Architecture and implementation guides can be found [here](./oscm-common-build/README.md).
+Architecture and implementation guides as well as a description of the configuration can be found [here](./oscm-common-build).
 
 ## Getting started
 
-If you want to develop a new microservice based on these tools, just clone or download this repository. You will require Java 8 and maven for the installation, also docker if you to run it in a container.
+If you want to develop a new microservice based on these tools, just clone or download this repository. You will require Java 8 and maven for the installation, also docker if you want to run the service it in a container.
 
 1. Install maven archetype
 
@@ -34,16 +34,16 @@ mvn install -f ./oscm-common-build/pom.xm
 3. Create new project structure (replace `sample` with service name)
 
 ```
-mvn archetype:generate 
-	-DarchetypeCatalog=local 
-	-DarchetypeGroupId=org.oscm.archetype
-	-DarchetypeArtifactId=oscm-archetype
-	-DarchetypeVersion=1.0.0
-	-DgroupId=org.oscm.sample
-	-DartifactId=sample
-	-Dversion=0.0.1-SNAPSHOT
-	-Dpackage=org.oscm.sample
-	-DserviceToolVersion=1.0.0
+mvn archetype:generate \
+	-DarchetypeCatalog=local \
+	-DarchetypeGroupId=org.oscm.archetype \
+	-DarchetypeArtifactId=oscm-archetype \
+	-DarchetypeVersion=1.0.0 \
+	-DgroupId=org.oscm.sample \
+	-DartifactId=sample \
+	-Dversion=0.0.1-SNAPSHOT \
+	-Dpackage=org.oscm.sample \
+	-DserviceToolVersion=1.0.0 \
 ```
 
 4. Build project (replace `sample` with service name)
@@ -56,6 +56,14 @@ mvn install -f ./oscm-sample-build/pom.xm
 
 ```
 docker build -t oscm-sample ./oscm-sample-build
+```
+
+Note that the sample can run without any additional work.
+
+6. Adapt the config file oscm-sample-build/config.properties and start your docker image (assuming you have a running Kafka instance).
+
+```
+docker run -it --env-file ./oscm-sample-build/config.properties --name oscm-sample -p 8080:8080 oscm-sample
 ```
 
 ## License
