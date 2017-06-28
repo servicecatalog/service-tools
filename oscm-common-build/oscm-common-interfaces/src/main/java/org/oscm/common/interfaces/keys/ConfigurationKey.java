@@ -16,7 +16,7 @@ package org.oscm.common.interfaces.keys;
 public interface ConfigurationKey {
 
     /**
-     * Gets the unique name identifying the configuration key.
+     * Gets the name identifying the configuration key.
      * 
      * @return the name
      */

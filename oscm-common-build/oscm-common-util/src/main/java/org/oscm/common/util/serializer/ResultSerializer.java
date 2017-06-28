@@ -64,7 +64,8 @@ public class ResultSerializer implements JsonDeserializer<Result> {
 
         List<Event> eventList = new ArrayList<>();
         JsonArray arrayJson = eventsJson.getAsJsonArray();
-        Class<? extends Event> clazz = result.getCommand().getOutputClass();
+        Class<? extends Event> clazz = result.getCommand().getOutputEntity()
+                .getEntityClass();
 
         arrayJson.forEach((e) -> eventList.add(gson.fromJson(e, clazz)));
 

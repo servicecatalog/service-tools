@@ -22,11 +22,11 @@ import org.oscm.common.util.logger.LogFormatter;
 import org.oscm.common.util.logger.ServiceLogger;
 
 /**
- * Startup class to orchestrate the application and its technologies.
+ * Server superclass to orchestrate the application and its technologies.
  * 
  * @author miethaner
  */
-public abstract class Application {
+public abstract class ApplicationServer {
 
     private static final String PARAM_CONFIG = "-c";
     private static final String PARAM_CONFIG_ENV = "env";
@@ -59,7 +59,7 @@ public abstract class Application {
 
         processParameters(params);
 
-        ServiceLogger logger = ServiceLogger.getLogger(Application.class);
+        ServiceLogger logger = ServiceLogger.getLogger(ApplicationServer.class);
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override

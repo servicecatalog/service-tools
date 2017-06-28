@@ -17,14 +17,17 @@ import org.oscm.common.interfaces.keys.ConfigurationKey;
  * @author miethaner
  */
 public enum KafkaConfig implements ConfigurationKey {
-    KAFKA_SERVERS(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, true, "servers"); //
+    KAFKA_SERVERS("kafka-servers", StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, true,
+            "servers"); //
 
+    private String name;
     private String proprietary;
     private boolean mandatory;
     private String defaultValue;
 
-    private KafkaConfig(String proprietary, boolean mandatory,
+    private KafkaConfig(String name, String proprietary, boolean mandatory,
             String defaultValue) {
+        this.name = name;
         this.proprietary = proprietary;
         this.mandatory = mandatory;
         this.defaultValue = defaultValue;
@@ -32,7 +35,7 @@ public enum KafkaConfig implements ConfigurationKey {
 
     @Override
     public String getConfigurationName() {
-        return name();
+        return name;
     }
 
     @Override

@@ -54,7 +54,8 @@ public class CommandSerializer implements JsonDeserializer<Command> {
 
         JsonElement eventJson = json.getAsJsonObject().get(Command.FIELD_EVENT);
 
-        Class<? extends Event> clazz = command.getCommand().getInputClass();
+        Class<? extends Event> clazz = command.getCommand().getInputEntity()
+                .getEntityClass();
         Event event = gson.fromJson(eventJson, clazz);
         command.setEvent(event);
 

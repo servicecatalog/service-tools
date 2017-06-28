@@ -97,8 +97,8 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
                     new ActivitySerializer());
             builder.registerTypeHierarchyAdapter(VersionKey.class,
                     new VersionSerializer());
-            builder.registerTypeAdapter(Event.class,
-                    new EventSerializer(activityKey.getInputClass()));
+            builder.registerTypeAdapter(Event.class, new EventSerializer(
+                    activityKey.getInputEntity().getEntityClass()));
             Gson gson = builder.create();
 
             VersionedEntity entity = gson.fromJson(reader, genericType);
@@ -157,8 +157,8 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
             gson.toJson(entity, genericType, writer);
 
         } catch (JsonSyntaxException e) {
-            InternalException ie = new InternalException(Messages.ERROR_JSON_FORMAT,
-                    e);
+            InternalException ie = new InternalException(
+                    Messages.ERROR_JSON_FORMAT, e);
 
             throw new ExceptionMapper().toWebException(ie);
         } finally {

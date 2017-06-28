@@ -16,7 +16,8 @@ import org.oscm.common.interfaces.events.CommandPublisher;
 import org.oscm.common.interfaces.events.EventSource;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ActivityKey.Type;
-import org.oscm.common.interfaces.keys.ServiceKey;
+import org.oscm.common.interfaces.keys.ApplicationKey;
+import org.oscm.common.interfaces.keys.EntityKey;
 import org.oscm.common.interfaces.keys.TransitionKey;
 import org.oscm.common.interfaces.services.CommandService;
 import org.oscm.common.interfaces.services.QueryService;
@@ -44,11 +45,11 @@ public class ServiceManager {
         return rm;
     }
 
-    private Map<ServiceKey, CommandPublisher> publishers;
+    private Map<ApplicationKey, CommandPublisher> publishers;
     private Map<ActivityKey, CommandService> commands;
     private Map<ActivityKey, QueryService> queries;
     private Map<TransitionKey, TransitionService> transitions;
-    private Map<Class<? extends Event>, EventSource<?>> sources;
+    private Map<EntityKey, EventSource<?>> sources;
 
     private ServiceManager() {
         publishers = new ConcurrentHashMap<>();
@@ -65,7 +66,7 @@ public class ServiceManager {
      *            the application key
      * @return the publisher
      */
-    public CommandPublisher getPublisher(ServiceKey application) {
+    public CommandPublisher getPublisher(ApplicationKey application) {
         if (application == null || !publishers.containsKey(application)) {
             throw new RuntimeException(application + " publisher not found");
         }
@@ -81,7 +82,7 @@ public class ServiceManager {
      * @param publisher
      *            the publisher
      */
-    public void setPublisher(ServiceKey application,
+    public void setPublisher(ApplicationKey application,
             CommandPublisher publisher) {
         if (application == null || publisher == null) {
             throw new RuntimeException(
@@ -170,7 +171,7 @@ public class ServiceManager {
     }
 
     /**
-     * Sets the transition service as value with the given event as key.
+     * Sets the transition service as value with the given transition as key.
      * 
      * @param transition
      *            the transition key
@@ -188,35 +189,35 @@ public class ServiceManager {
     }
 
     /**
-     * Gets the event source instance for the given event class.
+     * Gets the event source instance for the given entity key.
      * 
-     * @param clazz
-     *            the event class
+     * @param entity
+     *            the entity key
      * @return the source instance
      */
     @SuppressWarnings("unchecked")
-    public <E extends Event> EventSource<E> getEventSource(Class<E> clazz) {
-        if (clazz == null || !sources.containsKey(clazz)) {
-            throw new RuntimeException(clazz + " source not found");
+    public <E extends Event> EventSource<E> getEventSource(EntityKey entity) {
+        if (entity == null || !sources.containsKey(entity)) {
+            throw new RuntimeException(entity + " source not found");
         }
 
-        return (EventSource<E>) sources.get(clazz);
+        return (EventSource<E>) sources.get(entity);
     }
 
     /**
-     * Sets the event service as value with the given event as key.
+     * Sets the event source as value with the given entity as key.
      * 
-     * @param event
-     *            the event class
+     * @param entity
+     *            the entity key
      * @param source
      *            the source
      */
-    public <E extends Event> void setEventSource(Class<E> clazz,
+    public <E extends Event> void setEventSource(EntityKey entity,
             EventSource<E> source) {
-        if (clazz == null || source == null) {
-            throw new RuntimeException("Unable to set " + clazz + " source");
+        if (entity == null || source == null) {
+            throw new RuntimeException("Unable to set " + entity + " source");
         }
 
-        sources.put(clazz, source);
+        sources.put(entity, source);
     }
 }

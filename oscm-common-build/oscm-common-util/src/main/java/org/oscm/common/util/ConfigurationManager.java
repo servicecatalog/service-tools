@@ -18,8 +18,8 @@ import java.util.Set;
 
 import org.oscm.common.interfaces.config.ConfigurationImporter;
 import org.oscm.common.interfaces.keys.ActivityKey;
+import org.oscm.common.interfaces.keys.ApplicationKey;
 import org.oscm.common.interfaces.keys.ConfigurationKey;
-import org.oscm.common.interfaces.keys.ServiceKey;
 import org.oscm.common.interfaces.keys.VersionKey;
 
 /**
@@ -59,27 +59,24 @@ public class ConfigurationManager {
      * @param configs
      *            the configuration keys
      */
-    public static void init(ConfigurationImporter importer,
-            ServiceKey[] services, ServiceKey self, ActivityKey[] activities,
-            VersionKey[] versions, VersionKey current, VersionKey compatible,
-            ConfigurationKey[] configs) {
-        cm = new ConfigurationManager(importer, services, self, activities,
-                versions, current, compatible, configs);
+    public static void init(ConfigurationImporter importer, ApplicationKey self,
+            ActivityKey[] activities, VersionKey[] versions, VersionKey current,
+            VersionKey compatible, ConfigurationKey[] configs) {
+        cm = new ConfigurationManager(importer, self, activities, versions,
+                current, compatible, configs);
     }
 
     private Map<ActivityKey, Set<String>> roles;
     private Map<ConfigurationKey, String> entries;
-    private Map<String, ServiceKey> services;
     private Map<String, ActivityKey> activities;
     private Map<Integer, VersionKey> versions;
-    private ServiceKey self;
+    private ApplicationKey self;
     private VersionKey current;
     private VersionKey compatible;
 
     private ConfigurationManager() {
         roles = Collections.emptyMap();
         entries = Collections.emptyMap();
-        services = Collections.emptyMap();
         activities = Collections.emptyMap();
         versions = Collections.emptyMap();
         self = null;
@@ -88,17 +85,9 @@ public class ConfigurationManager {
     }
 
     private ConfigurationManager(ConfigurationImporter importer,
-            ServiceKey[] services, ServiceKey self, ActivityKey[] activities,
+            ApplicationKey self, ActivityKey[] activities,
             VersionKey[] versions, VersionKey current, VersionKey compatible,
             ConfigurationKey[] configs) {
-
-        this.services = new HashMap<>();
-        Arrays.asList(services)
-                .forEach((a) -> this.services.put(a.getServiceName(), a));
-
-        if (!this.services.containsValue(self)) {
-            throw new RuntimeException("Own service key not in service list");
-        }
 
         this.self = self;
 
@@ -124,11 +113,11 @@ public class ConfigurationManager {
     }
 
     /**
-     * Gets the service key for this service.
+     * Gets the application key for this application.
      * 
-     * @return the service
+     * @return the application
      */
-    public ServiceKey getSelf() {
+    public ApplicationKey getSelf() {
         return self;
     }
 
@@ -148,17 +137,6 @@ public class ConfigurationManager {
      */
     public VersionKey getCompatibleVersion() {
         return compatible;
-    }
-
-    /**
-     * Gets the service with the given name.
-     * 
-     * @param keyName
-     *            the service name
-     * @return the service
-     */
-    public ServiceKey getServiceForName(String keyName) {
-        return services.get(keyName);
     }
 
     /**

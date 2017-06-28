@@ -98,10 +98,12 @@ public class ActivityFilter implements ContainerRequestFilter {
             throw new ExceptionMapper().toWebException(nfe);
         }
 
-        ActivityKey activityKey = ConfigurationManager.getInstance()
-                .getActivityForName(actvity);
+        ConfigurationManager cm = ConfigurationManager.getInstance();
 
-        if (activityKey == null || activityKey.getType() != type) {
+        ActivityKey activityKey = cm.getActivityForName(actvity);
+
+        if (activityKey == null || activityKey.getType() != type
+                || !activityKey.getApplication().equals(cm.getSelf())) {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_ACTIVITY);
 

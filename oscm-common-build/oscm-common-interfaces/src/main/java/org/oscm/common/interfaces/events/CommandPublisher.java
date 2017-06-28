@@ -8,7 +8,11 @@
 
 package org.oscm.common.interfaces.events;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.oscm.common.interfaces.data.Command;
+import org.oscm.common.interfaces.data.Result;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
@@ -30,4 +34,21 @@ public interface CommandPublisher {
      */
     public void publish(Command command, ResultHandler handler)
             throws ServiceException;
+
+    /**
+     * Gets the result for the given command id. If no result can be found, null
+     * is returned instead.
+     * 
+     * @param id
+     *            the command id
+     * @return the result or null
+     */
+    public Result getResult(UUID id);
+
+    /**
+     * Gets all result for this publisher.
+     * 
+     * @return the list of results
+     */
+    public List<Result> getAllResults();
 }

@@ -8,7 +8,9 @@
 
 package org.oscm.common.kafka;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,13 +23,15 @@ import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.processor.Processor;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.StateStore;
+import org.apache.kafka.streams.state.QueryableStoreTypes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.oscm.common.interfaces.data.Command;
 import org.oscm.common.interfaces.data.Result;
 import org.oscm.common.interfaces.events.CommandPublisher;
 import org.oscm.common.interfaces.events.ResultHandler;
 import org.oscm.common.interfaces.exceptions.ServiceException;
-import org.oscm.common.interfaces.keys.ServiceKey;
+import org.oscm.common.interfaces.keys.ApplicationKey;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
@@ -70,28 +74,30 @@ public class CommandProducer extends Stream implements CommandPublisher {
     private Map<UUID, ResultHandler> waitingHandlers;
 
     private KafkaProducer<UUID, Command> producer;
-    private ServiceKey service;
+    private ApplicationKey application;
     private String commandTopic;
     private String resultTopic;
 
+    private KafkaStreams localStreams;
+    private ReadOnlyKeyValueStore<UUID, Result> store;
+
     /**
-     * Creates a new kafka producer for commands of the given service that will
-     * write to the given command topic. It also creates a global stream from
-     * the given result topic to monitor for corresponding results.
+     * Creates a new kafka producer for commands of the given application that
+     * will write to the command topic of that application. It also creates a
+     * global stream from the result topic to monitor for corresponding results.
      * 
      * @param commandTopic
      *            the command topic
      * @param resultTopic
      *            the result topic
-     * @param service
-     *            the service key
+     * @param application
+     *            the application key
      */
-    public CommandProducer(String commandTopic, String resultTopic,
-            ServiceKey service) {
+    public CommandProducer(ApplicationKey application) {
         super();
-        this.service = service;
-        this.commandTopic = commandTopic;
-        this.resultTopic = resultTopic;
+        this.application = application;
+        this.commandTopic = buildCommandTopic(application);
+        this.resultTopic = buildResultTopic(application);
         this.waitingHandlers = new ConcurrentHashMap<>();
 
         producer = new KafkaProducer<>(getConfig(), new UUIDSerializer(),
@@ -102,19 +108,19 @@ public class CommandProducer extends Stream implements CommandPublisher {
     protected KafkaStreams initStreams() {
         KStreamBuilder builder = new KStreamBuilder();
 
-        StateStore store = Stores.create(RESULT_STORE)
+        StateStore resultStore = Stores.create(RESULT_STORE)
                 .withKeys(new UUIDSerializer())
                 .withValues(new DataSerializer<>(Result.class)).inMemory()
                 .disableLogging().build().get();
 
-        builder.addGlobalStore(store, SOURCE_NAME, new UUIDSerializer(),
+        builder.addGlobalStore(resultStore, SOURCE_NAME, new UUIDSerializer(),
                 new DataSerializer<>(Result.class), resultTopic, PROCESSOR_NAME,
                 ResultProcessor::new);
 
-        KafkaStreams streams = new KafkaStreams(builder,
+        localStreams = new KafkaStreams(builder,
                 new StreamsConfig(getConfig()));
 
-        return streams;
+        return localStreams;
     }
 
     private Map<String, Object> getConfig() {
@@ -125,7 +131,7 @@ public class CommandProducer extends Stream implements CommandPublisher {
                 .forEach((key, value) -> config.put(key, value));
 
         config.put(StreamsConfig.APPLICATION_ID_CONFIG,
-                buildApplicationId("CMD_" + service.getServiceName()));
+                buildApplicationId(application.getApplicationName()));
 
         return config;
     }
@@ -145,5 +151,28 @@ public class CommandProducer extends Stream implements CommandPublisher {
                         handler.handle(e);
                     }
                 });
+    }
+
+    @Override
+    public Result getResult(UUID id) {
+        if (store == null) {
+            store = localStreams.store(RESULT_STORE,
+                    QueryableStoreTypes.keyValueStore());
+        }
+
+        return store.get(id);
+    }
+
+    @Override
+    public List<Result> getAllResults() {
+        if (store == null) {
+            store = localStreams.store(RESULT_STORE,
+                    QueryableStoreTypes.keyValueStore());
+        }
+
+        List<Result> list = new ArrayList<>();
+        store.all().forEachRemaining((record) -> list.add(record.value));
+
+        return list;
     }
 }

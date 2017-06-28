@@ -30,27 +30,19 @@ import org.oscm.common.util.ConfigurationManager;
  */
 public class EventStream extends Stream {
 
-    private String inputTopic;
-    private String outputTopic;
     private TransitionKey transition;
 
     /**
-     * Creates a new kafka stream from the given input topic. After processing
-     * with the service identified with the given transition, the resulting
-     * event is written to the given output topic.
+     * Creates a new kafka stream for the given transition key. The stream reads
+     * from the input topic defined by the transition and processes it with the
+     * corresponding service. The resulting event is written to the output
+     * topic.
      * 
-     * @param inputTopic
-     *            the input topic
-     * @param outputTopic
-     *            the output topic
      * @param transition
      *            the transition key
      */
-    public EventStream(String inputTopic, String outputTopic,
-            TransitionKey transition) {
+    public EventStream(TransitionKey transition) {
         super();
-        this.inputTopic = inputTopic;
-        this.outputTopic = outputTopic;
         this.transition = transition;
     }
 
@@ -60,12 +52,15 @@ public class EventStream extends Stream {
         KStreamBuilder builder = new KStreamBuilder();
 
         KStream<UUID, Event> stream = builder.stream(new UUIDSerializer(),
-                new DataSerializer<>(transition.getInputClass()), inputTopic);
+                new DataSerializer<>(
+                        transition.getInputEntity().getEntityClass()),
+                buildEventTopic(transition.getInputEntity()));
 
         stream.flatMap(new EventEventMapper(transition)) //
                 .to(new UUIDSerializer(),
-                        new DataSerializer<>(transition.getOutputClass()),
-                        outputTopic); //
+                        new DataSerializer<>(
+                                transition.getOutputEntity().getEntityClass()),
+                        buildEventTopic(transition.getOutputEntity())); //
 
         KafkaStreams streams = new KafkaStreams(builder,
                 new StreamsConfig(getConfig()));

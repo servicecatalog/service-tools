@@ -18,7 +18,6 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.oscm.common.interfaces.data.Command;
 import org.oscm.common.interfaces.data.Result;
-import org.oscm.common.interfaces.enums.Status;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.kafka.mappers.CommandResultMapper;
 import org.oscm.common.kafka.mappers.ResultEventMapper;
@@ -33,32 +32,20 @@ import org.oscm.common.util.ConfigurationManager;
  */
 public class CommandStream extends Stream {
 
-    private String commandTopic;
-    private String resultTopic;
-    private String eventTopic;
     private ActivityKey command;
 
     /**
-     * Creates new kafka stream from the given command topic that is filtered
-     * for the given command. After processing with the service identified by
-     * the given command, the result is written back to the given result topic.
-     * It is also mapped to an event written to the given event topic.
+     * Creates new kafka stream for the given command key. The stream reads from
+     * the command topic of this service and processes all matching commands
+     * with the corresponding service. The result is written back to the result
+     * topic. It is also mapped to an event written to the corresponding event
+     * topic.
      * 
-     * @param commandTopic
-     *            the command topic
-     * @param resultTopic
-     *            the result topic
-     * @param eventTopic
-     *            the event topic
      * @param command
      *            the command key
      */
-    public CommandStream(String commandTopic, String resultTopic,
-            String eventTopic, ActivityKey command) {
+    public CommandStream(ActivityKey command) {
         super();
-        this.commandTopic = commandTopic;
-        this.resultTopic = resultTopic;
-        this.eventTopic = eventTopic;
         this.command = command;
     }
 
@@ -68,19 +55,18 @@ public class CommandStream extends Stream {
         KStreamBuilder builder = new KStreamBuilder();
 
         KStream<UUID, Command> stream = builder.stream(new UUIDSerializer(),
-                new DataSerializer<>(Command.class), commandTopic);
+                new DataSerializer<>(Command.class),
+                buildCommandTopic(command.getApplication()));
 
-        stream.filter((key, value) -> value.getCommand().equals(command))
-                .map(new CommandResultMapper()) //
+        stream.flatMap(new CommandResultMapper(command)) //
                 .through(new UUIDSerializer(),
-                        new DataSerializer<>(Result.class), resultTopic) //
-                .filter((key, value) -> value.getCommand().equals(command)
-                        && value.getStatus() == Status.SUCCESS
-                        && value.getEvents() != null)
-                .flatMap(new ResultEventMapper()) //
+                        new DataSerializer<>(Result.class),
+                        buildResultTopic(command.getApplication())) //
+                .flatMap(new ResultEventMapper(command)) //
                 .to(new UUIDSerializer(),
-                        new DataSerializer<>(command.getOutputClass()),
-                        eventTopic);
+                        new DataSerializer<>(
+                                command.getOutputEntity().getEntityClass()),
+                        buildEventTopic(command.getOutputEntity()));
 
         KafkaStreams streams = new KafkaStreams(builder,
                 new StreamsConfig(getConfig()));

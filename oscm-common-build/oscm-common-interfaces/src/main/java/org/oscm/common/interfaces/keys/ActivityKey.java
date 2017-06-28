@@ -8,8 +8,6 @@
 
 package org.oscm.common.interfaces.keys;
 
-import org.oscm.common.interfaces.data.Event;
-
 /**
  * Interface for enums that represent activity keys.
  * 
@@ -34,18 +32,25 @@ public interface ActivityKey {
     public String getActivityName();
 
     /**
-     * Gets the input event class.
+     * Gets the input entity.
      * 
-     * @return the event class
+     * @return the entity key
      */
-    public Class<? extends Event> getInputClass();
+    public EntityKey getInputEntity();
 
     /**
-     * Gets the output event class.
+     * Gets the output entity.
      * 
-     * @return the event class
+     * @return the entity key
      */
-    public Class<? extends Event> getOutputClass();
+    public EntityKey getOutputEntity();
+
+    /**
+     * Gets the application which executes this activity.
+     * 
+     * @return the application key
+     */
+    public ApplicationKey getApplication();
 
     /**
      * Gets the activity type.
@@ -57,14 +62,14 @@ public interface ActivityKey {
     /**
      * Gets the version since this activity is available.
      * 
-     * @return the version
+     * @return the version key
      */
     public VersionKey getSince();
 
     /**
      * Gets the version until this activity is available.
      * 
-     * @return the version
+     * @return the version key
      */
     public VersionKey getUntil();
 }
