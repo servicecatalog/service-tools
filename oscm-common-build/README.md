@@ -26,6 +26,16 @@ Queries use these event topics as they read them like a table. The corresponding
 Independently event streams react to changes in an event topic and process the event in their business logic. The result is then published to another (or the same) event topic.
 
 
+## Frontend
+
+Description of the endpoints and the implementation details are found [here](./oscm-common-jersey).
+
+
+## Backend
+
+Configuration details on Apache Kafka and the implementation of Kafka Streams are found [here](./oscm-common-kafka)
+
+
 ## Implementation
 
 After installing the archetype and generating a project from it, you get several modules with sample classes:
@@ -45,7 +55,7 @@ To model your own business logic for the service tools, you have to take servera
   - `ConfigurationKey`- Defines configuration parameters for the application.
   - `EntityKey`- Defines all entities and their event classes.
   - `MessageKey` - Defines messages for logging and exceptions.
-  - `TransitionKey` - Defines transitions from on entity to another.
+  - `TransitionKey` - Defines transitions from one entity to another.
   - `VersionKey` - Defines all versions of the application.
   
 3. Write your business logic. Note that the methods that will be called by the tools must comply to the corresponding functional interface:
@@ -79,8 +89,9 @@ Mandatory. Secret for signing the json web token with HMAC.
 ### kafka-servers
 Mandatory. Comma separated list of Kafka bootstrap servers.
 
+
 ## Authorization
 
-The authorization at the REST endpoints relies on json web tokens. These tokens carry roles as a claim, which define the access rights of the caller. Also for each activity (commands and queries) a list of roles is configured that is compared with the claim. If there is a matching role, the caller is authorized.
+The authorization at the REST endpoints relies on JSON web tokens. These tokens carry roles as a claim, which define the access rights of the caller. Also for each activity (commands and queries) a list of roles is configured that is compared with the claim. If there is a matching role, the caller is authorized.
 
 Activities are also saved in the configuration file with a comma separated list of roles as value. An activity without roles can not be accessed.

@@ -16,54 +16,65 @@ Architecture and implementation guides as well as a description of the configura
 
 ## Getting started
 
-If you want to develop a new microservice based on these tools, just clone or download this repository. You will require Java 8 and maven for the installation, also docker if you want to run the service it in a container.
+If you want to develop a new microservice based on these tools, just clone or download this repository, execute the following instructions. You will require Java 8 and maven for the installation, also docker if you want to run the application it in a container. Note that the sample application can run without any additional work.
 
 1. Install maven archetype
-
-```
-mvn install archetype:update-local-catalog -f ./oscm-archetype/pom.xm
-mvn archetype:crawl
-```
+  ```
+  mvn install archetype:update-local-catalog -f ./oscm-archetype/pom.xm
+  mvn archetype:crawl
+  ```
 
 2. Install tools
+  ```
+  mvn install -f ./oscm-common-build/pom.xm
+  ```
 
-```
-mvn install -f ./oscm-common-build/pom.xm
-```
+3. Create new project structure (replace `sample` with application name)
+  ```
+  mvn archetype:generate \
+  	-DarchetypeCatalog=local \
+  	-DarchetypeGroupId=org.oscm.archetype \
+  	-DarchetypeArtifactId=oscm-archetype \
+  	-DarchetypeVersion=1.0.0 \
+  	-DgroupId=org.oscm.sample \
+  	-DartifactId=sample \
+  	-Dversion=0.0.1-SNAPSHOT \
+  	-Dpackage=org.oscm.sample \
+  	-DserviceToolVersion=1.0.0 \
+  ```
 
-3. Create new project structure (replace `sample` with service name)
+  4. Build project
+  ```
+  mvn install -f ./oscm-sample-build/pom.xm
+  ```
 
-```
-mvn archetype:generate \
-	-DarchetypeCatalog=local \
-	-DarchetypeGroupId=org.oscm.archetype \
-	-DarchetypeArtifactId=oscm-archetype \
-	-DarchetypeVersion=1.0.0 \
-	-DgroupId=org.oscm.sample \
-	-DartifactId=sample \
-	-Dversion=0.0.1-SNAPSHOT \
-	-Dpackage=org.oscm.sample \
-	-DserviceToolVersion=1.0.0 \
-```
-
-4. Build project (replace `sample` with service name)
-
-```
-mvn install -f ./oscm-sample-build/pom.xm
-```
-
-5. Build docker image (replace `sample` with service name)
-
-```
-docker build -t oscm-sample ./oscm-sample-build
-```
-
-Note that the sample can run without any additional work.
+  5. Build docker image
+  ```
+  docker build -t oscm-sample ./oscm-sample-build
+  ```
 
 6. Adapt the config file oscm-sample-build/config.properties and start your docker image (assuming you have a running Kafka instance).
 
+  ```
+  docker run -it --env-file ./oscm-sample-build/config.properties --name oscm-sample -p 8080:8080 oscm-sample
+  ```
+
+## Application parameters
+
 ```
-docker run -it --env-file ./oscm-sample-build/config.properties --name oscm-sample -p 8080:8080 oscm-sample
+-c [local|env] {properites <location>}
+	Determines the source, the type and the location of the configuration for this application.
+-l stdout <level>
+	Determines the destination and the log level for the application logger.
+
+Examples:
+-c env
+	Filters all environment variable for configuration keys and loads them into the application.
+	Usually used in container environments.
+-c local properties ./config.properties
+	Loads the properties file and loads all found configuration keys into the application.
+-l stdout ALL
+	Logs all log messages to the console.
 ```
 
 ## License

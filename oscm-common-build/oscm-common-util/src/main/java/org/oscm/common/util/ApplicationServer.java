@@ -68,7 +68,7 @@ public abstract class ApplicationServer {
                     logger.info(Messages.INFO_SERVICE_STOP);
                     stop();
                 } catch (Exception e) {
-                    // ignore
+                    logger.exception(e);
                 }
             }
         }));
@@ -135,7 +135,7 @@ public abstract class ApplicationServer {
 
                 default:
                     throw new RuntimeException(
-                            "Incomplete configuration parameters");
+                            "Unkown configuration parameters");
                 }
                 break;
 
@@ -168,7 +168,7 @@ public abstract class ApplicationServer {
                     break;
 
                 default:
-                    throw new RuntimeException("Incomplete logger parameters");
+                    throw new RuntimeException("Unknown logger parameters");
                 }
 
                 break;
