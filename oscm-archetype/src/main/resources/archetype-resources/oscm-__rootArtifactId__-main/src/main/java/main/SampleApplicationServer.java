@@ -26,24 +26,22 @@ import org.oscm.common.kafka.KafkaConfig;
 import org.oscm.common.kafka.Stream;
 import org.oscm.common.rest.JerseyConfig;
 import org.oscm.common.rest.JerseyResourceConfig;
-import org.oscm.common.util.Application;
+import org.oscm.common.util.ApplicationServer;
 import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.ServiceManager;
 import ${package}.interfaces.data.Sample;
 import ${package}.interfaces.enums.Activity;
-import ${package}.interfaces.enums.Service;
+import ${package}.interfaces.enums.Application;
+import ${package}.interfaces.enums.Entity;
 import ${package}.interfaces.enums.Version;
 import ${package}.services.SampleService;
 
 /**
  * Startup class to orchestrate the application and its technologies.
  */
-public class SampleApplication extends Application {
+public class SampleApplicationServer extends ApplicationServer {
 
     private static final String BASE_URI = "http://localhost:%s/%s";
-    private static final String TOPIC_COMMAND = "${rootArtifactId}_command";
-    private static final String TOPIC_RESULT = "${rootArtifactId}_result";
-    private static final String TOPIC_SAMPLE = "${rootArtifactId}_sample";
 
     /**
      * See {@link Application${symbol_pound}flow(Application, String...)} for applicable
@@ -51,7 +49,7 @@ public class SampleApplication extends Application {
      */
     public static void main(String[] args) throws Exception {
 
-        SampleApplication app = new SampleApplication();
+        SampleApplicationServer app = new SampleApplicationServer();
 
         app.flow(args);
     }
@@ -68,23 +66,21 @@ public class SampleApplication extends Application {
         keys.addAll(Arrays.asList(KafkaConfig.values()));
         keys.addAll(Arrays.asList(JerseyConfig.values()));
 
-        ConfigurationManager.init(importer, Service.values(), Service.SELF,
-                Activity.values(), Version.values(), Version.LATEST,
-                Version.V_1_0_0, keys.toArray(new ConfigurationKey[] {}));
+        ConfigurationManager.init(importer, Application.SELF, Activity.values(),
+                Version.values(), Version.LATEST, Version.V_1_0_0,
+                keys.toArray(new ConfigurationKey[] {}));
 
         ConfigurationManager cm = ConfigurationManager.getInstance();
 
         // Initialize kafka streams
-        CommandProducer cmdProducer = new CommandProducer(TOPIC_COMMAND,
-                TOPIC_RESULT, Service.SELF);
-        EventTable<Sample> sampleTable = new EventTable<>(TOPIC_SAMPLE,
-                Sample.class);
-        CommandStream sampleCreateStream = new CommandStream(TOPIC_COMMAND,
-                TOPIC_RESULT, TOPIC_SAMPLE, Activity.SAMPLE_CREATE);
-        CommandStream sampleUpdateStream = new CommandStream(TOPIC_COMMAND,
-                TOPIC_RESULT, TOPIC_SAMPLE, Activity.SAMPLE_UPDATE);
-        CommandStream sampleDeleteStream = new CommandStream(TOPIC_COMMAND,
-                TOPIC_RESULT, TOPIC_SAMPLE, Activity.SAMPLE_DELETE);
+        CommandProducer cmdProducer = new CommandProducer(Application.SELF);
+        EventTable<Sample> sampleTable = new EventTable<>(Entity.SAMPLE);
+        CommandStream sampleCreateStream = new CommandStream(
+                Activity.SAMPLE_CREATE);
+        CommandStream sampleUpdateStream = new CommandStream(
+                Activity.SAMPLE_UPDATE);
+        CommandStream sampleDeleteStream = new CommandStream(
+                Activity.SAMPLE_DELETE);
 
         streams = new ArrayList<>();
         streams.add(cmdProducer);
@@ -97,8 +93,8 @@ public class SampleApplication extends Application {
         ServiceManager sm = ServiceManager.getInstance();
 
         // Event classes
-        sm.setPublisher(Service.SELF, cmdProducer);
-        sm.setEventSource(Sample.class, sampleTable);
+        sm.setPublisher(Application.SELF, cmdProducer);
+        sm.setEventSource(Entity.SAMPLE, sampleTable);
 
         // Service classes
         sm.setCommandService(Activity.SAMPLE_CREATE,
@@ -140,5 +136,5 @@ public class SampleApplication extends Application {
 
         streams.forEach((s) -> s.stop());
     }
-    
+
 }

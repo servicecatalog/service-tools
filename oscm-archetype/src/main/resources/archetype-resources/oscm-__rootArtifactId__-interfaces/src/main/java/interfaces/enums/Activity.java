@@ -11,9 +11,11 @@
 
 package ${package}.interfaces.enums;
 
-import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.interfaces.keys.VersionKey;import ${package}.interfaces.data.Sample;
+import org.oscm.common.interfaces.keys.ApplicationKey;
+import org.oscm.common.interfaces.keys.EntityKey;
+import org.oscm.common.interfaces.keys.VersionKey;
+import ${package}.interfaces.data.Sample;
 
 /**
  * Enum for activity keys. These keys represent all commands and queries that
@@ -24,38 +26,47 @@ import org.oscm.common.interfaces.keys.VersionKey;import ${package}.interfaces.d
  */
 public enum Activity implements ActivityKey {
 
-    SAMPLE_READ(Sample.class, Sample.class, Type.QUERY), //
-    SAMPLE_READ_BY_NAME(Sample.class, Sample.class, Type.QUERY), //
-    SAMPLE_READ_ALL(Sample.class, Sample.class, Type.QUERY), //
+    SAMPLE_READ("read-sample", Entity.SAMPLE, Entity.SAMPLE, Type.QUERY), //
+    SAMPLE_READ_BY_NAME("read-sample-by-name", Entity.SAMPLE, Entity.SAMPLE,
+            Type.QUERY), //
+    SAMPLE_READ_ALL("read-all-samples", Entity.SAMPLE, Entity.SAMPLE,
+            Type.QUERY), //
 
-    SAMPLE_CREATE(Sample.class, Sample.class, Type.COMMAND), //
-    SAMPLE_UPDATE(Sample.class, Sample.class, Type.COMMAND), //
-    SAMPLE_DELETE(Sample.class, Sample.class, Type.COMMAND); //
+    SAMPLE_CREATE("create-sample", Entity.SAMPLE, Entity.SAMPLE, Type.COMMAND), //
+    SAMPLE_UPDATE("update-sample", Entity.SAMPLE, Entity.SAMPLE, Type.COMMAND), //
+    SAMPLE_DELETE("delete-sample", Entity.SAMPLE, Entity.SAMPLE, Type.COMMAND); //
 
-    private Class<? extends Event> inputClass;
-    private Class<? extends Event> outputClass;
+    private String name;
+    private EntityKey inputEntity;
+    private EntityKey outputEntity;
     private Type type;
 
-    private Activity(Class<? extends Event> inputClass,
-            Class<? extends Event> outputClass, Type type) {
-        this.inputClass = inputClass;
-        this.outputClass = outputClass;
+    private Activity(String name, EntityKey inputEntity, EntityKey outputEntity,
+            Type type) {
+        this.name = name;
+        this.inputEntity = inputEntity;
+        this.outputEntity = outputEntity;
         this.type = type;
     }
 
     @Override
     public String getActivityName() {
-        return name();
+        return name;
     }
 
     @Override
-    public Class<? extends Event> getInputClass() {
-        return inputClass;
+    public EntityKey getInputEntity() {
+        return inputEntity;
     }
 
     @Override
-    public Class<? extends Event> getOutputClass() {
-        return outputClass;
+    public EntityKey getOutputEntity() {
+        return outputEntity;
+    }
+
+    @Override
+    public ApplicationKey getApplication() {
+        return Application.SELF;
     }
 
     @Override

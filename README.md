@@ -20,8 +20,7 @@ If you want to develop a new microservice based on these tools, just clone or do
 
 1. Install maven archetype
   ```
-  mvn install archetype:update-local-catalog -f ./oscm-archetype/pom.xm
-  mvn archetype:crawl
+  mvn install -f ./oscm-archetype/pom.xm
   ```
 
 2. Install tools

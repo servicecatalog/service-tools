@@ -30,6 +30,7 @@ import org.oscm.common.interfaces.services.CommandService;
 import org.oscm.common.interfaces.services.QueryService;
 import org.oscm.common.util.ServiceManager;
 import ${package}.interfaces.data.Sample;
+import ${package}.interfaces.enums.Entity;
 
 /**
  * Service for viewing and updating samples. Please not that this class does not
@@ -44,7 +45,7 @@ public class SampleService {
         Sample sample = Sample.class.cast(event);
 
         EventSource<Sample> source = ServiceManager.getInstance()
-                .getEventSource(Sample.class);
+                .getEventSource(Entity.SAMPLE);
 
         Sample result = source.get(sample.getId());
 
@@ -62,7 +63,7 @@ public class SampleService {
         Sample sample = Sample.class.cast(event);
 
         EventSource<Sample> source = ServiceManager.getInstance()
-                .getEventSource(Sample.class);
+                .getEventSource(Entity.SAMPLE);
 
         List<Event> events = Collections.synchronizedList(new ArrayList<>());
 
@@ -78,7 +79,7 @@ public class SampleService {
             throws ServiceException {
 
         EventSource<Sample> source = ServiceManager.getInstance()
-                .getEventSource(Sample.class);
+                .getEventSource(Entity.SAMPLE);
 
         return new ArrayList<>(source.getAll());
     }
@@ -88,7 +89,7 @@ public class SampleService {
         Sample sample = Sample.class.cast(command.getEvent());
 
         EventSource<Sample> source = ServiceManager.getInstance()
-                .getEventSource(Sample.class);
+                .getEventSource(Entity.SAMPLE);
 
         Sample old = source.get(sample.getId());
 
@@ -114,7 +115,7 @@ public class SampleService {
         Sample sample = Sample.class.cast(command.getEvent());
 
         EventSource<Sample> source = ServiceManager.getInstance()
-                .getEventSource(Sample.class);
+                .getEventSource(Entity.SAMPLE);
 
         Sample old = source.get(sample.getId());
 
@@ -134,7 +135,7 @@ public class SampleService {
         Sample sample = Sample.class.cast(command.getEvent());
 
         EventSource<Sample> source = ServiceManager.getInstance()
-                .getEventSource(Sample.class);
+                .getEventSource(Entity.SAMPLE);
 
         Sample old = source.get(sample.getId());
 
