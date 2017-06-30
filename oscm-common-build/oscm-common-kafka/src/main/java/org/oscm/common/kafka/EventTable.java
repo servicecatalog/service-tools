@@ -33,7 +33,7 @@ import org.oscm.common.util.ConfigurationManager;
 public class EventTable<E extends Event> extends Stream
         implements EventSource<E> {
 
-    public static final String STATE_STORE = "event_store";
+    private static final String STATE_STORE = "event_store";
 
     private EntityKey entity;
 

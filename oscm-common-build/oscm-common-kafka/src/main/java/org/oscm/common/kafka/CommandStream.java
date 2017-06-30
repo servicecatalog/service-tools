@@ -10,11 +10,9 @@ package org.oscm.common.kafka;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.oscm.common.interfaces.data.Command;
 import org.oscm.common.interfaces.data.Result;
@@ -60,11 +58,10 @@ public class CommandStream extends Stream {
 
         KStreamBuilder builder = new KStreamBuilder();
 
-        KStream<UUID, Command> stream = builder.stream(new UUIDSerializer(),
+        builder.stream(new UUIDSerializer(),
                 new DataSerializer<>(Command.class),
-                buildCommandTopic(command.getApplication()));
-
-        stream.flatMap(new CommandResultMapper(command)) //
+                buildCommandTopic(command.getApplication())) //
+                .flatMap(new CommandResultMapper(command)) //
                 .through(new UUIDSerializer(),
                         new DataSerializer<>(Result.class),
                         buildResultTopic(command.getApplication())) //

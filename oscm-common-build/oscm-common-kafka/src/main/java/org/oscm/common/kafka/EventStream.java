@@ -10,13 +10,10 @@ package org.oscm.common.kafka;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
-import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.keys.TransitionKey;
 import org.oscm.common.kafka.mappers.EventEventMapper;
 import org.oscm.common.util.ConfigurationManager;
@@ -57,12 +54,11 @@ public class EventStream extends Stream {
 
         KStreamBuilder builder = new KStreamBuilder();
 
-        KStream<UUID, Event> stream = builder.stream(new UUIDSerializer(),
+        builder.stream(new UUIDSerializer(),
                 new DataSerializer<>(
                         transition.getInputEntity().getEntityClass()),
-                buildEventTopic(transition.getInputEntity()));
-
-        stream.flatMap(new EventEventMapper(transition)) //
+                buildEventTopic(transition.getInputEntity())) //
+                .flatMap(new EventEventMapper(transition)) //
                 .to(new UUIDSerializer(),
                         new DataSerializer<>(
                                 transition.getOutputEntity().getEntityClass()),
