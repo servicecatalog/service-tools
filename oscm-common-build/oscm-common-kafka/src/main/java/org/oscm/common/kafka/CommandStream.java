@@ -45,7 +45,13 @@ public class CommandStream extends Stream {
      *            the command key
      */
     public CommandStream(ActivityKey command) {
-        super();
+
+        if (!command.getOutputEntity().getApplication()
+                .equals(ConfigurationManager.getInstance().getSelf())) {
+            throw new RuntimeException(
+                    "An output entity outside of this application is not allowed");
+        }
+
         this.command = command;
     }
 

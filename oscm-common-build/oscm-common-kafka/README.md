@@ -2,9 +2,23 @@
 
 ## Concepts
 
+The Kafka API consists of four different streams that cover most of the needed functionality.
+
+### CommandProducer
+
+The command producer writes commands into the command topic of the configured application. It monitors the corresponding result topic for matching result and uses a callback object to return it. The command producer can be used as singleton, so only one instance per target application is necessary.
+
+### CommandStream
+
 ![CommandService Sequence](../../img/CommandService.png "CommandService Sequence")
 
+### EventStream
+
 ![EventService Sequence](../../img/EventService.png "EventService Sequence")
+
+### EventTable
+
+
 
 ## Conventions
 

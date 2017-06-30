@@ -42,7 +42,13 @@ public class EventStream extends Stream {
      *            the transition key
      */
     public EventStream(TransitionKey transition) {
-        super();
+
+        if (!transition.getOutputEntity().getApplication()
+                .equals(ConfigurationManager.getInstance().getSelf())) {
+            throw new RuntimeException(
+                    "An output entity outside of this application is not allowed");
+        }
+
         this.transition = transition;
     }
 

@@ -1,0 +1,12 @@
+# compile services
+- name: 'maven:3.5.0-jdk-8-alpine'
+  args: ['install']
+  dir:  'oscm-sample-build'
+ 
+# build images
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'eu.gcr.io/$PROJECT_ID/oscm/oscm-sample', '.']
+  dir:  'oscm-sample-build'
+  
+timeout: '500s'
+images: ['eu.gcr.io/$PROJECT_ID/oscm/oscm-sample']
