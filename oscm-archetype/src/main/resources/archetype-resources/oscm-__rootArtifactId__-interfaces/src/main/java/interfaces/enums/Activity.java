@@ -15,14 +15,13 @@ import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ApplicationKey;
 import org.oscm.common.interfaces.keys.EntityKey;
 import org.oscm.common.interfaces.keys.VersionKey;
-import ${package}.interfaces.data.Sample;
 
 /**
- * Enum for activity keys. These keys represent all commands and queries that
- * can be called over the frontend. Each key defines an input event and an
- * output event, e.g. the {@link Sample} class. The frontend and backend will
- * use these references for de-/serialization and validation. Also a version
- * window can be defined for filtering at the frontend.
+ * Enum for activity keys. Represents all commands and queries that this
+ * application can execute or interacts with. Each key defines an input
+ * {@link Entity} and an output entity. The frontend and backend will use these
+ * references for de-/serialization and validation. Also a version window can be
+ * defined for filtering at the frontend.
  */
 public enum Activity implements ActivityKey {
 

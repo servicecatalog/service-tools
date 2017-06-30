@@ -28,14 +28,14 @@ import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.services.CommandService;
 import org.oscm.common.interfaces.services.QueryService;
-import org.oscm.common.util.ServiceManager;
-import ${package}.interfaces.data.Sample;
-import ${package}.interfaces.enums.Entity;
+import org.oscm.common.interfaces.services.TransitionService;
+import org.oscm.common.util.ServiceManager;import ${package}.interfaces.data.Sample;import ${package}.interfaces.enums.Entity;
 
 /**
  * Service for viewing and updating samples. Please not that this class does not
  * implement any interface directly but each method follows the functional
- * interfaces {@link QueryService} or {@link CommandService}.
+ * interfaces {@link QueryService}, {@link CommandService} or
+ * {@link TransitionService}.
  */
 public class SampleService {
 

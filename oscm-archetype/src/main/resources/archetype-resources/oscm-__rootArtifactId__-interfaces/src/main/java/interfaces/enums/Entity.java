@@ -17,7 +17,7 @@ import org.oscm.common.interfaces.keys.EntityKey;
 import ${package}.interfaces.data.Sample;
 
 /**
- * @author miethaner
+ * Enum for entity keys. Represents entities that this application interacts with.
  */
 public enum Entity implements EntityKey {
     SAMPLE("sample", Sample.class);

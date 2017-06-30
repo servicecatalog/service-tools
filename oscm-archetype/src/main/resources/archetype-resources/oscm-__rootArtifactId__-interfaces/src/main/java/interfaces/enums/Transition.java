@@ -15,8 +15,9 @@ import org.oscm.common.interfaces.keys.EntityKey;
 import org.oscm.common.interfaces.keys.TransitionKey;
 
 /**
- * @author miethaner
- *
+ * Enum for transition keys. Represents all transitions the application
+ * processes. Each key defines an input {@link Entity} and an output entity. The
+ * backend will use these references for de-/serialization and validation.
  */
 public enum Transition implements TransitionKey {
     TRANSITION("transition", Entity.SAMPLE, Entity.SAMPLE);

@@ -18,8 +18,8 @@ import java.util.ResourceBundle;
 import org.oscm.common.interfaces.keys.MessageKey;
 
 /**
- * @author miethaner
- *
+ * Enum for message keys. Represents messages for logs and exceptions for this
+ * application.
  */
 public enum Messages implements MessageKey {
 

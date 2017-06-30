@@ -14,8 +14,7 @@ package ${package}.interfaces.enums;
 import org.oscm.common.interfaces.keys.ConfigurationKey;
 
 /**
- * @author miethaner
- *
+ * Enum for configuration keys. Represents application specific configuration settings.
  */
 public enum Config implements ConfigurationKey {
     CONFIG("config", "con.fig", false, "42");

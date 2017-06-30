@@ -14,9 +14,8 @@ package ${package}.interfaces.enums;
 import org.oscm.common.interfaces.keys.ApplicationKey;
 
 /**
- * 
- * 
- * @author miethaner
+ * Enum for application keys. Represents the applications / microservices that
+ * this application interacts with (including itself).
  */
 public enum Application implements ApplicationKey {
     SAMPLE("sample");

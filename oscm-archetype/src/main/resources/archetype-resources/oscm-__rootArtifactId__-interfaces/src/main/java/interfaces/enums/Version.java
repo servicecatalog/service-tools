@@ -14,7 +14,8 @@ package ${package}.interfaces.enums;
 import org.oscm.common.interfaces.keys.VersionKey;
 
 /**
- * Enum for the versions keys. Describes the history of versions of this service.
+ * Enum for the versions keys. Represents the history of versions of this
+ * application.
  */
 public enum Version implements VersionKey {
 
