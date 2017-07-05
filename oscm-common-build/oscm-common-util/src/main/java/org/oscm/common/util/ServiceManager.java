@@ -17,9 +17,11 @@ import org.oscm.common.interfaces.events.EventSource;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ActivityKey.Type;
 import org.oscm.common.interfaces.keys.ApplicationKey;
+import org.oscm.common.interfaces.keys.ConsumerKey;
 import org.oscm.common.interfaces.keys.EntityKey;
 import org.oscm.common.interfaces.keys.TransitionKey;
 import org.oscm.common.interfaces.services.CommandService;
+import org.oscm.common.interfaces.services.ConsumerService;
 import org.oscm.common.interfaces.services.QueryService;
 import org.oscm.common.interfaces.services.TransitionService;
 
@@ -49,6 +51,7 @@ public class ServiceManager {
     private Map<ActivityKey, CommandService> commands;
     private Map<ActivityKey, QueryService> queries;
     private Map<TransitionKey, TransitionService> transitions;
+    private Map<ConsumerKey, ConsumerService> consumers;
     private Map<EntityKey, EventSource<?>> sources;
 
     private ServiceManager() {
@@ -56,6 +59,7 @@ public class ServiceManager {
         commands = new ConcurrentHashMap<>();
         queries = new ConcurrentHashMap<>();
         transitions = new ConcurrentHashMap<>();
+        consumers = new ConcurrentHashMap<>();
         sources = new ConcurrentHashMap<>();
     }
 
@@ -186,6 +190,39 @@ public class ServiceManager {
         }
 
         transitions.put(transition, service);
+    }
+
+    /**
+     * Gets the consumer service instance for the given consumer key.
+     * 
+     * @param consumer
+     *            the consumer key
+     * @return the service instance
+     */
+    public ConsumerService getConsumerService(ConsumerKey consumer) {
+        if (consumer == null || !consumers.containsKey(consumer)) {
+            throw new RuntimeException(consumer + " serivce not found");
+        }
+
+        return consumers.get(consumer);
+    }
+
+    /**
+     * Sets the consumer service as value with the given consumer as key.
+     * 
+     * @param consumer
+     *            the consumer key
+     * @param service
+     *            the service
+     */
+    public void setConsumerService(ConsumerKey consumer,
+            ConsumerService service) {
+        if (consumer == null || service == null) {
+            throw new RuntimeException(
+                    "Unable to set " + consumer + " service");
+        }
+
+        consumers.put(consumer, service);
     }
 
     /**

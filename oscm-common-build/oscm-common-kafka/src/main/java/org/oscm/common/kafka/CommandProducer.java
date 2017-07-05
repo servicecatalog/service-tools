@@ -43,7 +43,7 @@ import org.oscm.common.util.ConfigurationManager;
  */
 public class CommandProducer extends Stream implements CommandPublisher {
 
-    private static final String RESULT_STORE = "results";
+    private static final String STORE_NAME = "result_store";
     private static final String SOURCE_NAME = "result_source";
     private static final String PROCESSOR_NAME = "result_processor";
 
@@ -76,7 +76,6 @@ public class CommandProducer extends Stream implements CommandPublisher {
     private KafkaProducer<UUID, Command> producer;
     private ApplicationKey application;
     private String commandTopic;
-    private String resultTopic;
 
     private KafkaStreams localStreams;
     private ReadOnlyKeyValueStore<UUID, Result> store;
@@ -97,24 +96,32 @@ public class CommandProducer extends Stream implements CommandPublisher {
         super();
         this.application = application;
         this.commandTopic = buildCommandTopic(application);
-        this.resultTopic = buildResultTopic(application);
         this.waitingHandlers = new ConcurrentHashMap<>();
-
-        producer = new KafkaProducer<>(getConfig(), new UUIDSerializer(),
-                new DataSerializer<>(Command.class));
     }
 
     @Override
     protected KafkaStreams initStreams() {
+
+        UUIDSerializer keySerializer = new UUIDSerializer();
+        DataSerializer<Command> commandSerializer = new DataSerializer<>(
+                Command.class);
+        DataSerializer<Result> resultSerializer = new DataSerializer<>(
+                Result.class);
+
+        producer = new KafkaProducer<>(getConfig(), keySerializer,
+                commandSerializer);
+
         KStreamBuilder builder = new KStreamBuilder();
 
-        StateStore resultStore = Stores.create(RESULT_STORE)
-                .withKeys(new UUIDSerializer())
-                .withValues(new DataSerializer<>(Result.class)).inMemory()
-                .disableLogging().build().get();
+        StateStore resultStore = Stores.create(STORE_NAME)
+                .withKeys(keySerializer) //
+                .withValues(resultSerializer) //
+                .persistent() //
+                .disableLogging() //
+                .build().get();
 
-        builder.addGlobalStore(resultStore, SOURCE_NAME, new UUIDSerializer(),
-                new DataSerializer<>(Result.class), resultTopic, PROCESSOR_NAME,
+        builder.addGlobalStore(resultStore, SOURCE_NAME, keySerializer,
+                resultSerializer, buildResultTopic(application), PROCESSOR_NAME,
                 ResultProcessor::new);
 
         localStreams = new KafkaStreams(builder,
@@ -156,7 +163,7 @@ public class CommandProducer extends Stream implements CommandPublisher {
     @Override
     public Result getResult(UUID id) {
         if (store == null) {
-            store = localStreams.store(RESULT_STORE,
+            store = localStreams.store(STORE_NAME,
                     QueryableStoreTypes.keyValueStore());
         }
 
@@ -166,7 +173,7 @@ public class CommandProducer extends Stream implements CommandPublisher {
     @Override
     public List<Result> getAllResults() {
         if (store == null) {
-            store = localStreams.store(RESULT_STORE,
+            store = localStreams.store(STORE_NAME,
                     QueryableStoreTypes.keyValueStore());
         }
 

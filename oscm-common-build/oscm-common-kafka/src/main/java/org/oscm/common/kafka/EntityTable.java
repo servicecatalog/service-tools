@@ -25,15 +25,15 @@ import org.oscm.common.interfaces.keys.EntityKey;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
- * Stream class for event tables with kafka. Takes events from a topic and saves
- * them in an internal state store.
+ * Stream class for entity tables with kafka. Takes events from a topic and
+ * saves them in an internal state store.
  * 
  * @author miethaner
  */
-public class EventTable<E extends Event> extends Stream
+public class EntityTable<E extends Event> extends Stream
         implements EventSource<E> {
 
-    private static final String STATE_STORE = "event_store";
+    private static final String STORE_NAME = "event_store";
 
     private EntityKey entity;
 
@@ -48,17 +48,21 @@ public class EventTable<E extends Event> extends Stream
      * @param clazz
      *            the event class
      */
-    public EventTable(EntityKey entity) {
+    public EntityTable(EntityKey entity) {
         this.entity = entity;
     }
 
     @Override
     protected KafkaStreams initStreams() {
 
+        UUIDSerializer keySerializer = new UUIDSerializer();
+        DataSerializer<Event> entitySerializer = new DataSerializer<>(
+                entity.getEntityClass());
+
         KStreamBuilder builder = new KStreamBuilder();
-        builder.table(new UUIDSerializer(),
-                new DataSerializer<>(entity.getEntityClass()),
-                buildEventTopic(entity), STATE_STORE);
+
+        builder.globalTable(keySerializer, entitySerializer,
+                buildEventTopic(entity), STORE_NAME);
 
         localStreams = new KafkaStreams(builder,
                 new StreamsConfig(getConfig()));
@@ -81,7 +85,7 @@ public class EventTable<E extends Event> extends Stream
     @Override
     public E get(UUID id) {
         if (store == null) {
-            store = localStreams.store(STATE_STORE,
+            store = localStreams.store(STORE_NAME,
                     QueryableStoreTypes.keyValueStore());
         }
 
@@ -91,7 +95,7 @@ public class EventTable<E extends Event> extends Stream
     @Override
     public List<E> getAll() {
         if (store == null) {
-            store = localStreams.store(STATE_STORE,
+            store = localStreams.store(STORE_NAME,
                     QueryableStoreTypes.keyValueStore());
         }
 

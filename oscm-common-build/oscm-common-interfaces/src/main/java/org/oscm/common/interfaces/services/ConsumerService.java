@@ -2,34 +2,28 @@
  *                                                                              
  *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Jun 12, 2017                                                      
+ *  Creation Date: Jul 4, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
 package org.oscm.common.interfaces.services;
 
-import java.util.List;
-
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 
 /**
- * Functional interface for transition methods.
+ * Functional interface for consumer methods.
  * 
  * @author miethaner
  */
-@FunctionalInterface
-public interface TransitionService {
+public interface ConsumerService {
 
     /**
-     * Processes a given event and maps it to a list of different events. If
-     * this method is used in a scheduled task, returning null will stop further
-     * execution.
+     * Processes a given event.
      * 
      * @param event
      *            the event to process
-     * @return the list of events or null
      * @throws ServiceException
      */
-    public List<Event> process(Event event) throws ServiceException;
+    public void process(Event event) throws ServiceException;
 }

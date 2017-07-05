@@ -8,18 +8,30 @@
 
 package org.oscm.common.kafka;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
+import org.apache.kafka.streams.kstream.KeyValueMapper;
 import org.oscm.common.interfaces.data.Command;
+import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.data.Result;
+import org.oscm.common.interfaces.enums.Status;
+import org.oscm.common.interfaces.events.CommandPublisher;
+import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.kafka.mappers.CommandResultMapper;
-import org.oscm.common.kafka.mappers.ResultEventMapper;
+import org.oscm.common.interfaces.services.CommandService;
 import org.oscm.common.util.ConfigurationManager;
+import org.oscm.common.util.ServiceManager;
+import org.oscm.common.util.logger.ServiceLogger;
 
 /**
  * Stream class for command pipelines with kafka. Takes a command from a topic
@@ -29,6 +41,67 @@ import org.oscm.common.util.ConfigurationManager;
  * @author miethaner
  */
 public class CommandStream extends Stream {
+
+    private static final ServiceLogger LOGGER = ServiceLogger
+            .getLogger(CommandStream.class);
+
+    private class CommandWrapper implements
+            KeyValueMapper<UUID, Command, List<KeyValue<UUID, Result>>> {
+
+        @Override
+        public List<KeyValue<UUID, Result>> apply(UUID key, Command value) {
+
+            ServiceManager sm = ServiceManager.getInstance();
+            CommandService service = sm.getCommandService(command);
+            CommandPublisher publisher = sm
+                    .getPublisher(ConfigurationManager.getInstance().getSelf());
+
+            if (value == null || !command.equals(value.getCommand())
+                    || publisher.getResult(key) != null) {
+                return new ArrayList<>();
+            }
+
+            Result result = new Result();
+            result.setId(key);
+            result.setCommand(value.getCommand());
+
+            try {
+                List<Event> events = service.execute(value);
+
+                result.setEvents(events);
+                result.setStatus(Status.SUCCESS);
+            } catch (ServiceException e) {
+                LOGGER.error(e);
+                result.setStatus(Status.FAILURE);
+                result.setFailure(e.getAsFailure());
+            }
+
+            result.setTimestamp(new Date());
+
+            return Arrays.asList(KeyValue.pair(result.getId(), result));
+        }
+    }
+
+    private class ResultMapper implements
+            KeyValueMapper<UUID, Result, List<KeyValue<UUID, Event>>> {
+
+        @Override
+        public List<KeyValue<UUID, Event>> apply(UUID key, Result value) {
+
+            List<KeyValue<UUID, Event>> events = new ArrayList<>();
+
+            if (value != null && command.equals(value.getCommand())
+                    && value.getStatus() == Status.SUCCESS
+                    && value.getEvents() != null) {
+
+                value.getEvents().forEach(
+                        (e) -> events.add(KeyValue.pair(e.getId(), e)));
+            }
+
+            return events;
+        }
+
+    }
 
     private ActivityKey command;
 
@@ -56,19 +129,23 @@ public class CommandStream extends Stream {
     @Override
     protected KafkaStreams initStreams() {
 
+        UUIDSerializer keySerializer = new UUIDSerializer();
+        DataSerializer<Command> commandSerializer = new DataSerializer<>(
+                Command.class);
+        DataSerializer<Result> resultSerializer = new DataSerializer<>(
+                Result.class);
+        DataSerializer<Event> outputSerializer = new DataSerializer<>(
+                command.getOutputEntity().getEntityClass());
+
         KStreamBuilder builder = new KStreamBuilder();
 
-        builder.stream(new UUIDSerializer(),
-                new DataSerializer<>(Command.class),
+        builder.stream(keySerializer, commandSerializer,
                 buildCommandTopic(command.getApplication())) //
-                .flatMap(new CommandResultMapper(command)) //
-                .through(new UUIDSerializer(),
-                        new DataSerializer<>(Result.class),
+                .flatMap(new CommandWrapper()) //
+                .through(keySerializer, resultSerializer,
                         buildResultTopic(command.getApplication())) //
-                .flatMap(new ResultEventMapper(command)) //
-                .to(new UUIDSerializer(),
-                        new DataSerializer<>(
-                                command.getOutputEntity().getEntityClass()),
+                .flatMap(new ResultMapper()) //
+                .to(keySerializer, outputSerializer,
                         buildEventTopic(command.getOutputEntity()));
 
         KafkaStreams streams = new KafkaStreams(builder,
