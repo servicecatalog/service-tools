@@ -111,7 +111,7 @@ public class TimedStream extends Stream {
      * @param transition
      *            the transition key
      * @param interval
-     *            the delay between task execution
+     *            the delay between task execution in milliseconds
      */
     public TimedStream(TransitionKey transition, long interval) {
 

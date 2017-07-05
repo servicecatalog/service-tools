@@ -19,8 +19,8 @@ public enum Status {
     @SerializedName(Constants.OPTION_SUCCESS)
     SUCCESS, //
 
-    @SerializedName(Constants.OPTION_FAILURE)
-    FAILURE, //
+    @SerializedName(Constants.OPTION_FAILED)
+    FAILED, //
 
     @SerializedName(Constants.OPTION_PENDING)
     PENDING, //
@@ -29,9 +29,9 @@ public enum Status {
     CACHED;
 
     public class Constants {
-        public static final String OPTION_SUCCESS = "SUCCESS";
-        public static final String OPTION_FAILURE = "FAILURE";
-        public static final String OPTION_PENDING = "PENDING";
-        public static final String OPTION_CACHED = "CACHED";
+        public static final String OPTION_SUCCESS = "success";
+        public static final String OPTION_FAILED = "failed";
+        public static final String OPTION_PENDING = "pending";
+        public static final String OPTION_CACHED = "cached";
     }
 }

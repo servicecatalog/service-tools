@@ -72,7 +72,7 @@ public class CommandStream extends Stream {
                 result.setStatus(Status.SUCCESS);
             } catch (ServiceException e) {
                 LOGGER.error(e);
-                result.setStatus(Status.FAILURE);
+                result.setStatus(Status.FAILED);
                 result.setFailure(e.getAsFailure());
             }
 

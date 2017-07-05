@@ -194,7 +194,7 @@ public class Frontend {
         switch (result.getStatus()) {
         case SUCCESS:
             return Response.ok(result).build();
-        case FAILURE:
+        case FAILED:
         case CACHED:
             if (result.getFailure() != null) {
                 return Response

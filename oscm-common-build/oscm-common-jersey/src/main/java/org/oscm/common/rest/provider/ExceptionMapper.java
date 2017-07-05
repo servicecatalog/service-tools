@@ -78,7 +78,7 @@ public class ExceptionMapper
             fail.setReason(Reason.INTERNAL);
         }
 
-        result.setStatus(org.oscm.common.interfaces.enums.Status.FAILURE);
+        result.setStatus(org.oscm.common.interfaces.enums.Status.FAILED);
         result.setFailure(fail);
         result.setTimestamp(new Date());
         result.setVersion(version);
