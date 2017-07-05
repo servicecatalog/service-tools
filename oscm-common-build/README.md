@@ -53,13 +53,15 @@ To model your own business logic for the service tools, you have to take servera
   - `ActivityKey` - Defines all commands and queries with their entities and parameters.
   - `ApplicationKey` - Defines all applications (microservices) that this application interacts with (including itself).
   - `ConfigurationKey`- Defines configuration parameters for the application.
+  - `ConsumerKey` - Defines all consumers for any entities.
   - `EntityKey`- Defines all entities and their event classes.
   - `MessageKey` - Defines messages for logging and exceptions.
-  - `TransitionKey` - Defines transitions from one entity to another.
+  - `TransitionKey` - Defines all transitions from one entity to another.
   - `VersionKey` - Defines all versions of the application.
   
 3. Write your business logic. Note that the methods that will be called by the tools must comply to the corresponding functional interface:
   - `CommandService`
+  - `ConsumerService`
   - `QueryService`
   - `TransitionService`
 

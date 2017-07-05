@@ -14,11 +14,19 @@ The command stream reads from applications command topic and filters it for the 
 
 ![CommandService Sequence](../../img/CommandService.png "CommandService Sequence")
 
-### EventStream
+### ConsumerStream
 
-The event stream works similar to the command stream. It reads from an event topic and processes events for its configured transition. The corresponding service returns events that are written into another (or the same) event topic.
+The consumer stream simply reads from an event topic and executes the corresponding service without any return value.
 
-### EventTable
+### TransitionStream
+
+The transition stream works similar to the command stream. It reads from an event topic and processes events for its configured transition. The corresponding service returns events that are written into another (or the same) event topic.
+
+### TimedStream
+
+The timed stream is variant of the transition stream. Instead of executing the corresponding service once, it is scheduled as a task with a configured intervall and called periodically. All events the service returns are written to the output topic. The task is unscheduled when the service returns `null`.  
+
+### EntityTable
 
 The event table reads from its configured event topic. It caches the data as a table with the current state in a local database (that is managed by Kafka Streams). 
 
@@ -40,10 +48,11 @@ Every stream requires an application id that is generated as the following:
 
 - CommandProducer: `<application>-<target>-<version>`
 - CommandStream: `<application>-<command>-<version>`
-- EventStream: `<application>-<transition>-<version>`
-- EventTable: `<application>-<entity>-<version>`
+- ConsumerStream: `<application>-<consumer>-<version>`
+- TransitionStream: `<application>-<transition>-<version>`
+- EntityTable: `<application>-<entity>-<version>`
 
-`application` and `target` are the names of the owning or the target application. `command`, `transition` and `entity` are the names of the corresponding `ActivityKey`, `TransitionKey` or `EntityKey`. `version` is the current `VersionKey` of the executing application.
+`application` and `target` are the names of the owning or the target application. `command`, `consumer`, `transition` and `entity` are the names of the corresponding `ActivityKey`, `ConsumerKey`, `TransitionKey` or `EntityKey`. `version` is the current `VersionKey` of the executing application.
 
 ## Broker configuration
 
