@@ -11,7 +11,7 @@ package org.oscm.common.interfaces.config;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.oscm.common.interfaces.keys.VersionKey;
+import org.oscm.common.interfaces.data.Version;
 
 /**
  * Unit test for VersionKey
@@ -20,24 +20,6 @@ import org.oscm.common.interfaces.keys.VersionKey;
  */
 public class VersionKeyTest {
 
-    private static final VersionKey key = new VersionKey() {
-
-        @Override
-        public int getMinor() {
-            return MINOR;
-        }
-
-        @Override
-        public int getMajor() {
-            return MAJOR;
-        }
-
-        @Override
-        public int getFix() {
-            return FIX;
-        }
-    };
-
     private static final int MAJOR = 1;
     private static final int MINOR = 2;
     private static final int FIX = 3;
@@ -45,23 +27,27 @@ public class VersionKeyTest {
     @Test
     public void testGetCompiledVersion() {
 
+        Version version = new Version(MAJOR, MINOR, FIX);
+
         int v = MAJOR * 100000 + MINOR * 1000 + FIX;
 
-        assertEquals(v, key.getCompiledVersion());
+        assertEquals(v, version.getCompiledVersion());
     }
 
     @Test
     public void testCompareVersion() {
 
-        int result = key.compareVersion(key);
+        Version version = new Version(MAJOR, MINOR, FIX);
+
+        int result = version.compare(version);
 
         assertEquals(0, result);
 
-        result = key.compareVersion(MAJOR, MINOR, FIX + 1);
+        result = version.compare(MAJOR, MINOR, FIX + 1);
 
         assertEquals(-1, result);
 
-        result = key.compareVersion(MAJOR, MINOR, FIX - 1);
+        result = version.compare(MAJOR, MINOR, FIX - 1);
 
         assertEquals(1, result);
     }

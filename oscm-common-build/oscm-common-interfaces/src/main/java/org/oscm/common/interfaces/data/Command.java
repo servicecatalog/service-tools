@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.interfaces.keys.VersionKey;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -147,7 +146,7 @@ public class Command extends VersionedEntity {
      *            the version key
      */
     @Override
-    public void setVersion(VersionKey version) {
+    public void setVersion(Version version) {
         super.setVersion(version);
 
         if (event != null) {

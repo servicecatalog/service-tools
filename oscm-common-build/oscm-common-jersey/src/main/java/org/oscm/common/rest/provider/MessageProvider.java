@@ -27,12 +27,12 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import org.oscm.common.interfaces.data.Event;
+import org.oscm.common.interfaces.data.Version;
 import org.oscm.common.interfaces.data.VersionedEntity;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.interfaces.keys.VersionKey;
 import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.serializer.ActivitySerializer;
@@ -76,14 +76,14 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
         InputStreamReader reader = new InputStreamReader(entityStream,
                 ConfigurationManager.CHARSET);
 
-        VersionKey currentKey = ConfigurationManager.getInstance()
+        Version currentVersion = ConfigurationManager.getInstance()
                 .getCurrentVersion();
 
-        ActivityKey activityKey = context.getActivity();
+        ActivityKey activity = context.getActivity();
 
-        VersionKey versionKey = context.getVersion();
+        Version contextVersion = context.getVersion();
 
-        if (activityKey == null || versionKey == null) {
+        if (activity == null || contextVersion == null) {
             InternalException ie = new InternalException(Messages.ERROR, "");
 
             throw new ExceptionMapper().toWebException(ie);
@@ -95,15 +95,15 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
             builder.setDateFormat(ConfigurationManager.FORMAT_DATE);
             builder.registerTypeHierarchyAdapter(ActivityKey.class,
                     new ActivitySerializer());
-            builder.registerTypeHierarchyAdapter(VersionKey.class,
+            builder.registerTypeHierarchyAdapter(Version.class,
                     new VersionSerializer());
             builder.registerTypeAdapter(Event.class, new EventSerializer(
-                    activityKey.getInputEntity().getEntityClass()));
+                    activity.getInputEntity().getEntityClass()));
             Gson gson = builder.create();
 
             VersionedEntity entity = gson.fromJson(reader, genericType);
-            entity.updateFrom(versionKey);
-            entity.setVersion(currentKey);
+            entity.updateFrom(contextVersion);
+            entity.setVersion(currentVersion);
 
             return entity;
         } catch (JsonSyntaxException e) {
@@ -140,20 +140,25 @@ public class MessageProvider implements MessageBodyReader<VersionedEntity>,
 
         ConfigurationManager cm = ConfigurationManager.getInstance();
 
-        VersionKey current = cm.getCurrentVersion();
-        VersionKey compatible = cm.getCompatibleVersion();
+        Version currentVersion = cm.getCurrentVersion();
+        Version compatibleVersion = cm.getCompatibleVersion();
+        Version contextVersion = context.getVersion();
 
         try {
             GsonBuilder builder = new GsonBuilder();
             builder.setDateFormat(ConfigurationManager.FORMAT_DATE);
             builder.registerTypeHierarchyAdapter(ActivityKey.class,
                     new ActivitySerializer());
-            builder.registerTypeHierarchyAdapter(VersionKey.class,
+            builder.registerTypeHierarchyAdapter(Version.class,
                     new VersionSerializer());
             Gson gson = builder.create();
 
-            entity.convertTo(compatible);
-            entity.setVersion(current);
+            if (contextVersion != null) {
+                entity.convertTo(contextVersion);
+            } else {
+                entity.convertTo(compatibleVersion);
+            }
+            entity.setVersion(currentVersion);
             gson.toJson(entity, genericType, writer);
 
         } catch (JsonSyntaxException e) {

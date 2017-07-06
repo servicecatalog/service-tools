@@ -6,7 +6,7 @@ POST https://<host>:<port>/<context>/<version>/commands/<key>
 POST https://<host>:<port>/<context>/<version>/queries/<key>
 ```
 
-`host`, `port` and `context` are defined by the application configuration, while `version` must be a valid `VersionKey`. `key` describes a `ActivityKey` of the corresponding type (command or query). Also the `Authorization` field in the HTTP-header must contain a valid JSON web token. These parameters are consumed by several filters and validated:
+`host`, `port` and `context` are defined by the application configuration, while `version` must be a valid `Version`. `key` describes a `ActivityKey` of the corresponding type (command or query). Also the `Authorization` field in the HTTP-header must contain a valid JSON web token. These parameters are consumed by several filters and validated:
 
 ![Frontend Dataflow](../../img/Frontend_Flow.png "Frontend Dataflow")
 

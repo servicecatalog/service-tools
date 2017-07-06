@@ -8,6 +8,8 @@
 
 package org.oscm.common.interfaces.keys;
 
+import org.oscm.common.interfaces.data.Version;
+
 /**
  * Interface for enums that represent activity keys.
  * 
@@ -64,12 +66,12 @@ public interface ActivityKey {
      * 
      * @return the version key
      */
-    public VersionKey getSince();
+    public Version getSince();
 
     /**
      * Gets the version until this activity is available.
      * 
      * @return the version key
      */
-    public VersionKey getUntil();
+    public Version getUntil();
 }

@@ -14,8 +14,8 @@ import java.util.List;
 
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.data.Result;
+import org.oscm.common.interfaces.data.Version;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.interfaces.keys.VersionKey;
 import org.oscm.common.util.ConfigurationManager;
 
 import com.google.gson.Gson;
@@ -39,7 +39,7 @@ public class ResultSerializer implements JsonDeserializer<Result> {
         gson = new GsonBuilder().setDateFormat(ConfigurationManager.FORMAT_DATE)
                 .registerTypeHierarchyAdapter(ActivityKey.class,
                         new ActivitySerializer())
-                .registerTypeHierarchyAdapter(VersionKey.class,
+                .registerTypeHierarchyAdapter(Version.class,
                         new VersionSerializer())
                 .registerTypeAdapter(Event.class, new EventSerializer(null))
                 .create();

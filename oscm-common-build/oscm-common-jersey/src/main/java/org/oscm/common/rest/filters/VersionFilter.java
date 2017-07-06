@@ -17,9 +17,9 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
+import org.oscm.common.interfaces.data.Version;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
-import org.oscm.common.interfaces.keys.VersionKey;
 import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.interfaces.Versioned;
 import org.oscm.common.rest.provider.ExceptionMapper;
@@ -62,61 +62,62 @@ public class VersionFilter implements ContainerRequestFilter {
             throw new ExceptionMapper().toWebException(nfe);
         }
 
-        String version = params.get(PARAM_VERSION).get(0);
+        String versionString = params.get(PARAM_VERSION).get(0);
 
-        VersionKey versionKey = validateVersion(version);
+        Version version = validateVersion(versionString);
 
-        context.setVersion(versionKey);
+        context.setVersion(version);
     }
 
     /**
      * Validates the version string and compares it with the existing version
      * numbers. Throws a NotFoundException if not valid.
      * 
-     * @param version
+     * @param versionString
      *            the version string
      * @return the corresponding version key
      * @throws WebApplicationException
      */
-    private VersionKey validateVersion(String version)
+    private Version validateVersion(String versionString)
             throws WebApplicationException {
 
-        if (version == null) {
+        if (versionString == null) {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
 
-        if (!version.matches(PATTERN_VERSION)) {
+        if (!versionString.matches(PATTERN_VERSION)) {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
 
-        int vnr = Integer.parseInt(version.substring(OFFSET_VERSION));
+        int vnr;
+        try {
+            vnr = Integer.parseInt(versionString.substring(OFFSET_VERSION));
+        } catch (NumberFormatException e) {
+            NotFoundException nfe = new NotFoundException(
+                    Messages.ERROR_INVALID_VERSION);
+
+            throw new ExceptionMapper().toWebException(nfe);
+        }
+
+        Version version = new Version(vnr);
 
         ConfigurationManager cm = ConfigurationManager.getInstance();
 
-        VersionKey versionKey = cm.getVersionForCompiled(vnr);
-
-        if (versionKey == null) {
+        if (version.compare(cm.getCompatibleVersion()) < 0
+                || version.compare(cm.getCurrentVersion()) > 0) {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_VERSION);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
 
-        if (versionKey.compareVersion(cm.getCompatibleVersion()) < 0
-                || versionKey.compareVersion(cm.getCurrentVersion()) > 0) {
-            NotFoundException nfe = new NotFoundException(
-                    Messages.ERROR_INVALID_VERSION);
-
-            throw new ExceptionMapper().toWebException(nfe);
-        }
-
-        return versionKey;
+        return version;
     }
 
 }

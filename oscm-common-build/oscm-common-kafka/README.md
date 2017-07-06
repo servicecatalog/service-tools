@@ -52,7 +52,7 @@ Every stream requires an application id that is generated as the following:
 - TransitionStream: `<application>-<transition>-<version>`
 - EntityTable: `<application>-<entity>-<version>`
 
-`application` and `target` are the names of the owning or the target application. `command`, `consumer`, `transition` and `entity` are the names of the corresponding `ActivityKey`, `ConsumerKey`, `TransitionKey` or `EntityKey`. `version` is the current `VersionKey` of the executing application.
+`application` and `target` are the names of the owning or the target application. `command`, `consumer`, `transition` and `entity` are the names of the corresponding `ActivityKey`, `ConsumerKey`, `TransitionKey` or `EntityKey`. `version` is the current `Version` of the executing application.
 
 ## Broker configuration
 

@@ -9,8 +9,8 @@
 package org.oscm.common.rest;
 
 import org.oscm.common.interfaces.data.Token;
+import org.oscm.common.interfaces.data.Version;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.interfaces.keys.VersionKey;
 
 /**
  * Context class for service requests.
@@ -19,7 +19,7 @@ import org.oscm.common.interfaces.keys.VersionKey;
  */
 public class ServiceRequestContext {
 
-    private VersionKey version;
+    private Version version;
     private ActivityKey activity;
     private Token token;
 
@@ -28,7 +28,7 @@ public class ServiceRequestContext {
      * 
      * @return the key or null
      */
-    public VersionKey getVersion() {
+    public Version getVersion() {
         return version;
     }
 
@@ -38,7 +38,7 @@ public class ServiceRequestContext {
      * @param version
      *            the version key
      */
-    public void setVersion(VersionKey version) {
+    public void setVersion(Version version) {
         this.version = version;
     }
 

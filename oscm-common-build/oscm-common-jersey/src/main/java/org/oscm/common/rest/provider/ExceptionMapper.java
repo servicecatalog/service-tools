@@ -18,6 +18,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.oscm.common.interfaces.data.Failure;
 import org.oscm.common.interfaces.data.Result;
+import org.oscm.common.interfaces.data.Version;
 import org.oscm.common.interfaces.enums.Reason;
 import org.oscm.common.interfaces.exceptions.CacheException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
@@ -26,7 +27,6 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TimeoutException;
 import org.oscm.common.interfaces.exceptions.TokenException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
-import org.oscm.common.interfaces.keys.VersionKey;
 import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.logger.ServiceLogger;
 
@@ -46,7 +46,7 @@ public class ExceptionMapper
     @Override
     public Response toResponse(Exception exception) {
 
-        VersionKey version = ConfigurationManager.getInstance()
+        Version version = ConfigurationManager.getInstance()
                 .getCurrentVersion();
 
         Result result = new Result();

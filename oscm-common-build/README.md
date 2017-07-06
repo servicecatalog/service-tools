@@ -57,7 +57,6 @@ To model your own business logic for the service tools, you have to take servera
   - `EntityKey`- Defines all entities and their event classes.
   - `MessageKey` - Defines messages for logging and exceptions.
   - `TransitionKey` - Defines all transitions from one entity to another.
-  - `VersionKey` - Defines all versions of the application.
   
 3. Write your business logic. Note that the methods that will be called by the tools must comply to the corresponding functional interface:
   - `CommandService`

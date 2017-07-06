@@ -1,49 +1,88 @@
 /*******************************************************************************
  *                                                                              
- *  Copyright FUJITSU LIMITED 2016                                           
+ *  Copyright FUJITSU LIMITED 2017                                           
  *                                                                                                                                 
- *  Creation Date: Dec 21, 2016                                                      
+ *  Creation Date: Jul 6, 2017                                                      
  *                                                                              
  *******************************************************************************/
 
-package org.oscm.common.interfaces.keys;
+package org.oscm.common.interfaces.data;
 
 /**
- * Interface for enums that represent version keys.
+ * Class for version numbers of applications.
  * 
  * @author miethaner
  */
-public interface VersionKey {
+public class Version {
+
+    private int major;
+    private int minor;
+    private int fix;
+
+    /**
+     * Creates a new version from the given components.
+     * 
+     * @param major
+     *            the major version number
+     * @param minor
+     *            the minor/patch version number
+     * @param fix
+     *            the fix number
+     */
+    public Version(int major, int minor, int fix) {
+        super();
+        this.major = major;
+        this.minor = minor;
+        this.fix = fix;
+    }
+
+    /**
+     * Creates a new version from a compiled one.
+     * 
+     * @param compiled
+     *            the compiled version number
+     */
+    public Version(int compiled) {
+        this.major = compiled / 10000;
+        this.minor = (compiled % 10000) / 1000;
+        this.fix = compiled % 1000;
+    }
 
     /**
      * Gets the major version number.
      * 
      * @return major version number
      */
-    public int getMajor();
+    public int getMajor() {
+        return major;
+    }
 
     /**
      * Gets the minor version number.
      * 
      * @return minor version number
      */
-    public int getMinor();
+    public int getMinor() {
+        return minor;
+    }
 
     /**
      * Gets the fix version number.
      * 
      * @return fix version number
      */
-    public int getFix();
+    public int getFix() {
+        return fix;
+    }
 
     /**
      * Gets the version number as single integer with major and minor occupying
-     * two digits and fix with three.
+     * two digits and fix with three. Example: 17.2.42 -> 1702042
      * 
      * @return the compiled number
      */
-    default public int getCompiledVersion() {
-        return getMajor() * 100000 + getMinor() * 1000 + getFix();
+    public int getCompiledVersion() {
+        return major * 100000 + minor * 1000 + fix;
     }
 
     /**
@@ -59,7 +98,7 @@ public interface VersionKey {
      *            the fix version number
      * @return -1, 0 or 1
      */
-    default public int compareVersion(int major, int minor, int fix) {
+    public int compare(int major, int minor, int fix) {
 
         int version = major * 100000 + minor * 1000 + fix;
 
@@ -81,12 +120,33 @@ public interface VersionKey {
      *            the version to compare with
      * @return -1, 0 or 1
      */
-    default public int compareVersion(VersionKey version) {
+    public int compare(Version version) {
         if (version == null) {
             return 0;
         }
 
-        return compareVersion(version.getMajor(), version.getMinor(),
+        return compare(version.getMajor(), version.getMinor(),
                 version.getFix());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof Version) {
+            Version other = Version.class.cast(obj);
+
+            return compare(other) == 0;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(getCompiledVersion());
     }
 }

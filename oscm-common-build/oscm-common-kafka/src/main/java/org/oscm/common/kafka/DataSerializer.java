@@ -15,9 +15,9 @@ import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;
 import org.oscm.common.interfaces.data.Command;
 import org.oscm.common.interfaces.data.Result;
+import org.oscm.common.interfaces.data.Version;
 import org.oscm.common.interfaces.data.VersionedEntity;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.interfaces.keys.VersionKey;
 import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.serializer.ActivitySerializer;
 import org.oscm.common.util.serializer.CommandSerializer;
@@ -36,22 +36,22 @@ public class DataSerializer<D extends VersionedEntity>
         implements Serializer<D>, Deserializer<D>, Serde<D> {
 
     private Class<? extends D> clazz;
-    private VersionKey currentKey;
-    private VersionKey compatibleKey;
+    private Version currentVersion;
+    private Version compatibleVersion;
     private Gson gson;
 
     public DataSerializer(Class<? extends D> clazz) {
         this.clazz = clazz;
 
         ConfigurationManager sc = ConfigurationManager.getInstance();
-        this.currentKey = sc.getCurrentVersion();
-        this.compatibleKey = sc.getCompatibleVersion();
+        this.currentVersion = sc.getCurrentVersion();
+        this.compatibleVersion = sc.getCompatibleVersion();
 
         GsonBuilder builder = new GsonBuilder();
         builder.setDateFormat(ConfigurationManager.FORMAT_DATE);
         builder.registerTypeHierarchyAdapter(ActivityKey.class,
                 new ActivitySerializer());
-        builder.registerTypeHierarchyAdapter(VersionKey.class,
+        builder.registerTypeHierarchyAdapter(Version.class,
                 new VersionSerializer());
         builder.registerTypeAdapter(Command.class, new CommandSerializer());
         builder.registerTypeAdapter(Result.class, new ResultSerializer());
@@ -66,8 +66,8 @@ public class DataSerializer<D extends VersionedEntity>
     @Override
     public byte[] serialize(String topic, D data) {
 
-        data.convertTo(compatibleKey);
-        data.setVersion(currentKey);
+        data.convertTo(compatibleVersion);
+        data.setVersion(currentVersion);
 
         String json = gson.toJson(data);
 
@@ -87,7 +87,7 @@ public class DataSerializer<D extends VersionedEntity>
 
         if (data != null) {
             data.updateFrom(data.getVersion());
-            data.setVersion(currentKey);
+            data.setVersion(currentVersion);
         }
 
         return data;

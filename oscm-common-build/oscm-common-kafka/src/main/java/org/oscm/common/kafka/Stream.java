@@ -9,9 +9,9 @@
 package org.oscm.common.kafka;
 
 import org.apache.kafka.streams.KafkaStreams;
+import org.oscm.common.interfaces.data.Version;
 import org.oscm.common.interfaces.keys.ApplicationKey;
 import org.oscm.common.interfaces.keys.EntityKey;
-import org.oscm.common.interfaces.keys.VersionKey;
 import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.logger.ServiceLogger;
 
@@ -52,7 +52,7 @@ public abstract class Stream {
         ConfigurationManager cm = ConfigurationManager.getInstance();
 
         String prefix = cm.getSelf().getApplicationName();
-        VersionKey version = cm.getCurrentVersion();
+        Version version = cm.getCurrentVersion();
 
         return String.format(APPLICATION_ID, prefix, identifier,
                 new Integer(version.getCompiledVersion()));

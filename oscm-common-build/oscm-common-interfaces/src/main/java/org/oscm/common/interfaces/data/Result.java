@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import org.oscm.common.interfaces.enums.Status;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.interfaces.keys.VersionKey;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -171,7 +170,7 @@ public class Result extends VersionedEntity {
      *            the version key
      */
     @Override
-    public void setVersion(VersionKey version) {
+    public void setVersion(Version version) {
         super.setVersion(version);
 
         if (events != null) {

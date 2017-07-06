@@ -17,11 +17,11 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.ext.Provider;
 
+import org.oscm.common.interfaces.data.Version;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.InternalException;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.interfaces.keys.ActivityKey;
-import org.oscm.common.interfaces.keys.VersionKey;
 import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Versioned;
@@ -47,18 +47,18 @@ public class MethodFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext request) throws IOException {
 
-        ActivityKey activityKey = context.getActivity();
+        ActivityKey activity = context.getActivity();
 
-        VersionKey versionKey = context.getVersion();
+        Version version = context.getVersion();
 
-        if (activityKey == null || versionKey == null) {
+        if (activity == null || version == null) {
             InternalException ie = new InternalException(Messages.ERROR, "");
 
             throw new ExceptionMapper().toWebException(ie);
         }
 
-        if (versionKey.compareVersion(activityKey.getSince()) < 0
-                || versionKey.compareVersion(activityKey.getUntil()) > 0) {
+        if (version.compare(activity.getSince()) < 0
+                || version.compare(activity.getUntil()) > 0) {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_METHOD_VERSION);
 

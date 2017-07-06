@@ -8,8 +8,6 @@
 
 package org.oscm.common.interfaces.data;
 
-import org.oscm.common.interfaces.keys.VersionKey;
-
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -22,14 +20,14 @@ public abstract class VersionedEntity {
     public static final String FIELD_VERSION = "version";
 
     @SerializedName(FIELD_VERSION)
-    private VersionKey version;
+    private Version version;
 
     /**
      * Gets the version key for this entity. Returns null if not set.
      * 
      * @return the key or null
      */
-    public VersionKey getVersion() {
+    public Version getVersion() {
         return version;
     }
 
@@ -39,7 +37,7 @@ public abstract class VersionedEntity {
      * @param version
      *            the version key
      */
-    public void setVersion(VersionKey version) {
+    public void setVersion(Version version) {
         this.version = version;
     }
 
@@ -53,7 +51,7 @@ public abstract class VersionedEntity {
      * @param version
      *            the version key to update from
      */
-    public void updateFrom(VersionKey version) {
+    public void updateFrom(Version version) {
         // nothing to update
     }
 
@@ -67,7 +65,7 @@ public abstract class VersionedEntity {
      * @param version
      *            the version key to convert to
      */
-    public void convertTo(VersionKey version) {
+    public void convertTo(Version version) {
         // nothing to convert
     }
 }

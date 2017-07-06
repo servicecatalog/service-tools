@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.oscm.common.interfaces.config.ConfigurationImporter;
+import org.oscm.common.interfaces.data.Version;
 import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ApplicationKey;
 import org.oscm.common.interfaces.keys.ConfigurationKey;
-import org.oscm.common.interfaces.keys.VersionKey;
 
 /**
  * Singleton class to manage configuration settings and resource access roles.
@@ -60,34 +60,31 @@ public class ConfigurationManager {
      *            the configuration keys
      */
     public static void init(ConfigurationImporter importer, ApplicationKey self,
-            ActivityKey[] activities, VersionKey[] versions, VersionKey current,
-            VersionKey compatible, ConfigurationKey[] configs) {
-        cm = new ConfigurationManager(importer, self, activities, versions,
-                current, compatible, configs);
+            ActivityKey[] activities, Version current, Version compatible,
+            ConfigurationKey[] configs) {
+        cm = new ConfigurationManager(importer, self, activities, current,
+                compatible, configs);
     }
 
     private Map<ActivityKey, Set<String>> roles;
     private Map<ConfigurationKey, String> entries;
     private Map<String, ActivityKey> activities;
-    private Map<Integer, VersionKey> versions;
     private ApplicationKey self;
-    private VersionKey current;
-    private VersionKey compatible;
+    private Version current;
+    private Version compatible;
 
     private ConfigurationManager() {
         roles = Collections.emptyMap();
         entries = Collections.emptyMap();
         activities = Collections.emptyMap();
-        versions = Collections.emptyMap();
         self = null;
         current = null;
         compatible = null;
     }
 
     private ConfigurationManager(ConfigurationImporter importer,
-            ApplicationKey self, ActivityKey[] activities,
-            VersionKey[] versions, VersionKey current, VersionKey compatible,
-            ConfigurationKey[] configs) {
+            ApplicationKey self, ActivityKey[] activities, Version current,
+            Version compatible, ConfigurationKey[] configs) {
 
         this.self = self;
 
@@ -95,14 +92,9 @@ public class ConfigurationManager {
         Arrays.asList(activities)
                 .forEach((a) -> this.activities.put(a.getActivityName(), a));
 
-        this.versions = new HashMap<>();
-        Arrays.asList(versions).forEach((v) -> this.versions
-                .put(new Integer(v.getCompiledVersion()), v));
-
-        if (!this.versions.containsValue(current)
-                || !this.versions.containsValue(compatible)) {
-            throw new RuntimeException("Current or compatible"
-                    + " version is not in version list");
+        if (current.compare(compatible) < 0) {
+            throw new RuntimeException(
+                    "Current version number is lower than compatible version");
         }
 
         this.current = current;
@@ -126,7 +118,7 @@ public class ConfigurationManager {
      * 
      * @return the version
      */
-    public VersionKey getCurrentVersion() {
+    public Version getCurrentVersion() {
         return current;
     }
 
@@ -135,7 +127,7 @@ public class ConfigurationManager {
      * 
      * @return the version
      */
-    public VersionKey getCompatibleVersion() {
+    public Version getCompatibleVersion() {
         return compatible;
     }
 
@@ -148,17 +140,6 @@ public class ConfigurationManager {
      */
     public ActivityKey getActivityForName(String keyName) {
         return activities.get(keyName);
-    }
-
-    /**
-     * Gets the version with the given compiled version for this service.
-     * 
-     * @param compiledVersion
-     *            the version as single number
-     * @return the version
-     */
-    public VersionKey getVersionForCompiled(int compiledVersion) {
-        return versions.get(new Integer(compiledVersion));
     }
 
     /**

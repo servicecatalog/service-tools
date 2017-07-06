@@ -73,7 +73,7 @@ public class ActivityFilter implements ContainerRequestFilter {
             throw new ExceptionMapper().toWebException(nfe);
         }
 
-        String activity = params.get(PARAM_ACTIVITY).get(0);
+        String activityString = params.get(PARAM_ACTIVITY).get(0);
 
         Activity annotation = method.getAnnotation(Activity.class);
 
@@ -83,15 +83,15 @@ public class ActivityFilter implements ContainerRequestFilter {
             throw new ExceptionMapper().toWebException(ie);
         }
 
-        ActivityKey activityKey = validateActivity(activity,
+        ActivityKey activity = validateActivity(activityString,
                 annotation.value());
 
-        context.setActivity(activityKey);
+        context.setActivity(activity);
     }
 
-    private ActivityKey validateActivity(String actvity, Type type) {
+    private ActivityKey validateActivity(String actvityString, Type type) {
 
-        if (actvity == null) {
+        if (actvityString == null) {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_ACTIVITY);
 
@@ -100,16 +100,16 @@ public class ActivityFilter implements ContainerRequestFilter {
 
         ConfigurationManager cm = ConfigurationManager.getInstance();
 
-        ActivityKey activityKey = cm.getActivityForName(actvity);
+        ActivityKey activity = cm.getActivityForName(actvityString);
 
-        if (activityKey == null || activityKey.getType() != type
-                || !activityKey.getApplication().equals(cm.getSelf())) {
+        if (activity == null || activity.getType() != type
+                || !activity.getApplication().equals(cm.getSelf())) {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_ACTIVITY);
 
             throw new ExceptionMapper().toWebException(nfe);
         }
 
-        return activityKey;
+        return activity;
     }
 }

@@ -50,11 +50,11 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext request) throws IOException {
 
-        ActivityKey activityKey = context.getActivity();
+        ActivityKey activity = context.getActivity();
 
         Token token = context.getToken();
 
-        if (activityKey == null || token == null) {
+        if (activity == null || token == null) {
             InternalException ie = new InternalException(Messages.ERROR, "");
 
             throw new ExceptionMapper().toWebException(ie);
@@ -62,7 +62,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
         ConfigurationManager config = ConfigurationManager.getInstance();
 
-        Set<String> configRoles = config.getRolesForActivity(activityKey);
+        Set<String> configRoles = config.getRolesForActivity(activity);
         Set<String> userRoles = token.getRoles();
 
         if (configRoles != null && userRoles != null) {

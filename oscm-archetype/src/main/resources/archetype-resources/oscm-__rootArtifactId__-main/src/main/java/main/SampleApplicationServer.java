@@ -29,11 +29,11 @@ import org.oscm.common.rest.JerseyResourceConfig;
 import org.oscm.common.util.ApplicationServer;
 import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.ServiceManager;
+import org.oscm.common.interfaces.data.Version;
 import ${package}.interfaces.data.Sample;
 import ${package}.interfaces.enums.Activity;
 import ${package}.interfaces.enums.Application;
 import ${package}.interfaces.enums.Entity;
-import ${package}.interfaces.enums.Version;
 import ${package}.services.SampleService;
 
 /**
@@ -67,7 +67,7 @@ public class SampleApplicationServer extends ApplicationServer {
         keys.addAll(Arrays.asList(JerseyConfig.values()));
 
         ConfigurationManager.init(importer, Application.SELF, Activity.values(),
-                Version.values(), Version.LATEST, Version.V_1_0_0,
+                new Version(0, 0, 1), new Version(0, 0, 1),
                 keys.toArray(new ConfigurationKey[] {}));
 
         ConfigurationManager cm = ConfigurationManager.getInstance();
