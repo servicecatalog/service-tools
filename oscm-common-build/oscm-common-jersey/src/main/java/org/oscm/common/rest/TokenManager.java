@@ -30,6 +30,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
  */
 public class TokenManager {
 
+    public static final String AUTHORIZATION_PREFIX = "Bearer ";
+
     private static final String ISSUER = "OSCM";
 
     private static TokenManager tm;

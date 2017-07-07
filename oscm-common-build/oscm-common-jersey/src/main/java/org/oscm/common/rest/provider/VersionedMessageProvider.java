@@ -51,7 +51,7 @@ import com.google.gson.JsonSyntaxException;
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class MessageProvider implements MessageBodyReader<VersionedEntity>,
+public class VersionedMessageProvider implements MessageBodyReader<VersionedEntity>,
         MessageBodyWriter<VersionedEntity> {
 
     @Inject

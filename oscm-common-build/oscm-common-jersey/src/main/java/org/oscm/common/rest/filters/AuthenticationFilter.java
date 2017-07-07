@@ -38,8 +38,6 @@ import org.oscm.common.rest.provider.ExceptionMapper;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
-    public static final String AUTHORIZATION_PREFIX = "Bearer ";
-
     @Inject
     private ServiceRequestContext context;
 
@@ -55,20 +53,23 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             throws WebApplicationException {
 
         if (!request.getSecurityContext().isSecure()) {
-            SecurityException se = new SecurityException(Messages.ERROR_NOT_SECURE);
+            SecurityException se = new SecurityException(
+                    Messages.ERROR_NOT_SECURE);
 
             throw new ExceptionMapper().toWebException(se);
         }
 
         String header = request.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-        if (!header.startsWith(AUTHORIZATION_PREFIX)) {
-            TokenException te = new TokenException(Messages.ERROR_NOT_AUTHENTICATED);
+        if (!header.startsWith(TokenManager.AUTHORIZATION_PREFIX)) {
+            TokenException te = new TokenException(
+                    Messages.ERROR_NOT_AUTHENTICATED);
 
             throw new ExceptionMapper().toWebException(te);
         }
 
-        String tokenString = header.substring(AUTHORIZATION_PREFIX.length());
+        String tokenString = header
+                .substring(TokenManager.AUTHORIZATION_PREFIX.length());
 
         Token token;
         try {
