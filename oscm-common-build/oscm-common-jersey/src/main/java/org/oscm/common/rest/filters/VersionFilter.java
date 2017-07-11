@@ -22,7 +22,7 @@ import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.NotFoundException;
 import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.interfaces.Versioned;
-import org.oscm.common.rest.provider.ExceptionMapper;
+import org.oscm.common.rest.provider.ExceptionProvider;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
@@ -59,7 +59,7 @@ public class VersionFilter implements ContainerRequestFilter {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_VERSION);
 
-            throw new ExceptionMapper().toWebException(nfe);
+            throw new ExceptionProvider().toWebException(nfe);
         }
 
         String versionString = params.get(PARAM_VERSION).get(0);
@@ -85,14 +85,14 @@ public class VersionFilter implements ContainerRequestFilter {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_VERSION);
 
-            throw new ExceptionMapper().toWebException(nfe);
+            throw new ExceptionProvider().toWebException(nfe);
         }
 
         if (!versionString.matches(PATTERN_VERSION)) {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_VERSION);
 
-            throw new ExceptionMapper().toWebException(nfe);
+            throw new ExceptionProvider().toWebException(nfe);
         }
 
         int vnr;
@@ -102,7 +102,7 @@ public class VersionFilter implements ContainerRequestFilter {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_VERSION);
 
-            throw new ExceptionMapper().toWebException(nfe);
+            throw new ExceptionProvider().toWebException(nfe);
         }
 
         Version version = new Version(vnr);
@@ -114,7 +114,7 @@ public class VersionFilter implements ContainerRequestFilter {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_VERSION);
 
-            throw new ExceptionMapper().toWebException(nfe);
+            throw new ExceptionProvider().toWebException(nfe);
         }
 
         return version;

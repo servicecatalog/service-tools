@@ -18,7 +18,7 @@ import org.oscm.common.rest.filters.AuthenticationFilter;
 import org.oscm.common.rest.filters.AuthorizationFilter;
 import org.oscm.common.rest.filters.MethodFilter;
 import org.oscm.common.rest.filters.VersionFilter;
-import org.oscm.common.rest.provider.ExceptionMapper;
+import org.oscm.common.rest.provider.ExceptionProvider;
 import org.oscm.common.rest.provider.VersionedMessageProvider;
 import org.oscm.common.rest.provider.ContextFactory;
 
@@ -51,7 +51,7 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(Frontend.class);
 
         register(VersionedMessageProvider.class);
-        register(ExceptionMapper.class);
+        register(ExceptionProvider.class);
     }
 
 }

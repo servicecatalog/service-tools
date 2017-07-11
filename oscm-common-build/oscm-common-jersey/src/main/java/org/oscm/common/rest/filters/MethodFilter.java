@@ -25,7 +25,7 @@ import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Versioned;
-import org.oscm.common.rest.provider.ExceptionMapper;
+import org.oscm.common.rest.provider.ExceptionProvider;
 
 /**
  * @author miethaner
@@ -54,7 +54,7 @@ public class MethodFilter implements ContainerRequestFilter {
         if (activity == null || version == null) {
             InternalException ie = new InternalException(Messages.ERROR, "");
 
-            throw new ExceptionMapper().toWebException(ie);
+            throw new ExceptionProvider().toWebException(ie);
         }
 
         if (version.compare(activity.getSince()) < 0
@@ -62,7 +62,7 @@ public class MethodFilter implements ContainerRequestFilter {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_METHOD_VERSION);
 
-            throw new ExceptionMapper().toWebException(nfe);
+            throw new ExceptionProvider().toWebException(nfe);
         }
     }
 }

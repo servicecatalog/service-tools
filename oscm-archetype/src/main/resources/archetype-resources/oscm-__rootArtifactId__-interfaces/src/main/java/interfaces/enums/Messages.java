@@ -37,7 +37,7 @@ public enum Messages implements MessageKey {
 
     @Override
     public Integer getCode() {
-        return new Integer(code);
+        return Integer.valueOf(code);
     }
 
     @Override

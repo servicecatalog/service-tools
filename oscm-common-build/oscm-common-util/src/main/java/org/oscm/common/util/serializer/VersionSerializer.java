@@ -43,7 +43,7 @@ public class VersionSerializer
             JsonSerializationContext context) {
 
         if (src != null) {
-            return context.serialize(new Integer(src.getCompiledVersion()));
+            return context.serialize(Integer.valueOf(src.getCompiledVersion()));
         } else {
             return null;
         }

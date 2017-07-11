@@ -28,7 +28,7 @@ public enum Status {
     @SerializedName(Constants.OPTION_CACHED)
     CACHED;
 
-    public class Constants {
+    public static class Constants {
         public static final String OPTION_SUCCESS = "success";
         public static final String OPTION_FAILED = "failed";
         public static final String OPTION_PENDING = "pending";

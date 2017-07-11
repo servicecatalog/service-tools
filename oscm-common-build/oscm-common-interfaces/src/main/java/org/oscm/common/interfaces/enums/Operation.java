@@ -23,7 +23,7 @@ public enum Operation {
     @SerializedName(Constants.OPTION_DELETE)
     DELETE; //
 
-    public class Constants {
+    public static class Constants {
         public static final String OPTION_UPDATE = "upd";
         public static final String OPTION_DELETE = "del";
     }

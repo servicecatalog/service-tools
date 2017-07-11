@@ -55,7 +55,7 @@ public abstract class Stream {
         Version version = cm.getCurrentVersion();
 
         return String.format(APPLICATION_ID, prefix, identifier,
-                new Integer(version.getCompiledVersion()));
+                Integer.valueOf(version.getCompiledVersion()));
     }
 
     /**

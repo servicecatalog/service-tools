@@ -25,7 +25,7 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.exceptions.TokenException;
 import org.oscm.common.interfaces.exceptions.ValidationException;
 import org.oscm.common.interfaces.keys.MessageKey;
-import org.oscm.common.rest.provider.ExceptionMapper;
+import org.oscm.common.rest.provider.ExceptionProvider;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -84,7 +84,7 @@ public class ExceptionMapperTest {
     @Test
     @Ignore
     public void testContent() {
-        ExceptionMapper mapper = new ExceptionMapper();
+        ExceptionProvider mapper = new ExceptionProvider();
         ValidationException e = new ValidationException(ERROR_KEY, PROPERTY);
 
         Response r = mapper.toResponse(e);
@@ -104,7 +104,7 @@ public class ExceptionMapperTest {
     }
 
     public void testExceptionStatus(ServiceException e, int status) {
-        ExceptionMapper mapper = new ExceptionMapper();
+        ExceptionProvider mapper = new ExceptionProvider();
 
         Response r = mapper.toResponse(e);
 

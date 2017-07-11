@@ -27,10 +27,10 @@ import org.oscm.common.interfaces.exceptions.ServiceException;
  */
 public class LogFormatter extends Formatter {
 
-    private static final DateFormat FORMAT = new SimpleDateFormat(
-            "yyyy-MM-dd'T'HH:mm:ssXXX");
+    private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
     private String hostname;
+    private DateFormat format;
 
     public LogFormatter() {
         try {
@@ -38,6 +38,8 @@ public class LogFormatter extends Formatter {
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unable to lookup hostname");
         }
+
+        format = new SimpleDateFormat(FORMAT);
     }
 
     @Override
@@ -47,7 +49,7 @@ public class LogFormatter extends Formatter {
         sb.append("[");
         sb.append(hostname);
         sb.append("] - [");
-        sb.append(FORMAT.format(new Date(record.getMillis())));
+        sb.append(format.format(new Date(record.getMillis())));
         sb.append("] - [");
         sb.append(record.getLevel());
 

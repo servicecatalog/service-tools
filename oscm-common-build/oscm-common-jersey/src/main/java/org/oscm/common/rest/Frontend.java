@@ -41,7 +41,7 @@ import org.oscm.common.rest.filters.ActivityFilter;
 import org.oscm.common.rest.filters.VersionFilter;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Versioned;
-import org.oscm.common.rest.provider.ExceptionMapper;
+import org.oscm.common.rest.provider.ExceptionProvider;
 import org.oscm.common.util.ConfigurationManager;
 import org.oscm.common.util.ServiceManager;
 import org.oscm.common.util.logger.ServiceLogger;
@@ -198,7 +198,7 @@ public class Frontend {
         case CACHED:
             if (result.getFailure() != null) {
                 return Response
-                        .status(ExceptionMapper.getStatusForReason(
+                        .status(ExceptionProvider.getStatusForReason(
                                 result.getFailure().getReason()))
                         .entity(result).build();
             } else {

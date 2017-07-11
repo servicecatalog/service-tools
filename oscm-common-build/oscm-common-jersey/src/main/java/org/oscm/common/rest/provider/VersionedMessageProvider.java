@@ -86,7 +86,7 @@ public class VersionedMessageProvider implements MessageBodyReader<VersionedEnti
         if (activity == null || contextVersion == null) {
             InternalException ie = new InternalException(Messages.ERROR, "");
 
-            throw new ExceptionMapper().toWebException(ie);
+            throw new ExceptionProvider().toWebException(ie);
         }
 
         try {
@@ -110,7 +110,7 @@ public class VersionedMessageProvider implements MessageBodyReader<VersionedEnti
             ValidationException ve = new ValidationException(
                     Messages.ERROR_JSON_FORMAT, null, e);
 
-            throw new ExceptionMapper().toWebException(ve);
+            throw new ExceptionProvider().toWebException(ve);
         } finally {
             reader.close();
         }
@@ -165,7 +165,7 @@ public class VersionedMessageProvider implements MessageBodyReader<VersionedEnti
             InternalException ie = new InternalException(
                     Messages.ERROR_JSON_FORMAT, e);
 
-            throw new ExceptionMapper().toWebException(ie);
+            throw new ExceptionProvider().toWebException(ie);
         } finally {
             writer.close();
         }

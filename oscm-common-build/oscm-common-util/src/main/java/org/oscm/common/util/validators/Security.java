@@ -8,6 +8,8 @@
 
 package org.oscm.common.util.validators;
 
+import java.util.UUID;
+
 import org.oscm.common.interfaces.data.Token;
 import org.oscm.common.interfaces.enums.Messages;
 import org.oscm.common.interfaces.exceptions.SecurityException;
@@ -29,7 +31,7 @@ public class Security {
      *            the user id
      * @throws ServiceException
      */
-    public static void validateUserId(Token token, Long userId)
+    public static void validateUserId(Token token, UUID userId)
             throws ServiceException {
         if (token == null || token.getUserId() == null
                 || userId != null && !token.getUserId().equals(userId)) {
@@ -47,7 +49,7 @@ public class Security {
      *            the organization id
      * @throws ServiceException
      */
-    public static void validateOrganizationId(Token token, Long organizationId)
+    public static void validateOrganizationId(Token token, UUID organizationId)
             throws ServiceException {
         if (token == null || token.getOrganizationId() == null
                 || organizationId != null
@@ -65,7 +67,7 @@ public class Security {
      *            the tenant id
      * @throws ServiceException
      */
-    public static void validateTenantId(Token token, Long tenantId)
+    public static void validateTenantId(Token token, UUID tenantId)
             throws ServiceException {
         if (token == null || token.getTenantId() == null
                 || tenantId != null && !token.getTenantId().equals(tenantId)) {

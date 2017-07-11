@@ -12,6 +12,7 @@ import java.util.Base64;
 import java.util.function.Function;
 
 import javax.net.ssl.SSLContext;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
@@ -59,9 +60,9 @@ public class RestClient {
             authString = TokenManager.AUTHORIZATION_PREFIX + TokenManager
                     .getInstance().createAndSignToken(token, expiration);
         } else if (user != null && password != null) {
-            String encoded = Base64.getEncoder()
-                    .encodeToString(new String(user + ":" + password)
-                            .getBytes(ConfigurationManager.CHARSET));
+            String decoded = user + ":" + password;
+            String encoded = Base64.getEncoder().encodeToString(
+                    decoded.getBytes(ConfigurationManager.CHARSET));
             authString = BASIC_AUTH_PREFIX + encoded;
         }
     }
@@ -113,6 +114,8 @@ public class RestClient {
             }
 
             return response.readEntity(responseType);
+        } catch (ProcessingException e) {
+            throw new ConnectionException(Messages.ERROR_CONNECTION_FAILURE, e);
         } finally {
             if (response != null) {
                 response.close();

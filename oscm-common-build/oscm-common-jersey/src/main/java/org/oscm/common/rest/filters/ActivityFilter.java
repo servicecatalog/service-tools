@@ -28,7 +28,7 @@ import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.interfaces.keys.ActivityKey.Type;
 import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.interfaces.Activity;
-import org.oscm.common.rest.provider.ExceptionMapper;
+import org.oscm.common.rest.provider.ExceptionProvider;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
@@ -70,7 +70,7 @@ public class ActivityFilter implements ContainerRequestFilter {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_ACTIVITY);
 
-            throw new ExceptionMapper().toWebException(nfe);
+            throw new ExceptionProvider().toWebException(nfe);
         }
 
         String activityString = params.get(PARAM_ACTIVITY).get(0);
@@ -80,7 +80,7 @@ public class ActivityFilter implements ContainerRequestFilter {
         if (annotation == null || annotation.value() == null) {
             InternalException ie = new InternalException(Messages.ERROR, "");
 
-            throw new ExceptionMapper().toWebException(ie);
+            throw new ExceptionProvider().toWebException(ie);
         }
 
         ActivityKey activity = validateActivity(activityString,
@@ -95,7 +95,7 @@ public class ActivityFilter implements ContainerRequestFilter {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_ACTIVITY);
 
-            throw new ExceptionMapper().toWebException(nfe);
+            throw new ExceptionProvider().toWebException(nfe);
         }
 
         ConfigurationManager cm = ConfigurationManager.getInstance();
@@ -107,7 +107,7 @@ public class ActivityFilter implements ContainerRequestFilter {
             NotFoundException nfe = new NotFoundException(
                     Messages.ERROR_INVALID_ACTIVITY);
 
-            throw new ExceptionMapper().toWebException(nfe);
+            throw new ExceptionProvider().toWebException(nfe);
         }
 
         return activity;

@@ -49,7 +49,7 @@ public enum Reason {
     @SerializedName(Constants.OPTION_OTHER)
     OTHER;
 
-    public class Constants {
+    public static class Constants {
         public static final String OPTION_CACHE = "cache";
         public static final String OPTION_CONCURRENCY = "concurrency";
         public static final String OPTION_CONFLICT = "conflict";

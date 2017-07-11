@@ -32,7 +32,7 @@ public class ConfigurationManager {
     public static final Charset CHARSET = StandardCharsets.UTF_8;
     public static final String FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
-    private static ConfigurationManager cm;
+    private static volatile ConfigurationManager cm;
 
     /**
      * Returns the singleton instance of the configuration manager.

@@ -25,7 +25,7 @@ import org.oscm.common.interfaces.exceptions.TokenException;
 import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.TokenManager;
 import org.oscm.common.rest.interfaces.Secure;
-import org.oscm.common.rest.provider.ExceptionMapper;
+import org.oscm.common.rest.provider.ExceptionProvider;
 
 /**
  * Request filter for checking the security and comparing with endpoint
@@ -56,7 +56,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             SecurityException se = new SecurityException(
                     Messages.ERROR_NOT_SECURE);
 
-            throw new ExceptionMapper().toWebException(se);
+            throw new ExceptionProvider().toWebException(se);
         }
 
         String header = request.getHeaderString(HttpHeaders.AUTHORIZATION);
@@ -65,7 +65,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             TokenException te = new TokenException(
                     Messages.ERROR_NOT_AUTHENTICATED);
 
-            throw new ExceptionMapper().toWebException(te);
+            throw new ExceptionProvider().toWebException(te);
         }
 
         String tokenString = header
@@ -76,7 +76,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             token = TokenManager.getInstance()
                     .decodeAndVerifyToken(tokenString);
         } catch (ServiceException e) {
-            throw new ExceptionMapper().toWebException(e);
+            throw new ExceptionProvider().toWebException(e);
         }
 
         context.setToken(token);

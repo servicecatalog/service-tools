@@ -27,7 +27,7 @@ import org.oscm.common.interfaces.keys.ActivityKey;
 import org.oscm.common.rest.ServiceRequestContext;
 import org.oscm.common.rest.interfaces.Activity;
 import org.oscm.common.rest.interfaces.Secure;
-import org.oscm.common.rest.provider.ExceptionMapper;
+import org.oscm.common.rest.provider.ExceptionProvider;
 import org.oscm.common.util.ConfigurationManager;
 
 /**
@@ -57,7 +57,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         if (activity == null || token == null) {
             InternalException ie = new InternalException(Messages.ERROR, "");
 
-            throw new ExceptionMapper().toWebException(ie);
+            throw new ExceptionProvider().toWebException(ie);
         }
 
         ConfigurationManager config = ConfigurationManager.getInstance();
@@ -73,13 +73,13 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 SecurityException se = new SecurityException(
                         Messages.ERROR_NOT_AUTHORIZED);
 
-                throw new ExceptionMapper().toWebException(se);
+                throw new ExceptionProvider().toWebException(se);
             }
         } else {
             SecurityException se = new SecurityException(
                     Messages.ERROR_NOT_AUTHORIZED);
 
-            throw new ExceptionMapper().toWebException(se);
+            throw new ExceptionProvider().toWebException(se);
         }
     }
 

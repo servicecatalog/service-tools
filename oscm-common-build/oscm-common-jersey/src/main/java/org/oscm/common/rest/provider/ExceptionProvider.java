@@ -37,11 +37,11 @@ import org.oscm.common.util.logger.ServiceLogger;
  * @author miethaner
  */
 @Provider
-public class ExceptionMapper
+public class ExceptionProvider
         implements javax.ws.rs.ext.ExceptionMapper<Exception> {
 
     private static final ServiceLogger LOGGER = ServiceLogger
-            .getLogger(ExceptionMapper.class);
+            .getLogger(ExceptionProvider.class);
 
     @Override
     public Response toResponse(Exception exception) {

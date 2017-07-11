@@ -32,7 +32,7 @@ import org.oscm.common.interfaces.services.TransitionService;
  */
 public class ServiceManager {
 
-    private static ServiceManager rm;
+    private static volatile ServiceManager rm;
 
     /**
      * Returns the singleton instance of the service manager.
