@@ -7,6 +7,7 @@ The service tools are a small framework for microservices based on the commander
 The tools are composed of several projects:
 
 - `oscm-common-build` - Implementation of the tools within multiple modules.
+- `oscm-test-build` - Implementation of test utils for different technologies.
 - `oscm-archetype` - Maven archetype for getting started quickly with a new microservice.
 - `oscm-dev` - Collection of configurations, scripts and style guides for developers. 
 
