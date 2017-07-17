@@ -10,6 +10,7 @@ package org.oscm.common.util;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.events.CommandPublisher;
@@ -47,12 +48,12 @@ public class ServiceManager {
         return rm;
     }
 
-    private Map<ApplicationKey, CommandPublisher> publishers;
-    private Map<ActivityKey, CommandService> commands;
-    private Map<ActivityKey, QueryService> queries;
-    private Map<TransitionKey, TransitionService> transitions;
-    private Map<ConsumerKey, ConsumerService> consumers;
-    private Map<EntityKey, EventSource<?>> sources;
+    private Map<ApplicationKey, Supplier<CommandPublisher>> publishers;
+    private Map<ActivityKey, Supplier<CommandService>> commands;
+    private Map<ActivityKey, Supplier<QueryService>> queries;
+    private Map<TransitionKey, Supplier<TransitionService>> transitions;
+    private Map<ConsumerKey, Supplier<ConsumerService>> consumers;
+    private Map<EntityKey, Supplier<EventSource<?>>> sources;
 
     private ServiceManager() {
         publishers = new ConcurrentHashMap<>();
@@ -75,25 +76,26 @@ public class ServiceManager {
             throw new RuntimeException(application + " publisher not found");
         }
 
-        return publishers.get(application);
+        return publishers.get(application).get();
     }
 
     /**
-     * Sets the command publisher as value with the given application as key.
+     * Sets the supplier for the command publisher as value with the given
+     * application as key.
      * 
      * @param application
      *            the application key
-     * @param publisher
-     *            the publisher
+     * @param supplier
+     *            the supplier for the publisher
      */
     public void setPublisher(ApplicationKey application,
-            CommandPublisher publisher) {
-        if (application == null || publisher == null) {
+            Supplier<CommandPublisher> supplier) {
+        if (application == null || supplier == null) {
             throw new RuntimeException(
                     "Unable to set " + application + " publisher");
         }
 
-        publishers.put(application, publisher);
+        publishers.put(application, supplier);
     }
 
     /**
@@ -108,24 +110,26 @@ public class ServiceManager {
             throw new RuntimeException(command + " serivce not found");
         }
 
-        return commands.get(command);
+        return commands.get(command).get();
     }
 
     /**
-     * Sets the command service as value with the given command as key.
+     * Sets the supplier for the command service as value with the given command
+     * as key.
      * 
      * @param command
      *            the command key
-     * @param service
-     *            the service
+     * @param supplier
+     *            the supplier of the service
      */
-    public void setCommandService(ActivityKey command, CommandService service) {
-        if (command == null || service == null
+    public void setCommandService(ActivityKey command,
+            Supplier<CommandService> supplier) {
+        if (command == null || supplier == null
                 || command.getType() != Type.COMMAND) {
             throw new RuntimeException("Unable to set " + command + " service");
         }
 
-        commands.put(command, service);
+        commands.put(command, supplier);
     }
 
     /**
@@ -140,23 +144,26 @@ public class ServiceManager {
             throw new RuntimeException(query + " serivce not found");
         }
 
-        return queries.get(query);
+        return queries.get(query).get();
     }
 
     /**
-     * Sets the query service as value with the given query as key.
+     * Sets the supplier for the query service as value with the given query as
+     * key.
      * 
      * @param query
      *            the query key
-     * @param service
-     *            the service
+     * @param supplier
+     *            the supplier of the service
      */
-    public void setQueryService(ActivityKey query, QueryService service) {
-        if (query == null || service == null || query.getType() != Type.QUERY) {
+    public void setQueryService(ActivityKey query,
+            Supplier<QueryService> supplier) {
+        if (query == null || supplier == null
+                || query.getType() != Type.QUERY) {
             throw new RuntimeException("Unable to set " + query + " service");
         }
 
-        queries.put(query, service);
+        queries.put(query, supplier);
     }
 
     /**
@@ -171,25 +178,26 @@ public class ServiceManager {
             throw new RuntimeException(transition + " serivce not found");
         }
 
-        return transitions.get(transition);
+        return transitions.get(transition).get();
     }
 
     /**
-     * Sets the transition service as value with the given transition as key.
+     * Sets the supplier for the transition service as value with the given
+     * transition as key.
      * 
      * @param transition
      *            the transition key
-     * @param service
-     *            the service
+     * @param supplier
+     *            the supplier of the service
      */
     public void setTransitionService(TransitionKey transition,
-            TransitionService service) {
-        if (transition == null || service == null) {
+            Supplier<TransitionService> supplier) {
+        if (transition == null || supplier == null) {
             throw new RuntimeException(
                     "Unable to set " + transition + " service");
         }
 
-        transitions.put(transition, service);
+        transitions.put(transition, supplier);
     }
 
     /**
@@ -204,25 +212,26 @@ public class ServiceManager {
             throw new RuntimeException(consumer + " serivce not found");
         }
 
-        return consumers.get(consumer);
+        return consumers.get(consumer).get();
     }
 
     /**
-     * Sets the consumer service as value with the given consumer as key.
+     * Sets the supplier for the consumer service as value with the given
+     * consumer as key.
      * 
      * @param consumer
      *            the consumer key
-     * @param service
-     *            the service
+     * @param supplier
+     *            the supplier of the service
      */
     public void setConsumerService(ConsumerKey consumer,
-            ConsumerService service) {
-        if (consumer == null || service == null) {
+            Supplier<ConsumerService> supplier) {
+        if (consumer == null || supplier == null) {
             throw new RuntimeException(
                     "Unable to set " + consumer + " service");
         }
 
-        consumers.put(consumer, service);
+        consumers.put(consumer, supplier);
     }
 
     /**
@@ -238,23 +247,24 @@ public class ServiceManager {
             throw new RuntimeException(entity + " source not found");
         }
 
-        return (EventSource<E>) sources.get(entity);
+        return (EventSource<E>) sources.get(entity).get();
     }
 
     /**
-     * Sets the event source as value with the given entity as key.
+     * Sets the supplier for the event source as value with the given entity as
+     * key.
      * 
      * @param entity
      *            the entity key
-     * @param source
-     *            the source
+     * @param supplier
+     *            the supplier of the source
      */
-    public <E extends Event> void setEventSource(EntityKey entity,
-            EventSource<E> source) {
-        if (entity == null || source == null) {
+    public void setEventSource(EntityKey entity,
+            Supplier<EventSource<?>> supplier) {
+        if (entity == null || supplier == null) {
             throw new RuntimeException("Unable to set " + entity + " source");
         }
 
-        sources.put(entity, source);
+        sources.put(entity, supplier);
     }
 }

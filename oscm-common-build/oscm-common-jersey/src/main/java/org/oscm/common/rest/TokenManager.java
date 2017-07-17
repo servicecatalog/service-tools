@@ -9,6 +9,8 @@
 package org.oscm.common.rest;
 
 import java.nio.charset.StandardCharsets;
+import java.security.PrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.Date;
 
 import org.oscm.common.interfaces.data.Token;
@@ -66,7 +68,7 @@ public class TokenManager {
     /**
      * Create a new JSON web token with the given expiration time from the given
      * service token. Also encodes the jwt and signs it with the configured
-     * secret.
+     * secret (HMAC512).
      * 
      * @param token
      *            the service token
@@ -75,6 +77,51 @@ public class TokenManager {
      * @return the encoded and signed token
      */
     public String createAndSignToken(Token token, long expirationTime) {
+
+        return createAndSignToken(token, expirationTime, this.secret);
+    }
+
+    /**
+     * Create a new JSON web token with the given expiration time from the given
+     * service token. Also encodes the jwt and signs it with the given secret.
+     * 
+     * @param token
+     *            the service token
+     * @param expirationTime
+     *            the expiration time for the created token
+     * @param secret
+     *            the secret to sign with
+     * @return the encoded and signed token
+     */
+    public String createAndSignToken(Token token, long expirationTime,
+            String secret) {
+
+        return createAndSignToken(token, expirationTime,
+                Algorithm.HMAC512(secret.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    /**
+     * Create a new JSON web token with the given expiration time from the given
+     * service token. Also encodes the jwt and signs it with the given private
+     * key.
+     * 
+     * @param token
+     *            the service token
+     * @param expirationTime
+     *            the expiration time for the created token
+     * @param key
+     *            the private key to sign with
+     * @return the encoded and signed token
+     */
+    public String createAndSignToken(Token token, long expirationTime,
+            PrivateKey key) {
+
+        return createAndSignToken(token, expirationTime,
+                Algorithm.RSA512(null, (RSAPrivateKey) key));
+    }
+
+    private String createAndSignToken(Token token, long expirationTime,
+            Algorithm alg) {
 
         return JWT.create().withIssuer(ISSUER)
                 .withExpiresAt(
@@ -86,8 +133,7 @@ public class TokenManager {
                 .withArrayClaim(Token.FIELD_ROLES, token.getRolesAsArray())
                 .withArrayClaim(Token.FIELD_RESTRICTIONS,
                         token.getRestrictionsAsArray())
-                .sign(Algorithm
-                        .HMAC512(secret.getBytes(StandardCharsets.UTF_8)));
+                .sign(alg);
     }
 
     /**

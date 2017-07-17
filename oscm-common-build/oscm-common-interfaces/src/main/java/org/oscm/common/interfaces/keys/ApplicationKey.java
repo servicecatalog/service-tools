@@ -16,9 +16,25 @@ package org.oscm.common.interfaces.keys;
 public interface ApplicationKey {
 
     /**
+     * Enum for application types.
+     * 
+     * @author miethaner
+     */
+    public enum Type {
+        INTERNAL, EXTERNAL
+    }
+
+    /**
      * Gets the application name.
      * 
      * @return the name
      */
     public String getApplicationName();
+
+    /**
+     * Gets the application type.
+     * 
+     * @return the type
+     */
+    public Type getType();
 }

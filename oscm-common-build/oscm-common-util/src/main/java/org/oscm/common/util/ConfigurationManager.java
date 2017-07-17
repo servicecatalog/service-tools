@@ -37,7 +37,7 @@ public class ConfigurationManager {
     /**
      * Returns the singleton instance of the configuration manager.
      * 
-     * @return the service configuration
+     * @return the configuration manager
      */
     public static ConfigurationManager getInstance() {
         if (cm == null) {
@@ -48,14 +48,20 @@ public class ConfigurationManager {
     }
 
     /**
-     * Initializes the service configuration from the given importer and saves
+     * Initializes the configuration manager from the given importer and saves
      * the data corresponding to the given configuration and activity keys. This
-     * overwrites the previous service configuration instance.
+     * overwrites the previous configuration manager instance.
      * 
      * @param importer
      *            the handler for the configuration source
+     * @param self
+     *            the key of this application
      * @param activities
      *            the activity keys
+     * @param current
+     *            the current version of this application
+     * @param compatible
+     *            the oldest compatible version of this application
      * @param configs
      *            the configuration keys
      */

@@ -18,9 +18,12 @@ import org.oscm.common.interfaces.keys.ConfigurationKey;
 public enum JerseyConfig implements ConfigurationKey {
     JERSEY_PORT("http-port", false, "8080"), //
     JERSEY_CONTEXT("http-context", false, "oscm"), //
-    JERSEY_KEYSTORE_LOCATION("ssl-keystore-location", true, "./keystore.jks"), //
-    JERSEY_KEYSTORE_PASSWORD("ssl-keystore-password", true, "changeit"), //
-    JERSEY_TOKEN_SECRET("auth-token-secret", true, "secret"), //
+    JERSEY_KEYSTORE_LOCATION("ssl-keystore-location", false, "./keystore.jks"), //
+    JERSEY_KEYSTORE_PASSWORD("ssl-keystore-password", false, "changeit"), //
+    JERSEY_TRUSTSTORE_LOCATION("ssl-truststore-location", false,
+            "/opt/java/lib/security/cacerts"), //
+    JERSEY_TRUSTSTORE_PASSWORD("ssl-truststore-password", false, "changeit"), //
+    JERSEY_TOKEN_SECRET("auth-token-secret", false, "secret"), //
     JERSEY_REQUEST_TIMEOUT("http-request-timeout", false, "60"); //
 
     private String name;

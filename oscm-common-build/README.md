@@ -81,6 +81,12 @@ Mandatory. Path to the java keystore with the SSL certificate.
 ### ssl-keystore-password
 Mandatory. Password for the java keystore with the SSL certificate.
 
+### ssl-truststore-location
+Mandatory. Path to the java truststore with the SSL certificates.
+
+### ssl-truststore-password
+Mandatory. Password for the java truststore with the SSL certificates.
+
 ### http-request-timeout
 Optional. Time limit for pending http request for commands. Default: 60
 
