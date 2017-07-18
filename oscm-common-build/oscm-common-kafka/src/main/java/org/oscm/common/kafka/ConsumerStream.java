@@ -16,6 +16,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.ForeachAction;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
+import org.apache.kafka.streams.processor.TopologyBuilder.AutoOffsetReset;
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.keys.ConsumerKey;
@@ -74,7 +75,7 @@ public class ConsumerStream extends Stream {
 
         KStreamBuilder builder = new KStreamBuilder();
 
-        builder.stream(keySerializer, inputSerializer,
+        builder.stream(AutoOffsetReset.EARLIEST, keySerializer, inputSerializer,
                 buildEventTopic(consumer.getInputEntity())) //
                 .foreach(new ConsumerWrapper());
 

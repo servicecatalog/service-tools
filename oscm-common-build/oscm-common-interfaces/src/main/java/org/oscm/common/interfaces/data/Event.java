@@ -26,15 +26,11 @@ import com.google.gson.annotations.SerializedName;
 public abstract class Event extends VersionedEntity {
 
     public static final String FIELD_ID = "id";
-    public static final String FIELD_ETAG = "etag";
     public static final String FIELD_OPERATION = "operation";
     public static final String FIELD_LINKS = "links";
 
     @SerializedName(FIELD_ID)
     private UUID id;
-
-    @SerializedName(FIELD_ETAG)
-    private UUID etag;
 
     @SerializedName(FIELD_OPERATION)
     private Operation operation;
@@ -56,25 +52,6 @@ public abstract class Event extends VersionedEntity {
      */
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    /**
-     * Gets the etag for this event. Returns null if not set.
-     * 
-     * @return the etag or null
-     */
-    public UUID getETag() {
-        return etag;
-    }
-
-    /**
-     * Sets the etag for this event.
-     * 
-     * @param tag
-     *            the etag
-     */
-    public void setETag(UUID tag) {
-        this.etag = tag;
     }
 
     /**
@@ -127,30 +104,6 @@ public abstract class Event extends VersionedEntity {
             if (id != null) {
                 throw new ValidationException(Messages.ERROR_BAD_PROPERTY,
                         FIELD_ID, FIELD_ID);
-            }
-        }
-    }
-
-    /**
-     * Validates the etag if it is present or not. If the given flag is true, a
-     * exception will be thrown in case the etag is null and vice versa.
-     * 
-     * @param present
-     *            true if id should be present
-     * @throws ValidationException
-     *             if conditions are not met
-     */
-    protected void validateETag(boolean present) throws ServiceException {
-        if (present) {
-            if (etag == null) {
-                throw new ValidationException(
-                        Messages.ERROR_MANDATORY_PROPERTY_NOT_PRESENT,
-                        FIELD_ETAG, FIELD_ETAG);
-            }
-        } else {
-            if (etag != null) {
-                throw new ValidationException(Messages.ERROR_BAD_PROPERTY,
-                        FIELD_ETAG, FIELD_ETAG);
             }
         }
     }

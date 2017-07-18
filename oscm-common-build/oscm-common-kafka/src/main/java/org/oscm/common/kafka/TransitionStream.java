@@ -19,6 +19,7 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.kstream.KeyValueMapper;
+import org.apache.kafka.streams.processor.TopologyBuilder.AutoOffsetReset;
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.keys.TransitionKey;
@@ -95,7 +96,7 @@ public class TransitionStream extends Stream {
 
         KStreamBuilder builder = new KStreamBuilder();
 
-        builder.stream(keySerializer, inputSerializer,
+        builder.stream(AutoOffsetReset.EARLIEST, keySerializer, inputSerializer,
                 buildEventTopic(transition.getInputEntity())) //
                 .flatMap(new TransitionWrapper()) //
                 .to(keySerializer, outputSerializer,

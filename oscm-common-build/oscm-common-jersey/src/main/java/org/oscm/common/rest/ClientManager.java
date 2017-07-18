@@ -19,6 +19,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Feature;
 
 import org.glassfish.jersey.SslConfigurator;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.oscm.common.interfaces.keys.ApplicationKey;
 
 /**
@@ -108,6 +109,13 @@ public class ClientManager {
         }
 
         list.add(feature);
+    }
+
+    public synchronized void addAuthentication(ApplicationKey application,
+            String user, String password) {
+
+        addFeature(application,
+                HttpAuthenticationFeature.basic(user, password));
     }
 
     /**

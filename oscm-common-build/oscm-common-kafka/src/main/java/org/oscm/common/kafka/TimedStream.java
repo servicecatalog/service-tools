@@ -12,16 +12,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
-import org.apache.kafka.streams.processor.Processor;
-import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.processor.TopologyBuilder.AutoOffsetReset;
 import org.oscm.common.interfaces.data.Event;
 import org.oscm.common.interfaces.exceptions.ServiceException;
 import org.oscm.common.interfaces.keys.TransitionKey;
@@ -40,64 +42,16 @@ import org.oscm.common.util.logger.ServiceLogger;
 public class TimedStream extends Stream {
 
     private static final int POOL_SIZE = 4;
-    private static final String SOURCE_NAME = "event_source";
-    private static final String PROCESSOR_NAME = "event_processor";
-    private static final String SINK_NAME = "event_source";
+    private static final String STORE_NAME = "event_store";
 
     private static final ServiceLogger LOGGER = ServiceLogger
             .getLogger(TimedStream.class);
 
-    private class TimedProcessor implements Processor<UUID, Event> {
+    private ScheduledExecutorService executor;
+    private Map<UUID, ScheduledFuture<?>> tasks;
 
-        private ScheduledExecutorService executor;
-        private ProcessorContext context;
-        private Map<UUID, ScheduledFuture<?>> tasks;
-
-        @Override
-        public void init(ProcessorContext context) {
-            this.executor = Executors.newScheduledThreadPool(POOL_SIZE);
-            this.context = context;
-            this.tasks = new HashMap<>();
-        }
-
-        @Override
-        public void process(UUID key, Event value) {
-
-            if (tasks.containsKey(key)) {
-                tasks.get(key).cancel(false);
-            }
-
-            Runnable r = () -> {
-                try {
-                    TransitionService service = ServiceManager.getInstance()
-                            .getTransitionService(transition);
-                    List<Event> events = service.process(value);
-
-                    if (events == null) {
-                        throw new RuntimeException("Remove Task");
-                    }
-
-                    events.forEach((e) -> context.forward(e.getId(), e));
-                } catch (ServiceException e) {
-                    LOGGER.error(e);
-                }
-
-            };
-
-            ScheduledFuture<?> future = executor.scheduleWithFixedDelay(r, 0,
-                    interval, TimeUnit.MILLISECONDS);
-
-            tasks.put(key, future);
-        }
-
-        @Override
-        public void punctuate(long timestamp) {
-        }
-
-        @Override
-        public void close() {
-        }
-    }
+    private KafkaProducer<UUID, Event> producer;
+    private String outputTopic;
 
     private TransitionKey transition;
     private long interval;
@@ -121,6 +75,7 @@ public class TimedStream extends Stream {
                     "An output entity outside of this application is not allowed");
         }
 
+        this.tasks = new ConcurrentHashMap<>();
         this.transition = transition;
         this.interval = interval;
     }
@@ -136,14 +91,16 @@ public class TimedStream extends Stream {
 
         KStreamBuilder builder = new KStreamBuilder();
 
-        builder.addSource(SOURCE_NAME, keySerializer, inputSerializer,
-                buildEventTopic(transition.getInputEntity()));
+        builder.table(AutoOffsetReset.EARLIEST, keySerializer, inputSerializer,
+                buildEventTopic(transition.getInputEntity()), STORE_NAME)
+                .foreach(this::execute);
 
-        builder.addProcessor(PROCESSOR_NAME, TimedProcessor::new, SOURCE_NAME);
+        executor = Executors.newScheduledThreadPool(POOL_SIZE);
 
-        builder.addSink(SINK_NAME,
-                buildEventTopic(transition.getOutputEntity()), keySerializer,
-                outputSerializer, PROCESSOR_NAME);
+        outputTopic = buildEventTopic(transition.getOutputEntity());
+
+        producer = new KafkaProducer<>(getConfig(), keySerializer,
+                outputSerializer);
 
         KafkaStreams streams = new KafkaStreams(builder,
                 new StreamsConfig(getConfig()));
@@ -162,5 +119,40 @@ public class TimedStream extends Stream {
                 buildApplicationId(transition.getTransitionName()));
 
         return config;
+    }
+
+    private void execute(UUID key, Event value) {
+
+        if (tasks.containsKey(key)) {
+            tasks.get(key).cancel(false);
+        }
+
+        Runnable runner = () -> {
+            try {
+
+                TransitionService service = ServiceManager.getInstance()
+                        .getTransitionService(transition);
+                List<Event> events = service.process(value);
+
+                if (events == null) {
+                    throw new RuntimeException("Remove Task");
+                }
+
+                events.forEach((e) -> producer
+                        .send(new ProducerRecord<>(outputTopic, e.getId(), e)));
+            } catch (ServiceException e) {
+                LOGGER.error(e);
+            } catch (Exception e) {
+                LOGGER.exception(e);
+                throw e;
+            }
+
+        };
+
+        ScheduledFuture<?> future = executor.scheduleWithFixedDelay(runner, 0,
+                interval, TimeUnit.MILLISECONDS);
+
+        tasks.put(key, future);
+
     }
 }
