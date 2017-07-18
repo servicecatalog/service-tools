@@ -8,7 +8,6 @@
 
 package org.oscm.common.interfaces.data;
 
-import java.util.Date;
 import java.util.UUID;
 
 import org.oscm.common.interfaces.keys.ActivityKey;
@@ -26,7 +25,6 @@ public class Command extends VersionedEntity {
     public static final String FIELD_CMD = "command";
     public static final String FIELD_EVENT = "event";
     public static final String FIELD_TOKEN = "token";
-    public static final String FIELD_TIMESTAMP = "timestamp";
 
     @SerializedName(FIELD_ID)
     private UUID id;
@@ -39,9 +37,6 @@ public class Command extends VersionedEntity {
 
     @SerializedName(FIELD_TOKEN)
     private Token token;
-
-    @SerializedName(FIELD_TIMESTAMP)
-    private Date timestamp;
 
     /**
      * Gets the command id. Returns null if not set.
@@ -117,25 +112,6 @@ public class Command extends VersionedEntity {
      */
     public void setToken(Token token) {
         this.token = token;
-    }
-
-    /**
-     * Gets the creation timestamp for this command. Returns null if not set.
-     * 
-     * @return the timestamp or null
-     */
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    /**
-     * Sets the creation timestamp for this command.
-     * 
-     * @param timestamp
-     *            the invocation timestamp
-     */
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
     }
 
     /**

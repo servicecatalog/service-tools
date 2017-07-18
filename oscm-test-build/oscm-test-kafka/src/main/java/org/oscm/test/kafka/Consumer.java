@@ -31,6 +31,8 @@ public class Consumer {
     public Consumer(String bootstrap) {
         Map<String, Object> configs = new HashMap<>();
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
+        configs.put(ConsumerConfig.GROUP_ID_CONFIG,
+                UUID.randomUUID().toString());
 
         this.consumer = new KafkaConsumer<>(configs, new UUIDSerializer(),
                 new JsonSerializer());

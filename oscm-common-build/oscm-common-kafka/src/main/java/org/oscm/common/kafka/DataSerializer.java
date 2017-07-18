@@ -8,6 +8,7 @@
 
 package org.oscm.common.kafka;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.kafka.common.serialization.Deserializer;
@@ -68,6 +69,8 @@ public class DataSerializer<D extends VersionedEntity>
 
         data.convertTo(compatibleVersion);
         data.setVersion(currentVersion);
+
+        data.setTimestamp(new Date());
 
         String json = gson.toJson(data);
 

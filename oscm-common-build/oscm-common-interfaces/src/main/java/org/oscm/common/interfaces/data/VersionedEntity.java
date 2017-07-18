@@ -8,6 +8,8 @@
 
 package org.oscm.common.interfaces.data;
 
+import java.util.Date;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -18,9 +20,13 @@ import com.google.gson.annotations.SerializedName;
 public abstract class VersionedEntity {
 
     public static final String FIELD_VERSION = "version";
+    public static final String FIELD_TIMESTAMP = "timestamp";
 
     @SerializedName(FIELD_VERSION)
     private Version version;
+
+    @SerializedName(FIELD_TIMESTAMP)
+    private Date timestamp;
 
     /**
      * Gets the version key for this entity. Returns null if not set.
@@ -39,6 +45,26 @@ public abstract class VersionedEntity {
      */
     public void setVersion(Version version) {
         this.version = version;
+    }
+
+    /**
+     * Gets the timestamp for when this event was created. Returns null if not
+     * set.
+     * 
+     * @return the timestamp or null
+     */
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * Sets the timestamp for when this event was created.
+     * 
+     * @param timestamp
+     *            the timestamp
+     */
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
     /**

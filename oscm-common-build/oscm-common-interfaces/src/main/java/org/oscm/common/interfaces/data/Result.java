@@ -8,7 +8,6 @@
 
 package org.oscm.common.interfaces.data;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +28,6 @@ public class Result extends VersionedEntity {
     public static final String FIELD_STATE = "state";
     public static final String FIELD_EVENTS = "events";
     public static final String FIELD_FAILURE = "failure";
-    public static final String FIELD_TIMESTAMP = "timestamp";
 
     @SerializedName(FIELD_ID)
     private UUID id;
@@ -45,9 +43,6 @@ public class Result extends VersionedEntity {
 
     @SerializedName(FIELD_FAILURE)
     private Failure failure;
-
-    @SerializedName(FIELD_TIMESTAMP)
-    private Date timestamp;
 
     /**
      * Gets the command id of the parent. Returns null if not set.
@@ -142,24 +137,6 @@ public class Result extends VersionedEntity {
      */
     public void setFailure(Failure failure) {
         this.failure = failure;
-    }
-
-    /**
-     * Gets the creation timestamp for this result. Returns null if not set.
-     * 
-     * @return the timestamp or null
-     */
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    /**
-     * Sets the creation timestamp for this result.
-     * 
-     * @param timestamp
-     */
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
     }
 
     /**
