@@ -69,31 +69,31 @@ To model your own business logic for the service tools, you have to take servera
 
 ## Configuration
 
-### http-port
+### HTTP_PORT
 Optional. Http port for the REST API endpoints. Default: 8080
 
-### http-context
+### HTTP_CONTEXT
 Optional. Http context for the REST API endpoints. Default: oscm
 
-### ssl-keystore-location
+### SSL_KEYSTORE_LOCATION
 Mandatory. Path to the java keystore with the SSL certificate.
 
-### ssl-keystore-password
+### SSL_KEYSTORE_PASSWORD
 Mandatory. Password for the java keystore with the SSL certificate.
 
-### ssl-truststore-location
+### SSL_TRUSTSTORE_LOCATION
 Mandatory. Path to the java truststore with the SSL certificates.
 
-### ssl-truststore-password
+### SSL_TRUSTSTORE_PASSWORD
 Mandatory. Password for the java truststore with the SSL certificates.
 
-### http-request-timeout
+### HTTP_REQUEST_TIMEOUT
 Optional. Time limit for pending http request for commands. Default: 60
 
-### auth-token-secret
+### AUTH_TOKEN_SECRET
 Mandatory. Secret for signing the json web token with HMAC.
 
-### kafka-servers
+### KAFKA_SERVERS
 Mandatory. Comma separated list of Kafka bootstrap servers.
 
 

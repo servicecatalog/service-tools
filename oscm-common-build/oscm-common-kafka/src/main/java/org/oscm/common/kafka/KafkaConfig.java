@@ -17,7 +17,7 @@ import org.oscm.common.interfaces.keys.ConfigurationKey;
  * @author miethaner
  */
 public enum KafkaConfig implements ConfigurationKey {
-    KAFKA_SERVERS("kafka-servers", StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, true,
+    KAFKA_SERVERS("KAFKA_SERVERS", StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, true,
             "servers"); //
 
     private String name;
