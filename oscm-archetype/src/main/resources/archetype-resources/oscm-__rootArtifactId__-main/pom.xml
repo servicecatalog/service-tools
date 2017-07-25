@@ -33,6 +33,11 @@
               </descriptorRefs>
               <finalName>oscm-${rootArtifactId}</finalName>
               <appendAssemblyId>false</appendAssemblyId>
+              <archive>
+                <manifest>
+                  <mainClass>${groupId}.SampleApplicationServer</mainClass>
+                </manifest>
+              </archive>
             </configuration>
           </execution>
         </executions>
