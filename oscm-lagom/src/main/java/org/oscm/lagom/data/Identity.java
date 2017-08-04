@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.annotation.concurrent.Immutable;
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -33,11 +32,11 @@ public class Identity {
 
     private UUID id;
 
-    private Date timestamp;
+    private Long timestamp;
 
     @JsonCreator
     public Identity(@JsonProperty(FIELD_ID) UUID id,
-        @JsonProperty(FIELD_TIMESTAMP) Date timestamp) {
+        @JsonProperty(FIELD_TIMESTAMP) Long timestamp) {
         this.id = id;
         this.timestamp = timestamp;
     }
@@ -80,7 +79,7 @@ public class Identity {
      * @return the timestamp or null
      */
     @JsonProperty(FIELD_TIMESTAMP)
-    public Date getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 }

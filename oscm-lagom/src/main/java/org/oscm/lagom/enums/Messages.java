@@ -65,7 +65,7 @@ public enum Messages implements MessageKey {
     ERROR_CONNECTION_FAILURE(901), //
     ERROR_BAD_RESPONSE(902); //
 
-    private static final String BUNDLE = "org.oscm.common.interfaces.messages.Messages";
+    private static final String BUNDLE = "org.oscm.lagom.messages.Messages";
 
     private final int code;
 

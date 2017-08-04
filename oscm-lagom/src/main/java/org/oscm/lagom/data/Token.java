@@ -6,9 +6,10 @@
  *
  *******************************************************************************/
 
-package org.oscm.common.interfaces.data;
+package org.oscm.lagom.data;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;
 
@@ -25,26 +26,58 @@ public class Token {
     public static final String FIELD_RESTRICTIONS = "restrictions";
     public static final String FIELD_ROLES = "roles";
 
-    @SerializedName(FIELD_USER_ID)
     private UUID userId;
 
-    @SerializedName(FIELD_ORGANIZATION_ID)
     private UUID organizationId;
 
-    @SerializedName(FIELD_TENANT_ID)
     private UUID tenantId;
 
-    @SerializedName(FIELD_RESTRICTIONS)
     private Set<String> restrictions;
 
-    @SerializedName(FIELD_ROLES)
     private Set<String> roles;
+
+    @JsonCreator
+    public Token(@JsonProperty(FIELD_USER_ID) UUID userId,
+        @JsonProperty(FIELD_ORGANIZATION_ID) UUID organizationId,
+        @JsonProperty(FIELD_TENANT_ID) UUID tenantId,
+        @JsonProperty(FIELD_RESTRICTIONS) Set<String> restrictions,
+        @JsonProperty(FIELD_ROLES) Set<String> roles) {
+        this.userId = userId;
+        this.organizationId = organizationId;
+        this.tenantId = tenantId;
+        this.restrictions = restrictions;
+        this.roles = roles;
+    }
+
+    public Token(String userId, String organizationId, String tenantId,
+        String[] restrictions, String[] roles) {
+        if (userId != null) {
+            this.userId = UUID.fromString(userId);
+        }
+
+        if (organizationId != null) {
+            this.organizationId = UUID.fromString(organizationId);
+        }
+
+        if (tenantId != null) {
+            this.tenantId = UUID.fromString(tenantId);
+        }
+
+        if (restrictions != null) {
+            this.restrictions = new HashSet<>(Arrays.asList(restrictions));
+        }
+
+        if (roles != null) {
+            this.roles = new HashSet<>(Arrays.asList(roles));
+        }
+    }
 
     /**
      * Gets the user id. Returns null if not set.
      *
      * @return the user id
      */
+    @JsonProperty(FIELD_USER_ID)
     public UUID getUserId() {
         return userId;
     }
@@ -63,36 +96,11 @@ public class Token {
     }
 
     /**
-     * Sets the user id.
-     *
-     * @param userId the user id
-     */
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    /**
-     * Sets the user id as string.
-     *
-     * @param userIdString the id string
-     */
-    public void setUserId(String userIdString) {
-        if (userIdString != null) {
-            try {
-                userId = UUID.fromString(userIdString);
-            } catch (IllegalArgumentException e) {
-                userId = null;
-            }
-        } else {
-            userId = null;
-        }
-    }
-
-    /**
      * Gets the organization id. Returns null if not set.
      *
      * @return the organization id.
      */
+    @JsonProperty(FIELD_ORGANIZATION_ID)
     public UUID getOrganizationId() {
         return organizationId;
     }
@@ -111,36 +119,11 @@ public class Token {
     }
 
     /**
-     * Sets the organization id.
-     *
-     * @param organizationId the organization id
-     */
-    public void setOrganizationId(UUID organizationId) {
-        this.organizationId = organizationId;
-    }
-
-    /**
-     * Sets the organization id as string.
-     *
-     * @param organizationIdString
-     */
-    public void setOrganizationId(String organizationIdString) {
-        if (organizationIdString != null) {
-            try {
-                organizationId = UUID.fromString(organizationIdString);
-            } catch (IllegalArgumentException e) {
-                organizationId = null;
-            }
-        } else {
-            organizationId = null;
-        }
-    }
-
-    /**
      * Gets the tenant id. Returns null if not set.
      *
      * @return the tenant id
      */
+    @JsonProperty(FIELD_TENANT_ID)
     public UUID getTenantId() {
         return tenantId;
     }
@@ -159,36 +142,11 @@ public class Token {
     }
 
     /**
-     * Sets the tenant id.
-     *
-     * @param tenantId the tenant id
-     */
-    public void setTenantId(UUID tenantId) {
-        this.tenantId = tenantId;
-    }
-
-    /**
-     * Sets the tenant id as string.
-     *
-     * @param tenantIdString the id string
-     */
-    public void setTenantId(String tenantIdString) {
-        if (tenantIdString != null) {
-            try {
-                tenantId = UUID.fromString(tenantIdString);
-            } catch (IllegalArgumentException e) {
-                tenantId = null;
-            }
-        } else {
-            tenantId = null;
-        }
-    }
-
-    /**
      * Gets the set of restrictions. Returns null if not set.
      *
      * @return the set of restrictions
      */
+    @JsonProperty(FIELD_RESTRICTIONS)
     public Set<String> getRestrictions() {
         if (restrictions != null) {
             return Collections.unmodifiableSet(restrictions);
@@ -211,32 +169,11 @@ public class Token {
     }
 
     /**
-     * Sets the set of restrictions.
-     *
-     * @param restrictions the set of restrictions
-     */
-    public void setRestrictions(Set<String> restrictions) {
-        this.restrictions = restrictions;
-    }
-
-    /**
-     * Set the array of restrictions.
-     *
-     * @param restrictionsArray the array of restrictions
-     */
-    public void setRestrictions(String[] restrictionsArray) {
-        if (restrictionsArray != null) {
-            restrictions = new HashSet<>(Arrays.asList(restrictionsArray));
-        } else {
-            restrictions = null;
-        }
-    }
-
-    /**
      * Gets the set of roles. Returns null if not set.
      *
      * @return the set of roles
      */
+    @JsonProperty(FIELD_ROLES)
     public Set<String> getRoles() {
         if (roles != null) {
             return Collections.unmodifiableSet(roles);
@@ -255,28 +192,6 @@ public class Token {
             return roles.toArray(new String[] {});
         } else {
             return new String[] {};
-        }
-    }
-
-    /**
-     * Sets the set of roles.
-     *
-     * @param roles the set of roles
-     */
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
-
-    /**
-     * Sets the array of roles.
-     *
-     * @param rolesArray the array of roles
-     */
-    public void setRoles(String[] rolesArray) {
-        if (rolesArray != null) {
-            roles = new HashSet<>(Arrays.asList(rolesArray));
-        } else {
-            roles = null;
         }
     }
 }
