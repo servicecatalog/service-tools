@@ -6,7 +6,7 @@
  *
  *******************************************************************************/
 
-package org.oscm.common.interfaces.enums;
+package org.oscm.lagom.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
