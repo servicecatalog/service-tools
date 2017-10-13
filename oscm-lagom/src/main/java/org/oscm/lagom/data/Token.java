@@ -15,8 +15,6 @@ import java.util.*;
 
 /**
  * Entity class for the security token.
- *
- * @author miethaner
  */
 public class Token {
 
@@ -36,6 +34,15 @@ public class Token {
 
     private Set<String> roles;
 
+    /**
+     * Creates a new security token.
+     *
+     * @param userId         the users id, null returns null
+     * @param organizationId the users organization id, null returns null
+     * @param tenantId       the users tenant id, null returns null
+     * @param restrictions   the users restrictions, null returns empty set
+     * @param roles          the users roles, null returns empty set
+     */
     @JsonCreator
     public Token(@JsonProperty(FIELD_USER_ID) UUID userId,
         @JsonProperty(FIELD_ORGANIZATION_ID) UUID organizationId,
@@ -49,6 +56,15 @@ public class Token {
         this.roles = roles;
     }
 
+    /**
+     * Creates a new security token.
+     *
+     * @param userId         the users id, null returns null
+     * @param organizationId the users organization id, null returns null
+     * @param tenantId       the users tenant id, null returns null
+     * @param restrictions   the users restrictions, null returns empty set
+     * @param roles          the users roles, null returns empty set
+     */
     public Token(String userId, String organizationId, String tenantId,
         String[] restrictions, String[] roles) {
         if (userId != null) {
@@ -73,9 +89,9 @@ public class Token {
     }
 
     /**
-     * Gets the user id. Returns null if not set.
+     * Gets the user id.
      *
-     * @return the user id
+     * @return the user id, null if not set
      */
     @JsonProperty(FIELD_USER_ID)
     public UUID getUserId() {
@@ -83,9 +99,9 @@ public class Token {
     }
 
     /**
-     * Gets the user id as string. Returns null if not set.
+     * Gets the user id as string.
      *
-     * @return the id string
+     * @return the id string, null if not set
      */
     public String getUserIdAsString() {
         if (userId != null) {
@@ -96,9 +112,9 @@ public class Token {
     }
 
     /**
-     * Gets the organization id. Returns null if not set.
+     * Gets the organization id.
      *
-     * @return the organization id.
+     * @return the organization id, null if not set
      */
     @JsonProperty(FIELD_ORGANIZATION_ID)
     public UUID getOrganizationId() {
@@ -106,9 +122,9 @@ public class Token {
     }
 
     /**
-     * Gets the organization id as string. Returns null if not set.
+     * Gets the organization id as string.
      *
-     * @return the id string
+     * @return the id string, null if not set
      */
     public String getOrganizationIdAsString() {
         if (organizationId != null) {
@@ -119,9 +135,9 @@ public class Token {
     }
 
     /**
-     * Gets the tenant id. Returns null if not set.
+     * Gets the tenant id.
      *
-     * @return the tenant id
+     * @return the tenant id, null if not set
      */
     @JsonProperty(FIELD_TENANT_ID)
     public UUID getTenantId() {
@@ -129,9 +145,9 @@ public class Token {
     }
 
     /**
-     * Gets the tenant id as string. Returns null if not set.
+     * Gets the tenant id as string.
      *
-     * @return the id string
+     * @return the id string, null if not set
      */
     public String getTenantIdAsString() {
         if (tenantId != null) {
@@ -142,7 +158,7 @@ public class Token {
     }
 
     /**
-     * Gets the set of restrictions. Returns null if not set.
+     * Gets the set of restrictions.
      *
      * @return the set of restrictions
      */
@@ -156,7 +172,7 @@ public class Token {
     }
 
     /**
-     * Gets the array of restrictions. Returns null if not set.
+     * Gets the array of restrictions.
      *
      * @return the array of restrictions
      */
@@ -169,7 +185,7 @@ public class Token {
     }
 
     /**
-     * Gets the set of roles. Returns null if not set.
+     * Gets the set of roles.
      *
      * @return the set of roles
      */
@@ -183,7 +199,7 @@ public class Token {
     }
 
     /**
-     * Gets the array of roles. Returns null if not set.
+     * Gets the array of roles.
      *
      * @return the array of roles
      */

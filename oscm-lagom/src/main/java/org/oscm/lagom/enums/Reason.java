@@ -12,8 +12,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Enum for failure reasons.
- *
- * @author miethaner
  */
 public enum Reason {
     @JsonProperty(Constants.OPTION_CACHE)

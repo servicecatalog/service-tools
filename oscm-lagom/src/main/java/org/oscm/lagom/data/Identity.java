@@ -10,20 +10,12 @@ package org.oscm.lagom.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import javax.annotation.concurrent.Immutable;
 import java.util.UUID;
 
 /**
- * Entity class for events.
- *
- * @author miethaner
+ * Data class for entities.
  */
-@Immutable
-@JsonSerialize
-@JsonDeserialize
 public class Identity {
 
     public static final String FIELD_ID = "id";
@@ -34,6 +26,12 @@ public class Identity {
 
     private Long timestamp;
 
+    /**
+     * Creates a new identity.
+     *
+     * @param id        the entities id, null returns null
+     * @param timestamp the entities creation timestamp, null returns null
+     */
     @JsonCreator
     public Identity(@JsonProperty(FIELD_ID) UUID id,
         @JsonProperty(FIELD_TIMESTAMP) Long timestamp) {
@@ -51,9 +49,9 @@ public class Identity {
     }
 
     /**
-     * Gets the event id. Returns null if not set.
+     * Gets the entities id.
      *
-     * @return the id or null
+     * @return the id, null if not set
      */
     @JsonProperty(FIELD_ID)
     public UUID getId() {
@@ -61,9 +59,9 @@ public class Identity {
     }
 
     /**
-     * Gets the event id as string. Returns an empty string if not set.
+     * Gets the entities id as string.
      *
-     * @return the id string or empty string
+     * @return the id string, null if not set
      */
     public String getIdString() {
         if (id != null) {
@@ -74,9 +72,9 @@ public class Identity {
     }
 
     /**
-     * Gets the timestamp for this event. Returns null if not set.
+     * Gets the creation timestamp for this entity.
      *
-     * @return the timestamp or null
+     * @return the timestamp, null if not set
      */
     @JsonProperty(FIELD_TIMESTAMP)
     public Long getTimestamp() {

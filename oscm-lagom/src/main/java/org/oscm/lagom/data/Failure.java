@@ -12,15 +12,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oscm.lagom.enums.Reason;
 
-import javax.annotation.concurrent.Immutable;
 import java.util.UUID;
 
 /**
  * Entity class for failures.
- *
- * @author miethaner
  */
-@Immutable
 public class Failure {
 
     private static final String FIELD_REASON = "reason";
@@ -39,6 +35,15 @@ public class Failure {
 
     private String message;
 
+    /**
+     * Creates a new failure.
+     *
+     * @param reason      the reason for the failure, null returns null
+     * @param referenceId the reference id for the failure, null returns null
+     * @param code        the error code for the failure, null returns null
+     * @param property    the responsible property for the failure, null returns null
+     * @param message     the message for the failure, null returns null
+     */
     @JsonCreator
     public Failure(@JsonProperty(FIELD_REASON) Reason reason,
         @JsonProperty(FIELD_REFERENCE_ID) UUID referenceId,
@@ -53,9 +58,9 @@ public class Failure {
     }
 
     /**
-     * Gets the reason for this failure. Returns null if not set.
+     * Gets the reason for this failure.
      *
-     * @return the reason or null
+     * @return the reason, null if not set
      */
     @JsonProperty(FIELD_REASON)
     public Reason getReason() {
@@ -63,9 +68,9 @@ public class Failure {
     }
 
     /**
-     * Gets the unique reference id for this failure. Returns null if not set.
+     * Gets the unique reference id for this failure.
      *
-     * @return the reference id or null
+     * @return the reference id, null if not set
      */
     @JsonProperty(FIELD_REFERENCE_ID)
     public UUID getReferenceId() {
@@ -73,9 +78,9 @@ public class Failure {
     }
 
     /**
-     * Gets the error code for this failure. Returns null if not set.
+     * Gets the error code for this failure.
      *
-     * @return the error code or null
+     * @return the error code, null if not set
      */
     @JsonProperty(FIELD_CODE)
     public Integer getCode() {
@@ -83,9 +88,9 @@ public class Failure {
     }
 
     /**
-     * Gets the responsible property for this failure. Returns null if not set.
+     * Gets the responsible property for this failure.
      *
-     * @return the property or null
+     * @return the property, null if not set
      */
     @JsonProperty(FIELD_PROPERTY)
     public String getProperty() {
@@ -93,9 +98,9 @@ public class Failure {
     }
 
     /**
-     * Gets the error message for this failure. Returns null if not set.
+     * Gets the error message for this failure.
      *
-     * @return the message or null
+     * @return the message, null if not set
      */
     @JsonProperty(FIELD_MESSAGE)
     public String getMessage() {

@@ -12,8 +12,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Enum for result states.
- *
- * @author miethaner
  */
 public enum Status {
     @JsonProperty(Constants.OPTION_SUCCESS)

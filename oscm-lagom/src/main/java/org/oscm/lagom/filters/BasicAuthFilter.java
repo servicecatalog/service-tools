@@ -16,12 +16,23 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.function.Function;
 
+/**
+ * Lagom filter class for basic authentication with HTTP(s).
+ */
 public class BasicAuthFilter {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String HEADER_PREFIX = "Basic ";
     public static final String SEPARATOR = ":";
 
+    /**
+     * Provides a function for Lagom that adds a basic auth header. The payload is created from the
+     * given user and password.
+     *
+     * @param user     the user name
+     * @param password the user password
+     * @return the function
+     */
     public static Function<RequestHeader, RequestHeader> getFilter(String user,
         String password) {
 
@@ -34,5 +45,8 @@ public class BasicAuthFilter {
 
         return requestHeader ->
             requestHeader.withHeader(AUTHORIZATION_HEADER, header);
+    }
+
+    private BasicAuthFilter() {
     }
 }

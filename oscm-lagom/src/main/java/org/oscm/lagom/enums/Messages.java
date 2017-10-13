@@ -16,8 +16,6 @@ import java.util.ResourceBundle;
 
 /**
  * Enum for message to provide code and message.
- *
- * @author miethaner
  */
 public enum Messages implements MessageKey {
 
@@ -73,10 +71,12 @@ public enum Messages implements MessageKey {
         this.code = error;
     }
 
+    @Override
     public Integer getCode() {
         return Integer.valueOf(code);
     }
 
+    @Override
     public String getMessage(String... values) {
         String msg;
         try {

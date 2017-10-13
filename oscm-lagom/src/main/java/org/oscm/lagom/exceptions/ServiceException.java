@@ -15,9 +15,7 @@ import org.oscm.lagom.interfaces.MessageKey;
 import java.util.UUID;
 
 /**
- * Super class for all service specific exceptions
- *
- * @author miethaner
+ * Super class for all service specific exceptions.
  */
 public abstract class ServiceException extends Exception {
 
@@ -27,7 +25,7 @@ public abstract class ServiceException extends Exception {
     private Integer code;
 
     /**
-     * Creates new service exception
+     * Creates a new service exception.
      *
      * @param messageKey the enum key for the message
      * @param values     the values for message placeholders
@@ -39,7 +37,7 @@ public abstract class ServiceException extends Exception {
     }
 
     /**
-     * Creates new service exception
+     * Creates a new service exception.
      *
      * @param messageKey the enum key for the message
      * @param e          the causing exception.
@@ -62,9 +60,9 @@ public abstract class ServiceException extends Exception {
     }
 
     /**
-     * Gets the error code. Returns null if not set.
+     * Gets the error code.
      *
-     * @return the error code or null
+     * @return the error code
      */
     public Integer getCode() {
         return code;

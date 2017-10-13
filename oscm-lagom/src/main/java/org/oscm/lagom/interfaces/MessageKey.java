@@ -12,15 +12,13 @@ package org.oscm.lagom.interfaces;
 
 /**
  * Interface for enums that represent message keys.
- *
- * @author miethaner
  */
 public interface MessageKey {
 
     /**
      * Gets the message id.
      *
-     * @return the message id.
+     * @return the message id
      */
     public Integer getCode();
 
